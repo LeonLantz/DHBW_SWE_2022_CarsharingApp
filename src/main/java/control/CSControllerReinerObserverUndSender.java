@@ -4,28 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
-import java.net.URL;
 
 import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
-import de.dhbwka.swe.utils.event.IGUIEventSender;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
-import de.dhbwka.swe.utils.gui.ButtonElement;
-import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
-import de.dhbwka.swe.utils.util.GenericEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
-import gui.MainComponent;
-import gui.MainComponentMitTabbedPane;
-import model.Kunde;
-import model.Standort;
-import util.ElementFactory;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -79,7 +69,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	/**
 	 * entityFactory für die Elemente 
 	 */
-	ElementFactory elementFactory = new ElementFactory( entityManager );
+	//ElementFactory elementFactory = new ElementFactory( entityManager );
 	
 	/**
 	 * Lesen und schreiben der Elemente. Attribut kann (muss nicht) 
@@ -102,7 +92,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public void init() {
 		try {
 			loadCSVData();
-			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -123,7 +113,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		
 		csvData.forEach( e -> { 
 			try {
-				elementFactory.createElement(Kunde.class, e);
+				//elementFactory.createElement(Kunde.class, e);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -147,9 +137,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
 		logger.debug("Hier ist der Controller!   Event: " + ge);
 		
+/*
 		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_KUNDE ) {
 			logger.debug( ge.getData().toString() );
-			String[] kundenAtts = (String[])ge.getData(); 
+			String[] kundenAtts = (String[])ge.getData();
 			try {
 				// element wird erzeugt und in ElementManager gespeichert
 				elementFactory.createElement(Kunde.class, kundenAtts);
@@ -159,6 +150,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				e.printStackTrace();
 			}
 		}
+*/
 	}
 		
 	/**
