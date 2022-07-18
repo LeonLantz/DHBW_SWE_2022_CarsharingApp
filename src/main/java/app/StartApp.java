@@ -26,6 +26,7 @@ public class StartApp {
         controller.init();
 
         JFrame frame = new JFrame("Carsharing Buchungssoftware");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1080, 720);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
