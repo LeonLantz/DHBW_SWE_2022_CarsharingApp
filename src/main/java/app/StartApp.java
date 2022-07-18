@@ -1,6 +1,6 @@
 package app;
 
-import control.CSControllerTest;
+import control.CSControllerReinerObserverUndSender;
 import gui.MainComponentMitNavBar;
 import util.CSHelp;
 
@@ -20,7 +20,7 @@ public class StartApp {
     public void initWithObserver() {
         MainComponentMitNavBar mainComp = new MainComponentMitNavBar(null);
 
-        CSControllerTest controller = new CSControllerTest();
+        CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
         controller.addObserver( mainComp );
         mainComp.addObserver( controller );
         controller.init();
