@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,10 +64,11 @@ public class ElementFactory {
 			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
 			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
 			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
-			String beschreibung = csvData[ Kunde.CSVPositions.BESCHREIBUNG.ordinal() ];
-			String engagiert = csvData[ Kunde.CSVPositions.ENGAGIERT.ordinal() ];
+			String email = csvData[ Kunde.CSVPositions.EMAIL.ordinal() ];
+			String dateOfBirth = csvData[ Kunde.CSVPositions.DATEOFBIRTH.ordinal() ];
+			String lastMod = csvData[ Kunde.CSVPositions.LASTMOD.ordinal() ];
 			
-			persistableElement = new Kunde( id, vorName, nachName, beschreibung, Boolean.getBoolean(engagiert) );
+			persistableElement = new Kunde( id, null, vorName, nachName, email, dateOfBirth, null, new Date(lastMod));
 			/**
 			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
 			 */

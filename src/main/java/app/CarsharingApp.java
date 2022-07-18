@@ -61,9 +61,9 @@ public class CarsharingApp {
 	private List<IDepictable> createKunden() {
 		List<IDepictable> data = new ArrayList<>();
 
-		Kunde kunde = new Kunde( "K-1", "Willi", "Bald", "Mein erster Kunde", false );
-		data.add(kunde);
-		data.add( new Kunde( "K-1", "Anna", "Conda", "Mein zweiter Kunde", true ) );
+//		Kunde kunde = new Kunde( "K-1", "Willi", "Bald", "Mein erster Kunde", false );
+//		data.add(kunde);
+//		data.add( new Kunde( "K-1", "Anna", "Conda", "Mein zweiter Kunde", true ) );
 		
 		return data;
 	}

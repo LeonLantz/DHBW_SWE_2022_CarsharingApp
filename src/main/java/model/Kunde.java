@@ -1,12 +1,17 @@
 package model;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
+
+import javax.swing.*;
+
 /**
  * Klasse Kunde als Beispiel einer Modellklasse mit Attributen
  * 
@@ -23,10 +28,13 @@ public class Kunde implements IDepictable, IPersistable {
 
 	public enum CSVPositions{
 		ID,
+		IMAGEFILE,
 		VORNAME,
 		NACHNAME,
-		ENGAGIERT,
-		BESCHREIBUNG
+		EMAIL,
+		DATEOFBIRTH,
+		ANSCHRIFT,
+		LASTMOD
 	}
 
 	
@@ -42,11 +50,14 @@ public class Kunde implements IDepictable, IPersistable {
 		 * Attribute erzeugen, die folgende Einstellungen haben:
 		 * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
 		 */
-		ID( "ID", String.class, true, false, false ),
-		VORNAME( "Vorname", String.class, true, true, true ),
-		NACHNAME( "Nachname", String.class, true, true, true ),
-		ENGAGIERT( "engagiert", Boolean.class, true, true, true ),
-		BESCHREIBUNG( "Beschreibung", String.class, true, true, true );
+		ID( "ID", String.class, false, false, false ),
+		IMAGEFILE( "Bild", File.class, true, false, false ),
+		VORNAME( "Vorname", String.class, true, false, false ),
+		NACHNAME( "Nachname", String.class, true, false, false ),
+		EMAIL( "Email", String.class, true, false, false ),
+		DATEOFBIRTH( "Geburtsdatum", String.class, true, false, false ),
+		ANSCHRIFT("Anschrift", Anschrift.class, true, false, false),
+		LASTMOD( "Änderung",Date.class, true, false, false );
 
 		private String name;
 		private boolean visible;
@@ -106,15 +117,15 @@ public class Kunde implements IDepictable, IPersistable {
 	 * Default-Konstruktor
 	 */
 	public Kunde() {
-		this( null, null, null, "--", false );
+		this( null, null, null, null, null, null, null, null);
 	}
 	
 	public Kunde( String vorName, String nachName ) {
-		this( null, vorName, nachName, "--", false );
+		this( null, null, vorName, nachName, "--", null, null );
 	}
 
-	public Kunde( String vorName, String nachName, String description ) {
-		this( null, vorName, nachName, description, false );
+	public Kunde(File imageFile, String vorName, String nachName, String email, String dateOfBirth, Anschrift anschrift, Date lastmod) {
+		this(null, imageFile, vorName, nachName, email, dateOfBirth, anschrift, lastmod);
 	}
 
 	/**
@@ -123,20 +134,23 @@ public class Kunde implements IDepictable, IPersistable {
 	 * @param iD 
 	 * @param vorName
 	 * @param nachName
-	 * @param description
-	 * @param engaged
+	 * @param email
+	 * @param dateOfBirth
 	 */
-	public Kunde( String iD, String vorName, String nachName, String description, boolean engaged ) {
+	public Kunde(String iD, File imageFile, String vorName, String nachName, String email, String dateOfBirth, Anschrift anschrift, Date lastMod ) {
 		super();
 
 		boolean modifiable = true;
 		
 		String randID = UUID.randomUUID().toString();
 		this.attArr[ Attributes.ID.ordinal() ] = Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
+		this.attArr[ Attributes.IMAGEFILE.ordinal() ] = Attributes.IMAGEFILE.createAttribute( this, imageFile, null );
 		this.attArr[ Attributes.NACHNAME.ordinal() ] = Attributes.NACHNAME.createAttribute( this, nachName, "--" );
 		this.attArr[ Attributes.VORNAME.ordinal() ] = Attributes.VORNAME.createAttribute( this, vorName, "--" );
-		this.attArr[ Attributes.BESCHREIBUNG.ordinal() ] = Attributes.BESCHREIBUNG.createAttribute( this, description, "" );
-		this.attArr[ Attributes.ENGAGIERT.ordinal() ] = Attributes.ENGAGIERT.createAttribute(this, engaged, Boolean.TRUE );
+		this.attArr[ Attributes.EMAIL.ordinal() ] = Attributes.EMAIL.createAttribute( this, email, "" );
+		this.attArr[ Attributes.DATEOFBIRTH.ordinal() ] = Attributes.DATEOFBIRTH.createAttribute(this, dateOfBirth, "" );
+		this.attArr[ Attributes.ANSCHRIFT.ordinal() ] = Attributes.ANSCHRIFT.createAttribute(this, anschrift, "" );
+		this.attArr[ Attributes.LASTMOD.ordinal() ] = Attributes.LASTMOD.createAttribute(this, lastMod, "" );
 	}
 
 	public <T> T getAttributeValueOf( Attributes attribute ) {
@@ -161,7 +175,7 @@ public class Kunde implements IDepictable, IPersistable {
 	public String toString() {
 		return this.attArr[ Attributes.NACHNAME.ordinal() ].getValue() + ", "
 					+ this.attArr[ Attributes.VORNAME.ordinal() ].getValue() + ", "
-					+ this.attArr[ Attributes.BESCHREIBUNG.ordinal() ].getValue();
+					+ this.attArr[ Attributes.EMAIL.ordinal() ].getValue();
 	}
 
 	@Override
@@ -174,19 +188,6 @@ public class Kunde implements IDepictable, IPersistable {
 		return this.attArr[ Attributes.ID.ordinal() ].getValue().toString();
 	}
 
-	/**
-	 * sets the description
-	 *
-	 * @param description the description that will be set
-	 */
-	public void setDescription( String description ) {
-		try{
-			this.attArr[ Attributes.BESCHREIBUNG.ordinal() ].setValue( description );
-		}
-		catch( Exception e ){
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public Attribute[] getAttributeArray() {
