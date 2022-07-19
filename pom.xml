@@ -20,14 +20,6 @@
 			<version>4.7.0</version>
 		</dependency>
 	</dependencies>
-<!--	<dependencies>
-		<dependency>
-			<groupId>de.dhbw.ka.swe</groupId>
-			<artifactId>swe-utils</artifactId>
-			<version>4.3.0</version>
-		</dependency>
-	</dependencies>
--->
 
 	<build>
 		<pluginManagement>
@@ -58,7 +50,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>app.SWETestappClass</mainClass>
+							<mainClass>app.StartApp</mainClass>
 						</manifest>
 						<manifestEntries>
 						</manifestEntries>
@@ -92,7 +84,7 @@
 								<manifest>
 									<addClasspath>true</addClasspath>
 									<!-- <mainClass>app.MqttViewerApp</mainClass> -->
-									<mainClass>app.SWETestappClass</mainClass>
+									<mainClass>app.StartApp</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
@@ -108,9 +100,7 @@
 	<repositories>
 <!-- 	<distributionManagement> -->
 		<repository>
-			<!-- <id>iai-artifactory</id> -->
-			<!-- <name>iai-artifactory.iai.kit.edu</name> -->
-			<!-- <url>https://iai-artifactory.iai.kit.edu/artifactory/webis-public</url> -->
+			<name>iai-artifactory.iai.kit.edu</name>
 			<id>webis-public</id>
 			<url>https://iai-artifactory.iai.kit.edu/artifactory/webis-public</url>
 		</repository>

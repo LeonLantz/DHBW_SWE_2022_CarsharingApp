@@ -90,13 +90,13 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	 * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
 	 */
 	public void init() {
-		try {
-			loadCSVData();
-			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			loadCSVData();
+//			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private void loadCSVData() throws IOException {
