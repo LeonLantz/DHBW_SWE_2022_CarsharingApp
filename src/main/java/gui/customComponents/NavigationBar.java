@@ -13,6 +13,7 @@ import util.CSHelp;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,6 +51,9 @@ public class NavigationBar extends ObservableComponent {
         }
     }
 
+    JPanel section_1, section_2, section_3;
+    JButton navBar_button_übersicht, navBar_button_buchungen, navBar_button_fahrzeuge, navBar_button_kunden, navBar_button_standorte, navBar_button_dokumente;
+
 
     public NavigationBar() {
     }
@@ -57,6 +61,8 @@ public class NavigationBar extends ObservableComponent {
     public NavigationBar(String id) {
         super(id);
     }
+
+
 
     private void initUI() {
         Border border_right = BorderFactory.createMatteBorder(0,0,0,1, CSHelp.navBar);
@@ -70,35 +76,35 @@ public class NavigationBar extends ObservableComponent {
         this.setBorder(border_right);
 
         //Teilkomponente: Sektion 1
-        JPanel section_1 = new JPanel();
+        section_1 = new JPanel();
         section_1.setBackground(Color.white);
         section_1.setPreferredSize(new Dimension(180, 130));
         section_1.setBorder(border_bottom);
         this.add(section_1, BorderLayout.NORTH);
 
         //Teilkomponente: Sektion 2
-        JPanel section_2 = new JPanel(new FlowLayout(0,0,0));
+        section_2 = new JPanel(new FlowLayout(0,0,0));
         section_2.setBackground(Color.white);
         section_2.setPreferredSize(new Dimension(180, 240));
 
         //Button Übersicht
         JPanel navBar_panel_übersicht = new JPanel();
         navBar_panel_übersicht.setBackground(Color.white);
-        JButton navbar_button_übersicht = new JButton("Übersicht");
-        navbar_button_übersicht.addActionListener(new ActionListener() {
+        navBar_button_übersicht = new JButton("Übersicht");
+        navBar_button_übersicht.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 NavigationBar.this.fireGUIEvent(new GUIEvent(this, Commands.TAB_CHANGED, "übersicht"));
             }
         });
-        navBar_panel_übersicht.add(navbar_button_übersicht, BorderLayout.CENTER);
+        navBar_panel_übersicht.add(navBar_button_übersicht, BorderLayout.CENTER);
         navBar_panel_übersicht.setPreferredSize(new Dimension(180, 40));
         section_2.add(navBar_panel_übersicht);
 
         //Button Buchungen
         JPanel navBar_panel_buchungen = new JPanel();
         navBar_panel_buchungen.setBackground(Color.white);
-        JButton navBar_button_buchungen = new JButton("Buchungen");
+        navBar_button_buchungen = new JButton("Buchungen");
         navBar_button_buchungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -112,7 +118,7 @@ public class NavigationBar extends ObservableComponent {
         //Button Fahrzeuge
         JPanel navBar_panel_fahrzeuge = new JPanel();
         navBar_panel_fahrzeuge.setBackground(Color.white);
-        JButton navBar_button_fahrzeuge = new JButton("Fahrzeuge");
+        navBar_button_fahrzeuge = new JButton("Fahrzeuge");
         navBar_button_fahrzeuge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,7 +132,7 @@ public class NavigationBar extends ObservableComponent {
         //Button Kunden
         JPanel navBar_panel_kunden = new JPanel();
         navBar_panel_kunden.setBackground(Color.white);
-        JButton navBar_button_kunden = new JButton("Kunden");
+        navBar_button_kunden = new JButton("Kunden");
         navBar_button_kunden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,7 +146,7 @@ public class NavigationBar extends ObservableComponent {
         //Button Standorte
         JPanel navBar_panel_standorte = new JPanel();
         navBar_panel_standorte.setBackground(Color.white);
-        JButton navBar_button_standorte = new JButton("Standorte");
+        navBar_button_standorte = new JButton("Standorte");
         navBar_button_standorte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +160,7 @@ public class NavigationBar extends ObservableComponent {
         //Button Dokumente
         JPanel navBar_panel_dokumente = new JPanel();
         navBar_panel_dokumente.setBackground(Color.white);
-        JButton navBar_button_dokumente = new JButton("Dokumente");
+        navBar_button_dokumente = new JButton("Dokumente");
         navBar_button_dokumente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -169,12 +175,45 @@ public class NavigationBar extends ObservableComponent {
         this.add(section_2, BorderLayout.CENTER);
 
         //Teilkomponente: Sektion 3
-        JPanel section_3 = new JPanel();
+        section_3 = new JPanel();
         section_3.setBackground(Color.white);
         section_3.setPreferredSize(new Dimension(180, 320));
         section_3.setBorder(border_top);
         this.add(section_3, BorderLayout.SOUTH);
 
+    }
+
+    public void setActive(String title) {
+        clearAllButtons();
+        switch (title) {
+            case "übersicht":
+                navBar_button_übersicht.setForeground(Color.BLUE);
+                break;
+            case "buchungen":
+                navBar_button_buchungen.setForeground(Color.BLUE);
+                break;
+            case "fahrzeuge":
+                navBar_button_fahrzeuge.setForeground(Color.BLUE);
+                break;
+            case "kunden":
+                navBar_button_kunden.setForeground(Color.BLUE);
+                break;
+            case "standorte":
+                navBar_button_standorte.setForeground(Color.BLUE);
+                break;
+            case "dokumente":
+                navBar_button_dokumente.setForeground(Color.BLUE);
+                break;
+        }
+    }
+
+    private void clearAllButtons() {
+        navBar_button_übersicht.setForeground(Color.black);
+        navBar_button_buchungen.setForeground(Color.black);
+        navBar_button_fahrzeuge.setForeground(Color.black);
+        navBar_button_kunden.setForeground(Color.black);
+        navBar_button_standorte.setForeground(Color.black);
+        navBar_button_dokumente.setForeground(Color.black);
     }
 
 

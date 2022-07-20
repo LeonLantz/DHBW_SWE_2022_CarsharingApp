@@ -37,18 +37,31 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         }
     }
 
-    //JPanel pane1, pane2, pane3, cardPane;
-    CardLayout card;
-    JPanel content;
+    private CardLayout card;
+    private JPanel content;
 
     private IPropertyManager propManager = null;
 
     private IAppLogger logger = AppLogger.getInstance();
 
-    private java.util.List<IDepictable> allElements = new ArrayList<>();
+    private List<IDepictable> allElements = new ArrayList<>();
     private List<AttributeElement> allAttributeElements = new ArrayList<>();
 
+    public final static String NB = "NavigationBar";
+    public final static String CPÜ = "ContentPanel-Übersicht";
+    public final static String CPB = "ContentPanel-Buchungen";
+    public final static String CPF = "ContentPanel-Fahrzeuge";
+    public final static String CPK = "ContentPanel-Kunden";
+    public final static String CPS = "ContentPanel-Standorte";
+    public final static String CPD = "ContentPanel-Dokumente";
+
     private NavigationBar nvb = null;
+    private ContentPanel übersichtPanel = null;
+    private ContentPanel buchungenPanel = null;
+    private ContentPanel fahrzeugePanel = null;
+    private ContentPanel kundenPanel = null;
+    private ContentPanel standortePanel = null;
+    private ContentPanel dokumentePanel = null;
 
     public MainComponentMitNavBar(PropertyManager propertyManager) {
         this.propManager = propertyManager;
@@ -65,11 +78,11 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         content.setLayout(card);
 
         content.add(createÜbersichtTab(), "übersicht");
-        content.add(createBuchungenTab(), "buchungen");
-        content.add(createFahrzeugeTab(), "fahrzeuge");
-        content.add(createKundenTab(), "kunden");
-        content.add(createStandorteTab(), "standorte");
-        content.add(createDokumenteTab(), "dokumente");
+        content.add(createBuchungenTab("Buchungen"), "buchungen");
+        content.add(createFahrzeugeTab("Fahrzeuge"), "fahrzeuge");
+        content.add(createKundenTab("Kunden"), "kunden");
+        content.add(createStandorteTab("Standorte"), "standorte");
+        content.add(createDokumenteTab("Dokumente"), "dokumente");
 
         this.add(createNavBar(), BorderLayout.WEST);
         this.add(content, BorderLayout.CENTER);
@@ -77,7 +90,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     private JPanel createNavBar() {
         JPanel navigationBar = new JPanel(new BorderLayout(0,0));
-        nvb = NavigationBar.builder("NVB")
+        nvb = NavigationBar.builder(NB)
                 .propManager(this.propManager)
                 .observer(this)
                 .build();
@@ -88,67 +101,76 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private JPanel createÜbersichtTab() {
         JPanel demo = new JPanel();
         demo.setBackground(CSHelp.main);
-        demo.add(new JLabel("Fahrzeuge"), BorderLayout.CENTER);
+        demo.add(new JLabel("Übersicht"), BorderLayout.CENTER);
         return demo;
     }
 
-    private JPanel createBuchungenTab() {
-        ContentPanel contentPanel = new ContentPanel("Buchungen",CSHelp.button_add_kunde);
-        return contentPanel;
+    private ContentPanel createBuchungenTab(String title) {
+        buchungenPanel = ContentPanel.builder(CPB)
+                .title(title)
+                .buttonImage(CSHelp.button_add_kunde)
+                .observer(this)
+                .propManager(this.propManager)
+                .build();
+        return buchungenPanel;
     }
 
-    private JPanel createFahrzeugeTab() {
-        ContentPanel contentPanel = new ContentPanel("Fahrzeuge",CSHelp.button_add_kunde);
-        return contentPanel;
+    private ContentPanel createFahrzeugeTab(String title) {
+        fahrzeugePanel = ContentPanel.builder(CPF)
+                .title(title)
+                .buttonImage(CSHelp.button_add_fahrzeug)
+                .observer(this)
+                .propManager(this.propManager)
+                .build();
+        return fahrzeugePanel;
     }
 
-    private JPanel createKundenTab() {
-        ContentPanel contentPanel = new ContentPanel("Kunden",CSHelp.button_add_kunde);
-        return contentPanel;
+    private ContentPanel createKundenTab(String title) {
+        kundenPanel = ContentPanel.builder(CPK)
+                .title(title)
+                .buttonImage(CSHelp.button_add_kunde)
+                .observer(this)
+                .propManager(this.propManager)
+                .build();
+        return kundenPanel;
     }
 
-    private JPanel createStandorteTab() {
-        ContentPanel contentPanel = new ContentPanel("Standorte",CSHelp.button_add_kunde);
-        return contentPanel;
+    private ContentPanel createStandorteTab(String title) {
+        standortePanel = ContentPanel.builder(CPS)
+                .title(title)
+                .buttonImage(CSHelp.button_add_kunde)
+                .observer(this)
+                .propManager(this.propManager)
+                .build();
+        return standortePanel;
     }
 
-    private JPanel createDokumenteTab() {
-        ContentPanel contentPanel = new ContentPanel("Dokumente",CSHelp.button_add_kunde);
-        return contentPanel;
+    private ContentPanel createDokumenteTab(String title) {
+        dokumentePanel = ContentPanel.builder(CPD)
+                .title(title)
+                .buttonImage(CSHelp.button_add_kunde)
+                .observer(this)
+                .propManager(this.propManager)
+                .build();
+        return dokumentePanel;
     }
-
 
     @Override
     public void processGUIEvent(GUIEvent ge) {
-//        System.out.println(ge.getCmdText());
-//        System.out.println(ge.getSource().getClass());
-//        System.out.println(ge.getData());
+        //System.out.println(ge.getCmdText());
+        //System.out.println(ge.getSource().getClass());
+        //System.out.println(ge.getData());
 
         if(ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
-            System.out.println("New tab selected: " + ge.getData());
+            nvb.setActive((String)ge.getData());
+            //System.out.println("New tab selected: " + ge.getData());
             this.card.show(this.content, (String) ge.getData());
         }
-        
-/*
-        if(ge.getCmdText().equals(SimpleTableComponent.Commands.ATTRIBUTE_ROW_SELECTED.cmdText)) {
-
-            //System.out.println(ge.getData().getClass());
-            Attribute[] attribute = (Attribute[]) ge.getData();
-            Kunde kunde = (Kunde) attribute[0].getDedicatedInstance();
-            System.out.println(kunde.getElementID());
-
-            JDialog dialog = new JDialog();
-            dialog.setTitle(kunde.getElementID());
-            dialog.setSize(new Dimension(500,500));
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setModal(true);
-            dialog.setVisible(true);
-        }
-*/
     }
 
     @Override
     public void processUpdateEvent(UpdateEvent ue) {
+
 
     }
 }
