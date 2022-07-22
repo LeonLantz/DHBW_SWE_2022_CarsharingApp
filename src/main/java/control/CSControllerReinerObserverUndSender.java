@@ -1,10 +1,5 @@
 package control;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
-
 import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
@@ -16,18 +11,13 @@ import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
-<<<<<<< Updated upstream
-=======
-import model.Kunde;
 import util.ElementFactory;
 import util.WorkingCSVReader;
-import util.WorkingCSVWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
->>>>>>> Stashed changes
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -81,7 +71,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	/**
 	 * entityFactory für die Elemente 
 	 */
-	//ElementFactory elementFactory = new ElementFactory( entityManager );
+	ElementFactory elementFactory = new ElementFactory( entityManager );
 	
 	/**
 	 * Lesen und schreiben der Elemente. Attribut kann (muss nicht) 
@@ -93,7 +83,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	IAppLogger logger = AppLogger.getInstance();
 
 	public CSControllerReinerObserverUndSender() {
-		logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
+//		logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
 	}
 	
 	/**
@@ -102,32 +92,23 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	 * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
 	 */
 	public void init() {
-//		try {
-//			loadCSVData();
-//			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			loadCSVData();
+//			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void loadCSVData() throws IOException {
 		/**
-		 * Hier sollen alle CSV-Daten gelesen werden 
+		 * Hier sollen alle CSV-Daten gelesen werden
 		 */
 		/**
 		 * exemplarisch für Kunden: Daten lesen, in den EntityManager speichern
 		 * und dann im UpdateEvent an die Main-GUI senden
 		 */
-<<<<<<< Updated upstream
-		String filePath = this.getClass().getResource("/CSVFiles/Kunden.csv").getPath();  // ohne "file:" am Anfang
-		CSVReader csvReader = new CSVReader( filePath );
-		List<String[]> csvData = csvReader.readData();
-		
-		csvData.forEach( e -> { 
-			try {
-				//elementFactory.createElement(Kunde.class, e);
-=======
 
 		//TODO: CSVLoad has to be fixed (Check in CSVReader unsuccessful)
 
@@ -138,15 +119,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		WorkingCSVReader workingCSVReader = new WorkingCSVReader("/CSVFiles/Kunden.csv", ";", true);
 		List<String[]> csvData = workingCSVReader.readData();
 
-		//TODO: Delete following block
-		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter("/CSVFiles/DeleteMe.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
-		workingCSVWriter.writeData(csvData);
-		//----
-
 		csvData.forEach( e -> {
 			try {
-				elementFactory.createElement(Kunde.class, e);
->>>>>>> Stashed changes
+//				elementFactory.createElement(Kunde.class, e);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
