@@ -29,7 +29,7 @@ public class NavigationBar extends ObservableComponent {
         public final Class<?> payloadType;
         public final String cmdText;
 
-        private Commands( String cmdText, Class<?> payloadType ) {
+        Commands(String cmdText, Class<?> payloadType) {
             this.cmdText = cmdText;
             this.payloadType = payloadType;
         }

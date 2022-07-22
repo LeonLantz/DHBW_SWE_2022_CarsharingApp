@@ -20,7 +20,7 @@ public class ContentPanel extends ObservableComponent {
         public final Class<?> payloadType;
         public final String cmdText;
 
-        private Commands( String cmdText, Class<?> payloadType ) {
+        Commands(String cmdText, Class<?> payloadType) {
             this.cmdText = cmdText;
             this.payloadType = payloadType;
         }
@@ -40,6 +40,7 @@ public class ContentPanel extends ObservableComponent {
     private JPanel header_west, header_west_searchBar, header_east, footer_east;
     private JLabel header_west_label;
     private JTextField header_west_searchBar_textfield;
+    private CustomTableComponent ctc = null;
 
     //Config
     private String title;
@@ -99,17 +100,16 @@ public class ContentPanel extends ObservableComponent {
 
     private JPanel createContent() {
         content = new JPanel(new BorderLayout(0,0));
-        content.setPreferredSize(new Dimension(900, 500));
+        content.setPreferredSize(new Dimension(900, 508));
         content.setBackground(CSHelp.main);
-        content.setBorder(new EmptyBorder(20,20,20,20));
-        //content.add();
+        if (this.ctc != null) content.add(ctc, BorderLayout.CENTER);
         return this.content;
     }
 
     private JPanel createFooter() {
         //Fußzeile
         footer = new JPanel(new BorderLayout(20,20));
-        footer.setPreferredSize(new Dimension(900, 80));
+        footer.setPreferredSize(new Dimension(900, 72));
         footer.setBackground(CSHelp.main);
 
         //Fußzeile, Komponente rechts
@@ -159,6 +159,7 @@ public class ContentPanel extends ObservableComponent {
     public static final class SLCBuilder {
 
         private String title;
+        private CustomTableComponent ctc;
         private ImageIcon buttonImage;
 
         private IPropertyManager propManager;
@@ -176,6 +177,11 @@ public class ContentPanel extends ObservableComponent {
 
         public SLCBuilder title(String title) {
             this.title = title;
+            return this;
+        }
+
+        public SLCBuilder table(CustomTableComponent ctc) {
+            this.ctc = ctc;
             return this;
         }
 
@@ -206,6 +212,7 @@ public class ContentPanel extends ObservableComponent {
             ContentPanel cp = new ContentPanel( this.id );
             cp.setPropertyManager( this.propManager );
             cp.title = this.title;
+            if( this.ctc != null ) cp.ctc = this.ctc;
             cp.buttonImage = this.buttonImage;
             cp.initUI();
             if( this.listener != null ) cp.addObserver(listener);

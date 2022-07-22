@@ -25,7 +25,7 @@ public class TableRowEditButton extends ObservableComponent {
         public final Class<?> payloadType;
         public final String cmdText;
 
-        private Commands(String cmdText, Class<?> payloadType) {
+        Commands(String cmdText, Class<?> payloadType) {
             this.cmdText = cmdText;
             this.payloadType = payloadType;
         }
@@ -51,7 +51,7 @@ public class TableRowEditButton extends ObservableComponent {
     private JButton button;
     private ObservableComponent observer;
 
-    private CommonAttributes commonAttributes;
+    private final CommonAttributes commonAttributes;
 
     public TableRowEditButton(CommonAttributes commonAttributes) {
         this.commonAttributes = commonAttributes;
@@ -104,7 +104,7 @@ public class TableRowEditButton extends ObservableComponent {
         private IGUIEventListener listener;
 
         private STBuilder() {
-        };
+        }
 
         private STBuilder(String id) {
             this.commonAttributes = new TableRowEditButton.CommonAttributes();

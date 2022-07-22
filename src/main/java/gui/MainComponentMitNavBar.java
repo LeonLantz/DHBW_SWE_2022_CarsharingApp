@@ -9,7 +9,11 @@ import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
 import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
+import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
+import model.Fahrzeug;
+import model.Fahrzeugkategorie;
+import model.Kunde;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -17,7 +21,9 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainComponentMitNavBar extends ObservableComponent implements IGUIEventListener, IUpdateEventListener {
@@ -42,10 +48,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     private IPropertyManager propManager = null;
 
-    private IAppLogger logger = AppLogger.getInstance();
+    private final IAppLogger logger = AppLogger.getInstance();
 
-    private List<IDepictable> allElements = new ArrayList<>();
-    private List<AttributeElement> allAttributeElements = new ArrayList<>();
+    private final List<IDepictable> allElements = new ArrayList<>();
+    private final List<AttributeElement> allAttributeElements = new ArrayList<>();
 
     public final static String NB = "NavigationBar";
     public final static String CPÜ = "ContentPanel-Übersicht";
@@ -56,7 +62,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     public final static String CPD = "ContentPanel-Dokumente";
 
     private NavigationBar nvb = null;
-    private ContentPanel übersichtPanel = null;
+    private final ContentPanel übersichtPanel = null;
     private ContentPanel buchungenPanel = null;
     private ContentPanel fahrzeugePanel = null;
     private ContentPanel kundenPanel = null;
@@ -106,6 +112,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private ContentPanel createBuchungenTab(String title) {
+
         buchungenPanel = ContentPanel.builder(CPB)
                 .title(title)
                 .buttonImage(CSHelp.button_add_kunde)
@@ -116,22 +123,49 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private ContentPanel createFahrzeugeTab(String title) {
+        CustomTableComponent ctc = CustomTableComponent.builder("fahrzeuge")
+                .observer(this)
+                .propManager(this.propManager)
+                .columnWidths(new int[]{50, 100, 100, 100, 100, 100, 100, 44, 100, 33, 33})
+                .modelClass(Fahrzeug.class)
+                .modelData(new Fahrzeug[]{
+                        new Fahrzeug(null, new File("src/main/resources/Images/audi.jpg"), "A3 Sportback 30 TFSI", "Audi", "V8", 5, 5, 80, "1654kg", Fahrzeugkategorie.GEHOBENE_MITTELKLASSE, "B", "DÜW L 140", new Date(), "Grau", new Date())
+                })
+                .build();
+
         fahrzeugePanel = ContentPanel.builder(CPF)
                 .title(title)
                 .buttonImage(CSHelp.button_add_fahrzeug)
                 .observer(this)
+                .table(ctc)
                 .propManager(this.propManager)
                 .build();
+        System.out.println("FahrzeugTab erfolgreich erstellt");
         return fahrzeugePanel;
     }
 
     private ContentPanel createKundenTab(String title) {
+        CustomTableComponent ctc = CustomTableComponent.builder("kunden")
+                .observer(this)
+                .propManager(this.propManager)
+                .columnWidths(new int[]{50, 100, 100, 170, 130, 100, 140, 33, 33})
+                .modelClass(Kunde.class)
+                .modelData(new Kunde[]{
+                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Leon", "Lantz", "leon@lantz.de", "0174758123", "DE9123123123124124", "14.04.2001", new Date()),
+                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Max", "Reichmann", "max@reichmann.de", "12345", "DE1111111111111111", "01.01.2001", new Date()),
+                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Lutz", "Gröll", "lutz@gröll.de", "+4988923211", "DE912324124", "01.01.1950", new Date()),
+                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Maximilian", "Nintemann", "maximilian@nintemann.de", "+49 911 911 911", "DE91232412423212", "01.01.1950", new Date())
+                })
+                .build();
+
         kundenPanel = ContentPanel.builder(CPK)
                 .title(title)
+                .table(ctc)
                 .buttonImage(CSHelp.button_add_kunde)
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
+        System.out.println("KundenTab erfolgreich erstellt");
         return kundenPanel;
     }
 
@@ -157,14 +191,22 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     @Override
     public void processGUIEvent(GUIEvent ge) {
-        //System.out.println(ge.getCmdText());
+        System.out.println(ge.getCmdText());
         //System.out.println(ge.getSource().getClass());
-        //System.out.println(ge.getData());
+        System.out.println(ge.getData());
+
 
         if(ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             nvb.setActive((String)ge.getData());
             //System.out.println("New tab selected: " + ge.getData());
-            this.card.show(this.content, (String) ge.getData());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    MainComponentMitNavBar.this.card.show(MainComponentMitNavBar.this.content, (String) ge.getData());
+                }
+
+            });
+            //this.card.show(this.content, (String) ge.getData());
         }
     }
 
