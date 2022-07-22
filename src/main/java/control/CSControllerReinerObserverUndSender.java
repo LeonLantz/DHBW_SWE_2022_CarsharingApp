@@ -118,16 +118,14 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
 		WorkingCSVReader workingCSVReader = new WorkingCSVReader("/CSVFiles/Kunden.csv", ";", true);
 		List<String[]> csvData = workingCSVReader.readData();
-		System.out.println(workingCSVReader);
 
-//		csvData.forEach( e -> {
-//			try {
-////				elementFactory.createElement(Kunde.class, e);
-//				elementFactory.createElement(null, e);
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
-//		});
+		csvData.forEach( e -> {
+			try {
+//				elementFactory.createElement(Kunde.class, e);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		});
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
