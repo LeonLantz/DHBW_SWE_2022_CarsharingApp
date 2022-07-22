@@ -20,12 +20,12 @@ public class TableRowEditButton extends ObservableComponent {
 
     public enum Commands implements EventCommand {
 
-        BUTTON_PRESSED("SimpleTableComponent.valueChanged", Attribute.class);
+        BUTTON_PRESSED("TableRowEditButton.button_pressed", Attribute.class);
 
         public final Class<?> payloadType;
         public final String cmdText;
 
-        private Commands(String cmdText, Class<?> payloadType) {
+        Commands(String cmdText, Class<?> payloadType) {
             this.cmdText = cmdText;
             this.payloadType = payloadType;
         }
@@ -42,8 +42,8 @@ public class TableRowEditButton extends ObservableComponent {
     }
 
     private static class CommonAttributes {
-
         private String id;
+        private String value;
         private ImageIcon imageIcon;
         private Dimension size;
     }
@@ -51,7 +51,7 @@ public class TableRowEditButton extends ObservableComponent {
     private JButton button;
     private ObservableComponent observer;
 
-    private CommonAttributes commonAttributes;
+    private final CommonAttributes commonAttributes;
 
     public TableRowEditButton(CommonAttributes commonAttributes) {
         this.commonAttributes = commonAttributes;
@@ -74,7 +74,7 @@ public class TableRowEditButton extends ObservableComponent {
         this.button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(e);
+                TableRowEditButton.this.fireGUIEvent(new GUIEvent(this, Commands.BUTTON_PRESSED, TableRowEditButton.this.commonAttributes.value));
             }
         });
 
@@ -94,9 +94,9 @@ public class TableRowEditButton extends ObservableComponent {
     }
 
     /**
-     * *******************************************************************************************
+     * *************************************************************************************************
      * The local builder class
-     * *******************************************************************************************
+     * *************************************************************************************************
      */
     public static class STBuilder {
 
@@ -104,11 +104,16 @@ public class TableRowEditButton extends ObservableComponent {
         private IGUIEventListener listener;
 
         private STBuilder() {
-        };
+        }
 
         private STBuilder(String id) {
             this.commonAttributes = new TableRowEditButton.CommonAttributes();
             this.commonAttributes.id = id;
+        }
+
+        public STBuilder value(String value) {
+            this.commonAttributes.value = value;
+            return this;
         }
 
         public STBuilder image(ImageIcon imageIcon) {
