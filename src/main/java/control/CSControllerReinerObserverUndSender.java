@@ -16,6 +16,18 @@ import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
+<<<<<<< Updated upstream
+=======
+import model.Kunde;
+import util.ElementFactory;
+import util.WorkingCSVReader;
+import util.WorkingCSVWriter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.List;
+>>>>>>> Stashed changes
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -107,6 +119,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		 * exemplarisch für Kunden: Daten lesen, in den EntityManager speichern
 		 * und dann im UpdateEvent an die Main-GUI senden
 		 */
+<<<<<<< Updated upstream
 		String filePath = this.getClass().getResource("/CSVFiles/Kunden.csv").getPath();  // ohne "file:" am Anfang
 		CSVReader csvReader = new CSVReader( filePath );
 		List<String[]> csvData = csvReader.readData();
@@ -114,6 +127,26 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		csvData.forEach( e -> { 
 			try {
 				//elementFactory.createElement(Kunde.class, e);
+=======
+
+		//TODO: CSVLoad has to be fixed (Check in CSVReader unsuccessful)
+
+//		String filePath = this.getClass().getResource("/Kunden.csv").getPath();  // ohne "file:" am Anfang
+//		CSVReader csvReader = new CSVReader( filePath );
+//		List<String[]> csvData = csvReader.readData();
+
+		WorkingCSVReader workingCSVReader = new WorkingCSVReader("/CSVFiles/Kunden.csv", ";", true);
+		List<String[]> csvData = workingCSVReader.readData();
+
+		//TODO: Delete following block
+		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter("/CSVFiles/DeleteMe.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+		workingCSVWriter.writeData(csvData);
+		//----
+
+		csvData.forEach( e -> {
+			try {
+				elementFactory.createElement(Kunde.class, e);
+>>>>>>> Stashed changes
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
