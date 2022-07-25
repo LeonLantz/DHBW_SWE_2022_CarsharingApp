@@ -48,9 +48,9 @@ public class StartApp {
         if (VMOptionPos+1 >= args.length || args[VMOptionPos+1].startsWith("-")) {
             throw new IllegalArgumentException("No argument for run parameter \"-"+parameter+"\" given.");
         }
-        String path = args[VMOptionPos+1];
-        if (!path.startsWith(sp)) path = sp + path;
-        if (!path.endsWith(sp)) path = path+sp;
-        return path;
+        String arg = args[VMOptionPos+1];
+        if (!arg.startsWith(sp)) arg = sp + arg;
+        if (!arg.endsWith(sp)) arg = arg+sp;
+        return arg;
     }
 }
