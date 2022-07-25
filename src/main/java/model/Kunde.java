@@ -57,7 +57,7 @@ public class Kunde implements IDepictable, IPersistable {
         PHONE("Telefon", String.class, true, false, false),
         IBAN("Kontonummer", String.class, false, false, false),
         DATEOFBIRTH( "Geburtsdatum", String.class, true, false, false ),
-        LAST_EDITED( "Zuletzt bearbeitet", Date.class, true, false, false );
+        LAST_EDITED( "zul.", Date.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -166,6 +166,13 @@ public class Kunde implements IDepictable, IPersistable {
             this.attArr[ attribute.ordinal() ].setValue( value );
         else
             throw new IllegalArgumentException( "wrong class type for attribute '" + attribute.name() + "'!" );
+    }
+    public String getTableCellText() {
+        return "<html><body>"
+                + this.attArr[ Attributes.NACHNAME.ordinal() ].getValue()
+                + ", " + this.attArr[ Attributes.VORNAME.ordinal() ].getValue()
+                + "<br>" + this.attArr[ Attributes.PHONE.ordinal() ].getValue()
+                + "</body></html>";
     }
 
     @Override

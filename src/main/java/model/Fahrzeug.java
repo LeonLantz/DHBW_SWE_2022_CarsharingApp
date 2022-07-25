@@ -13,15 +13,7 @@ import java.util.UUID;
 public class Fahrzeug implements IDepictable, IPersistable {
 
     public enum CSVPositions{
-//        ID,
-//        IMAGEFILE,
-//        VORNAME,
-//        NACHNAME,
-//        EMAIL,
-//        PHONE,
-//        IBAN,
-//        DATEOFBIRTH,
-//        LAST_EDITED
+
     }
 
     /**
@@ -50,7 +42,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         NUMMERNSCHILD( "Nummernschild", String.class, true, false, false ),
         TÜV_BIS( "TÜV bis", Date.class, false, false, false ),
         FARBE( "Farbe", String.class, true, false, false ),
-        LAST_EDIT( "Zuletzt bearbeitet", Date.class, true, false, false );
+        LAST_EDIT( "zul.", Date.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -152,6 +144,13 @@ public class Fahrzeug implements IDepictable, IPersistable {
             this.attArr[ attribute.ordinal() ].setValue( value );
         else
             throw new IllegalArgumentException( "wrong class type for attribute '" + attribute.name() + "'!" );
+    }
+
+    public String getTableCellText() {
+        return "<html><body>"
+                + this.attArr[ Attributes.BEZEICHNUNG.ordinal() ].getValue()
+                + "<br>" + this.attArr[ Attributes.NUMMERNSCHILD.ordinal() ].getValue()
+                + "</body></html>";
     }
 
     @Override

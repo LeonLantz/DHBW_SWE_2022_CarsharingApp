@@ -14,8 +14,11 @@ import java.util.Map;
 public class CSHelp {
     public static Font lato, lato_bold;
     public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar;
-    public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row;
+    public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row, table_cell_image;
     //public static Map<String, ImageIcon> images;
+
+    public static File[] imageFiles;
+    public static HashMap<String, ImageIcon> imageList;
 
     public static void init() {
         registerFonts();
@@ -44,33 +47,19 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        File file_add_kunde = new File("src/main/resources/Images/kunden.png");
-        File file_add_fahrzeug = new File("src/main/resources/Images/add_fahrzeug.png");
-        File file_edit_row = new File("src/main/resources/Images/edit.png");
-        File file_delete_row = new File("src/main/resources/Images/delete.png");
-
-        try {
-            //Image "Kunde hinzufügen"
-            BufferedImage b1 = ImageIO.read(file_add_kunde);
-            Image i1 = new ImageIcon(b1).getImage().getScaledInstance(300, 54, Image.SCALE_SMOOTH);
-            button_add_kunde = new ImageIcon(i1);
-
-            //Image "Fahrzeug hinzufügen"
-            BufferedImage b4 = ImageIO.read(file_add_fahrzeug);
-            Image i4 = new ImageIcon(b4).getImage().getScaledInstance(300, 54, Image.SCALE_SMOOTH);
-            button_add_fahrzeug = new ImageIcon(i4);
-
-            //Image "Tabellenzeile bearbeiten"
-            BufferedImage b2 = ImageIO.read(file_edit_row);
-            Image i2 = new ImageIcon(b2).getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-            button_edit_row = new ImageIcon(i2);
-
-            //Image "Tabellenzeile löschen"
-            BufferedImage b3 = ImageIO.read(file_delete_row);
-            Image i3 = new ImageIcon(b3).getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-            button_delete_row = new ImageIcon(i3);
-        } catch (IOException ex) {
-            System.out.println(ex);
+        imageFiles = new File("src/main/resources/Images").listFiles();
+        imageList = new HashMap<>();
+        for(File file :  imageFiles) {
+            if (!file.isHidden()) {
+                BufferedImage bufferedImage = null;
+                try {
+                    bufferedImage = ImageIO.read(file);
+                    imageList.put(file.getName(), new ImageIcon(bufferedImage));
+                    System.out.println("Image:" + file.getName() + " successfully registered!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -98,6 +87,10 @@ public class CSHelp {
         Image image = imageIcon.getImage();
         Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
 
+        ImageIcon result = new ImageIcon(newimg);
+        Image abc = result.getImage();
+        BufferedImage bi = new BufferedImage(abc.getWidth(null), abc.getHeight(null), BufferedImage.SCALE_SMOOTH);
+        ImageIO.write(bi, "png", new File("src/main/resources/Images/tableImages/test.png"));
         return new ImageIcon(newimg);
     }
 

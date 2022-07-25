@@ -9,9 +9,7 @@ import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.IPropertyManager;
 import gui.renderer.TableCellRenderer;
-import model.Fahrzeug;
-import model.Fahrzeugkategorie;
-import model.Kunde;
+import model.*;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -74,15 +72,6 @@ public class CustomTableComponent extends ObservableComponent {
         this.setPreferredSize(new Dimension(900, 520));
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-//        Kunde[] kunden = new Kunde[]{
-//                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Leon", "Lantz", "leon@lantz.de", "0174758123", "DE9123123123124124", "14.04.2001", new Date()),
-//                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Max", "Reichmann", "max@reichmann.de", "12345", "DE1111111111111111", "01.01.2001", new Date()),
-//                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Lutz", "Gröll", "lutz@gröll.de", "+4988923211", "DE912324124", "01.01.1950", new Date()),
-//                new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Maximilian", "Nintemann", "maximilian@nintemann.de", "+49 911 911 911", "DE91232412423212", "01.01.1950", new Date())
-//        };
-
-
-
 
         ArrayList namesList = new ArrayList<String>();
 
@@ -92,6 +81,14 @@ public class CustomTableComponent extends ObservableComponent {
             }
         } else if (Kunde.class.equals(modelClass)) {
             for (String name : Kunde.getAttributeNames(true)) {
+                namesList.add(name);
+            }
+        } else if (Standort.class.equals(modelClass)) {
+            for (String name : Standort.getAttributeNames(true)) {
+                namesList.add(name);
+            }
+        }else if (Buchung.class.equals(modelClass)) {
+            for (String name : Buchung.getAttributeNames(true)) {
                 namesList.add(name);
             }
         }
@@ -108,11 +105,11 @@ public class CustomTableComponent extends ObservableComponent {
             Vector<Attribute> attributeVector = new Vector<Attribute>(Attribute.filterVisibleAttributes(modelData[i].getAttributes()));
 
             JButton editButton = new JButton();
-            editButton.setIcon(CSHelp.button_add_kunde);
+            editButton.setIcon(CSHelp.imageList.get("edit.png"));
             editButton.setBorder(BorderFactory.createEmptyBorder());
             editButton.setContentAreaFilled(false);
             JButton deleteButton = new JButton();
-            deleteButton.setIcon(CSHelp.button_add_kunde);
+            deleteButton.setIcon(CSHelp.imageList.get("delete.png"));
             deleteButton.setBorder(BorderFactory.createEmptyBorder());
             deleteButton.setContentAreaFilled(false);
 
@@ -135,7 +132,7 @@ public class CustomTableComponent extends ObservableComponent {
             data.add( attributeVector );
         }
         SimpleTableComponent stc = SimpleTableComponent.builder("STC")
-                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, Date.class, File.class, Fahrzeugkategorie.class)
+                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, Date.class, File.class, Fahrzeugkategorie.class, Kunde.class, Fahrzeug.class, Buchungsstatus.class)
                 .data(data)
                 .columnNames(names)
                 .selectionMode(ListSelectionModel.SINGLE_SELECTION)

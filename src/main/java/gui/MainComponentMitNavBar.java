@@ -11,9 +11,7 @@ import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
 import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
-import model.Fahrzeug;
-import model.Fahrzeugkategorie;
-import model.Kunde;
+import model.*;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -113,9 +111,20 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     private ContentPanel createBuchungenTab(String title) {
 
+        CustomTableComponent ctc = CustomTableComponent.builder("buchungen")
+                .observer(this)
+                .propManager(this.propManager)
+                .columnWidths(new int[]{145, 140, 140, 75, 75, 140, 75, 33, 33})
+                .modelClass(Buchung.class)
+                .modelData(new Buchung[]{
+                        new Buchung("B1232", new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Leon Christian", "Lantz", "leon@lantz.de", "0174758123", "DE9123123123124124", "14.04.2001", new Date()), new Fahrzeug(null, new File("src/main/resources/Images/audi.jpg"), "A3 Sportback 30 TFSI", "Audi", "V8", 5, 5, 80, "1654kg", Fahrzeugkategorie.GEHOBENE_MITTELKLASSE, "B", "DÜW L 140", new Date(), "Grau", new Date()), new Date(), new Date(), Buchungsstatus.FRISTGERECHT_STORNIERT, new Date())
+                })
+                .build();
+
         buchungenPanel = ContentPanel.builder(CPB)
                 .title(title)
-                .buttonImage(CSHelp.button_add_kunde)
+                .table(ctc)
+                .buttonImage(CSHelp.imageList.get("kunden.png"))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -126,7 +135,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         CustomTableComponent ctc = CustomTableComponent.builder("fahrzeuge")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{50, 100, 100, 100, 100, 100, 100, 44, 100, 33, 33})
+                .columnWidths(new int[]{50, 150, 100, 50, 80, 115, 110, 60, 75, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .modelData(new Fahrzeug[]{
                         new Fahrzeug(null, new File("src/main/resources/Images/audi.jpg"), "A3 Sportback 30 TFSI", "Audi", "V8", 5, 5, 80, "1654kg", Fahrzeugkategorie.GEHOBENE_MITTELKLASSE, "B", "DÜW L 140", new Date(), "Grau", new Date())
@@ -135,7 +144,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         fahrzeugePanel = ContentPanel.builder(CPF)
                 .title(title)
-                .buttonImage(CSHelp.button_add_fahrzeug)
+                .buttonImage(CSHelp.imageList.get("fahrzeug.png"))
                 .observer(this)
                 .table(ctc)
                 .propManager(this.propManager)
@@ -148,7 +157,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         CustomTableComponent ctc = CustomTableComponent.builder("kunden")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{50, 100, 100, 170, 130, 100, 140, 33, 33})
+                .columnWidths(new int[]{50, 100, 140, 150, 130, 145, 75, 33, 33})
                 .modelClass(Kunde.class)
                 .modelData(new Kunde[]{
                 new Kunde(new File("src/main/resources/Images/profile_picture.png"), "Leon", "Lantz", "leon@lantz.de", "0174758123", "DE9123123123124124", "14.04.2001", new Date()),
@@ -161,7 +170,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         kundenPanel = ContentPanel.builder(CPK)
                 .title(title)
                 .table(ctc)
-                .buttonImage(CSHelp.button_add_kunde)
+                .buttonImage(CSHelp.imageList.get("kunden.png"))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -170,9 +179,20 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private ContentPanel createStandorteTab(String title) {
+        CustomTableComponent ctc = CustomTableComponent.builder("standorte")
+                .observer(this)
+                .propManager(this.propManager)
+                .columnWidths(new int[]{100, 100, 100, 100, 100, 100, 100, 90, 33, 33})
+                .modelClass(Standort.class)
+                .modelData(new Standort[]{
+                        new Standort("Erzbergstraße 40", "76133", "Karlsruhe", "Deutschland", "https://goo.gl/maps/ZBwnxvrJ5YhAxkcM7", "4", new Date())
+                })
+                .build();
+
         standortePanel = ContentPanel.builder(CPS)
                 .title(title)
-                .buttonImage(CSHelp.button_add_kunde)
+                .table(ctc)
+                .buttonImage(CSHelp.imageList.get("kunden.png"))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -182,7 +202,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private ContentPanel createDokumenteTab(String title) {
         dokumentePanel = ContentPanel.builder(CPD)
                 .title(title)
-                .buttonImage(CSHelp.button_add_kunde)
+                .buttonImage(CSHelp.imageList.get("kunden.png"))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -203,6 +223,11 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 @Override
                 public void run() {
                     MainComponentMitNavBar.this.card.show(MainComponentMitNavBar.this.content, (String) ge.getData());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             });
