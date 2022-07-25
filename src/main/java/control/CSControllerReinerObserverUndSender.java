@@ -11,8 +11,10 @@ import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
+
 import util.ElementFactory;
 import util.WorkingCSVReader;
+import util.WorkingCSVWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,9 +93,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	 * Das muss separat gemacht werden, da beim Verknüpfen der Observer (Controller+MainGUI)
 	 * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
 	 */
-	public void init() {
+	public void init(String csvDirectory, String propDirectory) {
 		try {
-			loadCSVData();
+			loadCSVData(csvDirectory);
 //			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
 
 		} catch (IOException e) {
@@ -101,23 +103,15 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		}
 	}
 
-	private void loadCSVData() throws IOException {
-		/**
-		 * Hier sollen alle CSV-Daten gelesen werden
-		 */
-		/**
-		 * exemplarisch für Kunden: Daten lesen, in den EntityManager speichern
-		 * und dann im UpdateEvent an die Main-GUI senden
-		 */
-
-		//TODO: CSVLoad has to be fixed (Check in CSVReader unsuccessful)
-
-//		String filePath = this.getClass().getResource("/Kunden.csv").getPath();  // ohne "file:" am Anfang
-//		CSVReader csvReader = new CSVReader( filePath );
-//		List<String[]> csvData = csvReader.readData();
-
-		WorkingCSVReader workingCSVReader = new WorkingCSVReader("/CSVFiles/Kunden.csv", ";", true);
+	private void loadCSVData(String csvDirectory) throws IOException {
+		// Fixed CSV Reading and Writing (works even with built Maven JARs)
+		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Kunden.csv", ";", true);
 		List<String[]> csvData = workingCSVReader.readData();
+
+		//TODO: DELETE these two lines
+		// since those are only demo code to show csv writing functionality
+		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+"writetest.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+		workingCSVWriter.writeData(csvData);
 
 		csvData.forEach( e -> {
 			try {

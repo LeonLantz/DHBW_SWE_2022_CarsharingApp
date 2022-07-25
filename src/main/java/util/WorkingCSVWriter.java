@@ -1,10 +1,10 @@
 package util;
 
-import jdk.internal.loader.Resource;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 public class WorkingCSVWriter {
@@ -17,15 +17,50 @@ public class WorkingCSVWriter {
         this.csvFilename = csvFilename;
         this.separator = separator;
         this.headerLine = headerLine;
+        this.handleFile();
+    }
+
+    private static final String sp = File.separator;
+    private String absoluteFilePath = "";
+
+    /** Check if directory and file exist.
+     * Create new directories and file if needed.
+     */
+    private void handleFile() {
+        String jarPath = "";
+        System.out.println("Reading data...");
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            System.out.println(jarPath);
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+
+        String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf(sp));
+
+        String relativeDirectoryPath = this.csvFilename.substring(0, this.csvFilename.lastIndexOf(sp));
+        File absoluteDirectories = new File(absoluteWorkingDirectoryPath + relativeDirectoryPath);
+
+        this.absoluteFilePath = absoluteWorkingDirectoryPath + this.csvFilename;
+        File absoluteFile = new File(this.absoluteFilePath);
+        try {
+            if (!absoluteDirectories.exists() && !absoluteDirectories.mkdirs()) {
+                System.out.println("Directory doesn't exist, and creating directory: " + relativeDirectoryPath + " failed.");
+            }
+            if (!absoluteFile.exists() && !absoluteFile.createNewFile()) {
+                System.out.println("File doesn't exist, and creating file with path: " + this.absoluteFilePath + " failed.");
+
+            } else {
+                System.out.println("Input data exists, or file with path " + this.absoluteFilePath + " created successfully.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void writeData(List<String[]> data) {
         try {
-            URL fullpath = this.getClass().getResource(this.csvFilename);
-            if (fullpath == null) {
-
-            }
-            PrintWriter writer = new PrintWriter(new File(fullpath.getPath()));
+            PrintWriter writer = new PrintWriter(this.absoluteFilePath);
             if (this.headerLine.length() > 0) {
                 writer.write(this.headerLine);
                 writer.println();
@@ -42,7 +77,7 @@ public class WorkingCSVWriter {
             writer.flush();
             writer.close();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error in writing to resource: "+this.csvFilename);
+            e.printStackTrace();
         }
     }
 }
