@@ -2,28 +2,26 @@ package util;
 
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
-public class WorkingCSVReader {
-    private final String separator;
-    private final String csvFilename;
-    private final boolean ignoreHeaderLine;
+public class WorkingCSVWriter {
 
-    public WorkingCSVReader(String csvFilename, String separator, boolean ignoreHeaderLine) {
+    private final String csvFilename;
+    private final String separator;
+    private final String headerLine;
+
+    public WorkingCSVWriter(String csvFilename, String separator, String headerLine) {
         this.csvFilename = csvFilename;
         this.separator = separator;
-        this.ignoreHeaderLine = ignoreHeaderLine;
+        this.headerLine = headerLine;
         this.handleFile();
     }
+
     private static final String sp = File.separator;
     private String absoluteFilePath = "";
-
 
     /** Check if directory and file exist.
      * Create new directories and file if needed.
@@ -60,16 +58,26 @@ public class WorkingCSVReader {
         }
     }
 
-    public List<String[]> readData() throws IllegalArgumentException {
+    public void writeData(List<String[]> data) {
         try {
-            List<String[]> csvData = new ArrayList<>();
-            List<String> allLines = Files.readAllLines(Paths.get(absoluteFilePath), StandardCharsets.UTF_8);
-            if (this.ignoreHeaderLine) allLines.remove(0);
-            allLines.forEach(line -> csvData.add(line.split(this.separator)));
-            return csvData;
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException("Error in reading resource: "+this.csvFilename);
+            PrintWriter writer = new PrintWriter(this.absoluteFilePath);
+            if (this.headerLine.length() > 0) {
+                writer.write(this.headerLine);
+                writer.println();
+            }
+            data.forEach(line_items -> {
+                String result_line = "";
+                for (int i = 0; i < line_items.length-1; i++) {
+                    result_line += line_items[i] + this.separator;
+                }
+                result_line += line_items[line_items.length-1];
+                writer.write(result_line);
+                writer.println();
+            });
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
