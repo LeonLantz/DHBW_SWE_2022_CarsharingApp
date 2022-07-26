@@ -1,4 +1,3 @@
-#ID;Name;Vorname;engagiert;Beschreibung
-k-1;Bald;Willi;true;Erster Kunde
-k-2;Conda;Anna;false;Zweite Kundin
-k-3;Branntwein;Franz;true;dritter Kunde
+#ID;ImageFile;Vorname;Nachname;Email;Phone;IBAN;dateOfBirth;last_edited;
+;/hhh/;Leon;Lantz;leon.kanns@gmail.com;01747566920;DE958274742814;2001-04-14;2022-07-25;
+;/hhh/;Leon;Okay;leon.kanns@gmail.com;01747566920;DE958274742814;2001-04-14;2022-07-25;

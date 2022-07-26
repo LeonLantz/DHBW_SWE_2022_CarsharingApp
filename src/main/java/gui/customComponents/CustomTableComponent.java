@@ -17,7 +17,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -30,7 +34,8 @@ public class CustomTableComponent extends ObservableComponent {
     public enum Commands implements EventCommand {
 
         ROW_SELECTED( "customtablecomponent.tab_changed", String.class ),
-        EDIT_ROW("customtablecomponent.row_edited", Kunde.class);
+        EDIT_ROW("customtablecomponent.row_edited", IDepictable.class),
+        DELETE_ROW("customtablecomponent.row_deleted", IDepictable.class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -59,9 +64,14 @@ public class CustomTableComponent extends ObservableComponent {
 
     private final IGUIEventListener observer;
 
+    private SimpleTableComponent stc;
+
     private int[] columnWidths = null;
     private Class modelClass = null;
     private IDepictable[] modelData = null;
+    private String[] columnNames;
+
+    final Vector<Vector<Attribute>> data = new Vector<>();
 
     public CustomTableComponent(String id, IGUIEventListener observer) {
         this.observer = observer;
@@ -71,7 +81,6 @@ public class CustomTableComponent extends ObservableComponent {
         this.setLayout(new BorderLayout(0,0));
         this.setPreferredSize(new Dimension(900, 520));
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
-
 
         ArrayList namesList = new ArrayList<String>();
 
@@ -95,46 +104,15 @@ public class CustomTableComponent extends ObservableComponent {
 
         namesList.add("Edit");
         namesList.add("Delete");
-        String[] names = new String[namesList.size()];
-        namesList.toArray(names);
+        columnNames = new String[namesList.size()];
+        namesList.toArray(columnNames);
 
-        final Vector<Vector<Attribute>> data = new Vector<>();
 
-        for (int i = 0; i < modelData.length; i++) {
-            int finalI = i;
-            Vector<Attribute> attributeVector = new Vector<Attribute>(Attribute.filterVisibleAttributes(modelData[i].getAttributes()));
 
-            JButton editButton = new JButton();
-            editButton.setIcon(CSHelp.imageList.get("edit.png"));
-            editButton.setBorder(BorderFactory.createEmptyBorder());
-            editButton.setContentAreaFilled(false);
-            JButton deleteButton = new JButton();
-            deleteButton.setIcon(CSHelp.imageList.get("delete.png"));
-            deleteButton.setBorder(BorderFactory.createEmptyBorder());
-            deleteButton.setContentAreaFilled(false);
-
-            editButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //System.out.println(kunden[finalI] + "Edit");
-                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.EDIT_ROW, modelData[finalI]));
-                }
-            });
-            deleteButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
-
-            attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
-            attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
-            data.add( attributeVector );
-        }
-        SimpleTableComponent stc = SimpleTableComponent.builder("STC")
-                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, Date.class, File.class, Fahrzeugkategorie.class, Kunde.class, Fahrzeug.class, Buchungsstatus.class)
+        stc = SimpleTableComponent.builder("STC")
+                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, LocalDate.class, File.class, Fahrzeugkategorie.class, Kunde.class, Fahrzeug.class, Buchungsstatus.class, LocalDateTime.class)
                 .data(data)
-                .columnNames(names)
+                .columnNames(columnNames)
                 .selectionMode(ListSelectionModel.SINGLE_SELECTION)
                 //new int[]{50, 100, 100, 170, 130, 100, 140, 35, 35}
                 .columnWidths(this.columnWidths)
@@ -148,8 +126,53 @@ public class CustomTableComponent extends ObservableComponent {
         p.setBackground(CSHelp.main);
         p.setBorder(new EmptyBorder(0,0,0,0));
         this.add(stc, BorderLayout.CENTER);
+
     }
 
+    public void setModelData(IDepictable[] modelData) {
+        for (int i = 0; i < modelData.length; i++) {
+            int finalI = i;
+            Vector<Attribute> attributeVector = new Vector<Attribute>(Attribute.filterVisibleAttributes(modelData[i].getAttributes()));
+
+            JButton editButton = new EditButton(modelData[finalI]);
+            JButton deleteButton = new DeleteButton(modelData[finalI]);
+
+            attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
+            attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
+            this.data.add( attributeVector );
+
+            this.stc.setData(this.data, this.columnNames);
+        }
+    }
+
+    public class EditButton extends JButton {
+        public EditButton(IDepictable data) {
+            this.setIcon(CSHelp.imageList.get("edit.png"));
+            this.setBorder(BorderFactory.createEmptyBorder());
+            this.setContentAreaFilled(false);
+            this.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("okay");
+                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.DELETE_ROW, data));
+                }
+            });
+        }
+    }
+
+    public class DeleteButton extends JButton {
+        public DeleteButton(IDepictable data) {
+            this.setIcon(CSHelp.imageList.get("delete.png"));
+            this.setBorder(BorderFactory.createEmptyBorder());
+            this.setContentAreaFilled(false);
+            this.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.EDIT_ROW, data));
+                }
+            });
+        }
+    }
 
 
     public static SLCBuilder builder(String id ) {
@@ -167,7 +190,7 @@ public class CustomTableComponent extends ObservableComponent {
 
         private int[] columnWidths;
         private Class modelClass;
-        private IDepictable[] modelData;
+        //private IDepictable[] modelData;
 
         private SLCBuilder() {
         }
@@ -200,11 +223,6 @@ public class CustomTableComponent extends ObservableComponent {
             return this;
         }
 
-        public SLCBuilder modelData(IDepictable[] modelData) {
-            this.modelData = modelData;
-            return this;
-        }
-
         /**
          * Build a SimpleListComponent instance
          *
@@ -215,7 +233,6 @@ public class CustomTableComponent extends ObservableComponent {
             ctc.setPropertyManager( this.propManager );
             ctc.columnWidths = this.columnWidths;
             ctc.modelClass = this.modelClass;
-            ctc.modelData = this.modelData;
             ctc.initUI();
             if( this.listener != null ) ctc.addObserver(listener);
             return ctc;

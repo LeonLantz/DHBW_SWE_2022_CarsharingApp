@@ -5,6 +5,8 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,21 @@ import java.util.UUID;
 public class Fahrzeug implements IDepictable, IPersistable {
 
     public enum CSVPositions{
-
+        ID,
+        IMAGEFILE,
+        BEZEICHNUNG,
+        MARKE,
+        MOTOR,
+        TÜREN,
+        SITZE,
+        KOFFERRAUMVOLUMEN,
+        GEWICHT,
+        FAHRZEUGKATEGORIE,
+        FÜHRERSCHEINKLASSE,
+        NUMMERNSCHILD,
+        TÜV_BIS,
+        FARBE,
+        LAST_EDIT
     }
 
     /**
@@ -40,9 +56,9 @@ public class Fahrzeug implements IDepictable, IPersistable {
         FAHRZEUGKATEGORIE( "Kategorie", Fahrzeugkategorie.class, true, false, false ),
         FÜHRERSCHEINKLASSE( "Führerscheinklasse", String.class, false, false, false ),
         NUMMERNSCHILD( "Nummernschild", String.class, true, false, false ),
-        TÜV_BIS( "TÜV bis", Date.class, false, false, false ),
+        TÜV_BIS( "TÜV bis", LocalDate.class, false, false, false ),
         FARBE( "Farbe", String.class, true, false, false ),
-        LAST_EDIT( "zul.", Date.class, true, false, false );
+        LAST_EDIT( "zul.", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -97,7 +113,14 @@ public class Fahrzeug implements IDepictable, IPersistable {
         return names.toArray( new String[ names.size() ] );
     }
 
+    private static String csvFileName = "Fahrzeuge.csv";
+
+    public static String getCsvFileName() {
+        return csvFileName;
+    }
+
     private final Attribute[] attArr = new Attribute[ Fahrzeug.Attributes.values().length ];
+
 
     /**
      * Default-Konstruktor
@@ -106,11 +129,11 @@ public class Fahrzeug implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Fahrzeug(File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, Date tüv_bis, String color, Date last_edit) {
+    public Fahrzeug(File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String color, LocalDateTime last_edit) {
         this(null, imageFile, bezeichnung, marke, motor, türen, sitze, kofferraumvolumen, gewicht, kategorie, führerscheinklasse, nummernschild, tüv_bis, color, last_edit);
     }
 
-    public Fahrzeug(String iD, File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, Date tüv_bis, String farbe, Date last_edit ) {
+    public Fahrzeug(String iD, File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String farbe, LocalDateTime last_edit ) {
         super();
 
         boolean modifiable = true;

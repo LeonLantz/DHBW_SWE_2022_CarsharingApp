@@ -1,5 +1,6 @@
 package gui.renderer;
 
+import gui.customComponents.CustomTableComponent;
 import model.Buchungsstatus;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
@@ -15,42 +16,44 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
 
     TableHeaderRenderer tableHeaderRenderer = new TableHeaderRenderer();
 
+    Border border = BorderFactory.createMatteBorder(0,0,1,0, CSHelp.tableDividerColor);
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
+
+        if( row == 0 && column == 0) {
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            table.getTableHeader().setDefaultRenderer(tableHeaderRenderer);
+            table.getTableHeader().setReorderingAllowed(false);
+            table.setBorder(BorderFactory.createEmptyBorder());
+            table.setRowHeight(50);
+            table.getColumn("Edit").setIdentifier("Edit");
+            table.getColumn("Edit").setHeaderValue("");
+            table.getColumn("Delete").setIdentifier("Delete");
+            table.getColumn("Delete").setHeaderValue("");
+            table.getColumn("Edit").setCellEditor(new JButtonEditor());
+            table.getColumn("Delete").setCellEditor(new JButtonEditor());
+            try {
+                table.getColumn("Bild").setIdentifier("Bild");
+                table.getColumn("Bild").setHeaderValue("");
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+
         if( value == null ) {
             return new JLabel( "NULL" );
         }
-
-        Border border = BorderFactory.createMatteBorder(0,0,1,0, CSHelp.tableDividerColor);
-
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.getTableHeader().setDefaultRenderer(tableHeaderRenderer);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setBorder(BorderFactory.createEmptyBorder());
-        table.setRowHeight(50);
-
-        try {
-            table.getColumn("Bild").setIdentifier("Bild");
-            table.getColumn("Bild").setHeaderValue("");
-        } catch (Exception ex) {
-
-        }
-
-        table.getColumn("Edit").setIdentifier("Edit");
-        table.getColumn("Edit").setHeaderValue("");
-        table.getColumn("Edit").setCellEditor(new JButtonEditor());
-        table.getColumn("Delete").setCellEditor(new JButtonEditor());
-        table.getColumn("Delete").setIdentifier("Delete");
-        table.getColumn("Delete").setHeaderValue("");
-
 
         Component guiComp = new JLabel( value.toString() );
         guiComp.setBackground(CSHelp.tableCellBackground);
@@ -59,24 +62,32 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
 
         if( clazz ==  String.class ){
             ((JLabel)guiComp).setOpaque(true);
-            ((JLabel)guiComp).setFont(CSHelp.lato.deriveFont(12f));
-            ((JLabel)guiComp).setForeground(CSHelp.tableCellText);
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
             if(value.toString().contains("https")) {
-                ((JLabel)guiComp).setForeground(Color.BLUE.darker());
-                ((JLabel)guiComp).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                guiComp.setForeground(Color.BLUE.darker());
+                guiComp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
-        }else if(clazz == JButton.class) {
+        }else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class) {
             guiComp = (JButton)value;
             ((JButton)guiComp).setBorder( border );
-        }else if(clazz == Date.class) {
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-            DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            String datumString = dateFormat.format(value);
-            String timeString = timeFormat.format(value) + " Uhr";
+        }else if(clazz == LocalDateTime.class) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+            String datumString = dateFormat.format((LocalDateTime)value);
+            String timeString = timeFormat.format((LocalDateTime)value) + " Uhr";
             ((JLabel)guiComp).setText("<html><body>" + datumString + "<br>" + timeString + "</body></html>");
             ((JLabel)guiComp).setOpaque(true);
             guiComp.setFont(CSHelp.lato.deriveFont(9f));
+            ((JLabel)guiComp).setForeground(CSHelp.tableCellText);
+            ((JLabel)guiComp).setBorder( border );
+        }else if(clazz == LocalDate.class) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.YYYY");
+            String datumString = dateFormat.format((LocalDate)value);
+            ((JLabel)guiComp).setText(datumString);
+            ((JLabel)guiComp).setOpaque(true);
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
             ((JLabel)guiComp).setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == File.class) {
@@ -85,22 +96,22 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
         }else if (clazz == Fahrzeugkategorie.class ) {
             ((JLabel)guiComp).setOpaque(true);
             ((JLabel)guiComp).setText(((Fahrzeugkategorie) value).getBezeichner());
-            ((JLabel)guiComp).setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Buchungsstatus.class ) {
             ((JLabel)guiComp).setOpaque(true);
             ((JLabel)guiComp).setText(((Buchungsstatus) value).getBezeichner());
-            ((JLabel)guiComp).setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Kunde.class) {
             guiComp = new JLabel(((Kunde)value).getTableCellText());
             guiComp.setFont(CSHelp.lato.deriveFont(12f));
-            ((JLabel)guiComp).setForeground(Color.BLUE.darker());
+            guiComp.setForeground(Color.BLUE.darker());
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Fahrzeug.class) {
             guiComp = new JLabel(((Fahrzeug)value).getTableCellText());
-            ((JLabel)guiComp).setFont(CSHelp.lato.deriveFont(12f));
-            ((JLabel)guiComp).setForeground(Color.BLUE.darker());
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setForeground(Color.BLUE.darker());
             ((JLabel)guiComp).setBorder( border );
         }
         return guiComp;

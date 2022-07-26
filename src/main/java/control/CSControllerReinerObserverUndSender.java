@@ -12,14 +12,16 @@ import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
 
+import model.Fahrzeug;
+import model.Fahrzeugkategorie;
+import model.Kunde;
 import util.ElementFactory;
 import util.WorkingCSVReader;
 import util.WorkingCSVWriter;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
+import java.util.*;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -33,7 +35,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		/**
 		 * Command:  ID + gelieferter Payload-Typ
 		 */
-		SET_KUNDEN( "Controller.setKunden", List.class );
+		SET_BUCHUNGEN( "Controller.setBuchungen", List.class ),
+		SET_FAHRZEUGE( "Controller.setFahrzeuge", List.class ),
+		SET_KUNDEN( "Controller.setKunden", List.class ),
+		SET_STANDORTE( "Controller.setStandorte", List.class );
 
 		public final Class<?> payloadType;
 		public final String cmdText;
@@ -96,8 +101,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public void init(String csvDirectory, String propDirectory) {
 		try {
 			loadCSVData(csvDirectory);
-//			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
-
+			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+			fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll( Fahrzeug.class) ) );
+			System.out.println(entityManager.findAll(Fahrzeug.class));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,21 +111,44 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
 	private void loadCSVData(String csvDirectory) throws IOException {
 		// Fixed CSV Reading and Writing (works even with built Maven JARs)
-		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Kunden.csv", ";", true);
-		List<String[]> csvData = workingCSVReader.readData();
 
-		//TODO: DELETE these two lines
-		// since those are only demo code to show csv writing functionality
-		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+"writetest.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
-		workingCSVWriter.writeData(csvData);
+		Map<String, Class> modelClasses = new HashMap<>();
+		modelClasses.put("Kunden.csv", Kunde.class);
+		modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
 
-		csvData.forEach( e -> {
-			try {
-//				elementFactory.createElement(Kunde.class, e);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
+
+		for (String fileName : modelClasses.keySet()) {
+			System.out.println(fileName);
+
+			WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+fileName, ";", true);
+			List<String[]> csvData = workingCSVReader.readData();
+
+			csvData.forEach( e -> {
+				try {
+					elementFactory.createElement(modelClasses.get(fileName), e);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			});
+		}
+
+
+
+//		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Fahrzeuge.csv", ";", true);
+//		List<String[]> csvData = workingCSVReader.readData();
+//
+//		//TODO: DELETE these two lines
+//		// since those are only demo code to show csv writing functionality
+//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+"writetest.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+//		workingCSVWriter.writeData(csvData);
+//
+//		csvData.forEach( e -> {
+//			try {
+//				elementFactory.createElement(Fahrzeug.class, e);
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//		});
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:

@@ -6,6 +6,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,8 +57,8 @@ public class Kunde implements IDepictable, IPersistable {
         EMAIL( "Email", String.class, true, false, false ),
         PHONE("Telefon", String.class, true, false, false),
         IBAN("Kontonummer", String.class, false, false, false),
-        DATEOFBIRTH( "Geburtsdatum", String.class, true, false, false ),
-        LAST_EDITED( "zul.", Date.class, true, false, false );
+        DATEOFBIRTH( "Geburtsdatum", LocalDate.class, true, false, false ),
+        LAST_EDITED( "zul.", LocalDate.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -112,6 +113,12 @@ public class Kunde implements IDepictable, IPersistable {
         return names.toArray( new String[ names.size() ] );
     }
 
+    private static String csvFileName = "Kunden.csv";
+
+    public static String getCsvFileName() {
+        return csvFileName;
+    }
+
     private final Attribute[] attArr = new Attribute[ Attributes.values().length ];
 
     /**
@@ -125,7 +132,7 @@ public class Kunde implements IDepictable, IPersistable {
         this( null, null, vorName, nachName, "--", null, null, null, null);
     }
 
-    public Kunde(File imageFile, String vorName, String nachName, String email, String phone, String iban, String dateOfBirth, Date last_edit) {
+    public Kunde(File imageFile, String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDate last_edit) {
         this(null, imageFile, vorName, nachName, email, phone, iban, dateOfBirth, last_edit);
     }
 
@@ -138,7 +145,7 @@ public class Kunde implements IDepictable, IPersistable {
      * @param email
      * @param dateOfBirth
      */
-    public Kunde(String iD, File imageFile, String vorName, String nachName, String email, String phone, String iban, String dateOfBirth, Date last_edit ) {
+    public Kunde(String iD, File imageFile, String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDate last_edit ) {
         super();
 
         boolean modifiable = true;

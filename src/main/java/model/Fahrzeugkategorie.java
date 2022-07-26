@@ -1,10 +1,10 @@
 package model;
 
 public enum Fahrzeugkategorie {
-    KLEINFAHRZEUG("okay"),
-    MITTELKLASSE("okay"),
-    GEHOBENE_MITTELKLASSE("okay"),
-    TRANSPORTFAHRZEUG("okay");
+    KLEINFAHRZEUG("Kleinfahrzeug"),
+    MITTELKLASSE("Mittelklasse"),
+    GEHOBENE_MITTELKLASSE("Gehobene_Mittelklasse"),
+    TRANSPORTFAHRZEUG("Transportfahrzeug");
 
     String bezeichner;
 
@@ -14,5 +14,14 @@ public enum Fahrzeugkategorie {
 
     public String getBezeichner() {
         return bezeichner;
+    }
+
+    public static Fahrzeugkategorie fromString(String bezeichner) {
+        for (Fahrzeugkategorie f : Fahrzeugkategorie.values()) {
+            if (f.bezeichner.equalsIgnoreCase(bezeichner)) {
+                return f;
+            }
+        }
+        return null;
     }
 }

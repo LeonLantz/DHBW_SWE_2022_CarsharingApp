@@ -4,9 +4,16 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
+import model.Fahrzeug;
+import model.Fahrzeugkategorie;
+import model.Kunde;
 //import model.Kunde;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,21 +61,44 @@ public class ElementFactory {
 	 */
 	public IPersistable createElement(Class<?> c, String[] csvData) throws Exception {
 
-//		if (c == null) {
-//			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
-//		}
-//		else if( c == Kunde.class ) {
-//			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
-//			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
-//			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
-//			String beschreibung = csvData[ Kunde.CSVPositions.BESCHREIBUNG.ordinal() ];
-//			String engagiert = csvData[ Kunde.CSVPositions.ENGAGIERT.ordinal() ];
-//
-//			persistableElement = new Kunde( id, vorName, nachName, beschreibung, Boolean.getBoolean(engagiert) );
-//			/**
-//			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
-//			 */
-//		}
+		if (c == null) {
+			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
+		}
+		else if( c == Kunde.class ) {
+			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
+			String imageFile = csvData[ Kunde.CSVPositions.IMAGEFILE.ordinal() ];
+			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
+			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
+			String email = csvData[ Kunde.CSVPositions.EMAIL.ordinal() ];
+			String phone = csvData[ Kunde.CSVPositions.PHONE.ordinal() ];
+			String iban = csvData[ Kunde.CSVPositions.IBAN.ordinal() ];
+			String dateOfBirth = csvData[ Kunde.CSVPositions.DATEOFBIRTH.ordinal() ];
+			String last_edit = csvData[ Kunde.CSVPositions.LAST_EDITED.ordinal() ];
+
+			persistableElement = new Kunde( id, new File(imageFile), vorName, nachName, email, phone, iban, LocalDate.parse(dateOfBirth), LocalDate.parse(last_edit));
+			/**
+			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
+			 */
+		}
+		else if( c == Fahrzeug.class) {
+			String id = csvData[ Fahrzeug.CSVPositions.ID.ordinal() ];
+			String imageFile = csvData[ Fahrzeug.CSVPositions.IMAGEFILE.ordinal() ];
+			String bezeichnung = csvData[ Fahrzeug.CSVPositions.BEZEICHNUNG.ordinal() ];
+			String marke = csvData[ Fahrzeug.CSVPositions.MARKE.ordinal() ];
+			String motor = csvData[ Fahrzeug.CSVPositions.MOTOR.ordinal() ];
+			String türen = csvData[ Fahrzeug.CSVPositions.TÜREN.ordinal() ];
+			String sitze = csvData[ Fahrzeug.CSVPositions.SITZE.ordinal() ];
+			String kofferraumvolumen = csvData[ Fahrzeug.CSVPositions.KOFFERRAUMVOLUMEN.ordinal() ];
+			String gewicht = csvData[ Fahrzeug.CSVPositions.GEWICHT.ordinal() ];
+			String fahrzeugkategorie = csvData[ Fahrzeug.CSVPositions.FAHRZEUGKATEGORIE.ordinal() ];
+			String führerscheinklasse = csvData[ Fahrzeug.CSVPositions.FÜHRERSCHEINKLASSE.ordinal() ];
+			String nummernschild = csvData[ Fahrzeug.CSVPositions.NUMMERNSCHILD.ordinal() ];
+			String tüv_bis = csvData[ Fahrzeug.CSVPositions.TÜV_BIS.ordinal() ];
+			String farbe = csvData[ Fahrzeug.CSVPositions.FARBE.ordinal() ];
+			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
+
+			persistableElement = new Fahrzeug(id, new File(imageFile), bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
+		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];
 //			String nachName = csvData[ Person.CSVPositions.NACHNAME.ordinal() ];
@@ -113,7 +143,7 @@ public class ElementFactory {
 //				mapOfUnreferencedElements.put( id, listOfMitglieder );
 //			}
 //		}
-//		entityManager.persist( persistableElement );
+		entityManager.persist( persistableElement );
 
 		return persistableElement;
 	}
