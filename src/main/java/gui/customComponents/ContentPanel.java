@@ -4,6 +4,7 @@ import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.util.IPropertyManager;
+import gui.MainComponentMitNavBar;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -44,7 +45,7 @@ public class ContentPanel extends ObservableComponent {
 
     //Config
     private String title;
-    private ImageIcon buttonImage;
+    private MainComponentMitNavBar.NewObjectButton button;
 
     public ContentPanel() {
     }
@@ -115,20 +116,12 @@ public class ContentPanel extends ObservableComponent {
         //Fußzeile, Komponente rechts
         footer_east = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
         footer_east.setPreferredSize(new Dimension(338,50));
-        footer_east.add(createFooterButton());
+        footer_east.add(button);
         footer.add(footer_east, BorderLayout.EAST);
 
         return this.footer;
     }
 
-    private TableRowEditButton createFooterButton() {
-        TableRowEditButton addButton = TableRowEditButton.builder(this.title+"Button")
-                .value(this.title)
-                .image(this.buttonImage)
-                .size(new Dimension(300,54))
-                .build();
-        return addButton;
-    }
 
     public JPanel getContent() {
         return content;
@@ -160,7 +153,7 @@ public class ContentPanel extends ObservableComponent {
 
         private String title;
         private CustomTableComponent ctc;
-        private ImageIcon buttonImage;
+        private MainComponentMitNavBar.NewObjectButton button;
 
         private IPropertyManager propManager;
         private String id;
@@ -185,8 +178,8 @@ public class ContentPanel extends ObservableComponent {
             return this;
         }
 
-        public SLCBuilder buttonImage(ImageIcon buttonImage) {
-            this.buttonImage = buttonImage;
+        public SLCBuilder addButton(MainComponentMitNavBar.NewObjectButton button) {
+            this.button = button;
             return this;
         }
 
@@ -212,8 +205,8 @@ public class ContentPanel extends ObservableComponent {
             ContentPanel cp = new ContentPanel( this.id );
             cp.setPropertyManager( this.propManager );
             cp.title = this.title;
+            cp.button = this.button;
             if( this.ctc != null ) cp.ctc = this.ctc;
-            cp.buttonImage = this.buttonImage;
             cp.initUI();
             if( this.listener != null ) cp.addObserver(listener);
             return cp;

@@ -4,6 +4,7 @@ import control.CSControllerReinerObserverUndSender;
 import de.dhbwka.swe.utils.event.*;
 import de.dhbwka.swe.utils.gui.AttributeElement;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
@@ -16,7 +17,10 @@ import model.*;
 import util.CSHelp;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,8 +31,15 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     public enum Commands implements EventCommand {
 
-        ;
+        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Attribute.class);
 
+        public final Class<?> payloadType;
+        public final String cmdText;
+
+        Commands(String cmdText, Class<?> payloadType) {
+            this.cmdText = cmdText;
+            this.payloadType = payloadType;
+        }
         @Override
         public String getCmdText() {
             return null;
@@ -126,7 +137,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         buchungenPanel = ContentPanel.builder(CPB)
                 .title(title)
                 .table(buchungenTable)
-                .buttonImage(CSHelp.imageList.get("kunden.png"))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -134,7 +145,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private ContentPanel createFahrzeugeTab(String title) {
-        fahrzeugeTable = CustomTableComponent.builder("fahrzeuge")
+        fahrzeugeTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
                 .columnWidths(new int[]{50, 150, 100, 50, 80, 115, 110, 60, 75, 33, 33})
@@ -143,7 +154,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         fahrzeugePanel = ContentPanel.builder(CPF)
                 .title(title)
-                .buttonImage(CSHelp.imageList.get("fahrzeug.png"))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
                 .observer(this)
                 .table(fahrzeugeTable)
                 .propManager(this.propManager)
@@ -153,16 +164,17 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private ContentPanel createKundenTab(String title) {
-         kundenTable = CustomTableComponent.builder("kunden")
+         kundenTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
                 .columnWidths(new int[]{50, 100, 140, 150, 130, 145, 75, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
+
         kundenPanel = ContentPanel.builder(CPK)
                 .title(title)
                 .table(kundenTable)
-                .buttonImage(CSHelp.imageList.get("kunden.png"))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -181,7 +193,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         standortePanel = ContentPanel.builder(CPS)
                 .title(title)
                 .table(standorteTable)
-                .buttonImage(CSHelp.imageList.get("kunden.png"))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -191,11 +203,27 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private ContentPanel createDokumenteTab(String title) {
         dokumentePanel = ContentPanel.builder(CPD)
                 .title(title)
-                .buttonImage(CSHelp.imageList.get("kunden.png"))
                 .observer(this)
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
                 .propManager(this.propManager)
                 .build();
         return dokumentePanel;
+    }
+
+    public class NewObjectButton extends JButton {
+
+        public NewObjectButton(ImageIcon imageIcon, Class modelClass) {
+            this.setPreferredSize(new Dimension(300,54));
+            this.setBorder(new EmptyBorder(0,0,0,0));
+            this.setIcon(imageIcon);
+            this.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MainComponentMitNavBar.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, modelClass));
+
+                }
+            });
+        }
     }
 
     @Override
@@ -203,6 +231,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         //System.out.println(ge.getCmdText());
         //System.out.println(ge.getSource().getClass());
 //        System.out.println(ge.getData());
+
 
         if(ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             nvb.setActive((String)ge.getData());

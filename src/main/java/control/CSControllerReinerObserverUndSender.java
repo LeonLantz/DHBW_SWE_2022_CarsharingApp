@@ -12,6 +12,7 @@ import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
 
+import gui.MainComponentMitNavBar;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Kunde;
@@ -116,7 +117,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		modelClasses.put("Kunden.csv", Kunde.class);
 		modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
 
-
 		for (String fileName : modelClasses.keySet()) {
 			System.out.println(fileName);
 
@@ -166,7 +166,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	@Override
 	public void processGUIEvent(GUIEvent ge) {
 
-		logger.debug("Hier ist der Controller!   Event: " + ge);
+		//logger.debug("Hier ist der Controller!   Event: " + ge);
+
+		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
+			System.out.println(ge.getData());
+		}
 		
 /*
 		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_KUNDE ) {
