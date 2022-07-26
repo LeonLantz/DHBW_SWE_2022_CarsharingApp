@@ -12,7 +12,9 @@ import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
 
+import gui.CreateKundeView;
 import gui.MainComponentMitNavBar;
+import gui.customComponents.ObjectCreationPanel;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Kunde;
@@ -20,9 +22,14 @@ import util.ElementFactory;
 import util.WorkingCSVReader;
 import util.WorkingCSVWriter;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -168,10 +175,47 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
 		//logger.debug("Hier ist der Controller!   Event: " + ge);
 
+		//System.out.println(ge.getCmdText());
+
 		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
 			System.out.println(ge.getData());
+
+			CreateKundeView createKundeView = new CreateKundeView();
+
+			ObjectCreationPanel ocp = ObjectCreationPanel.builder("Kunden")
+					.observer(this)
+					.build();
+
+
+
+			//TODO: create CustomComponent for value input of model classes
+//			JPanel content = new JPanel();
+//			content.setPreferredSize(new Dimension(500,700));
+//			JButton button = new JButton("Hallo");
+//			button.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					System.out.println("Neuer Kunde erfolgreich angelegt");
+//				}
+//			});
+//			content.add(button);
+//			content.add(new JLabel("Tschüss"));
+			//----------
+
+			createKundeView.setContent(ocp);
+			createKundeView.setVisible(true);
+		}else if (ge.getCmdText().equals(ObjectCreationPanel.Commands.ADD_KUNDE.cmdText)) {
+			logger.debug( ge.getData().toString() );
+			String[] kundenAtts = (String[])ge.getData();
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Kunde.class, kundenAtts);
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
 /*
 		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_KUNDE ) {
 			logger.debug( ge.getData().toString() );

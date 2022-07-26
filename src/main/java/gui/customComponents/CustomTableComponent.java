@@ -130,6 +130,7 @@ public class CustomTableComponent extends ObservableComponent {
     }
 
     public void setModelData(IDepictable[] modelData) {
+        this.data.removeAllElements();
         for (int i = 0; i < modelData.length; i++) {
             int finalI = i;
             Vector<Attribute> attributeVector = new Vector<Attribute>(Attribute.filterVisibleAttributes(modelData[i].getAttributes()));
@@ -190,7 +191,6 @@ public class CustomTableComponent extends ObservableComponent {
 
         private int[] columnWidths;
         private Class modelClass;
-        //private IDepictable[] modelData;
 
         private SLCBuilder() {
         }
