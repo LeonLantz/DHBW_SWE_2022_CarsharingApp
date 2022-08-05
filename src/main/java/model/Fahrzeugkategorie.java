@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Fahrzeugkategorie {
     KLEINFAHRZEUG("Kleinfahrzeug"),
     MITTELKLASSE("Mittelklasse"),
@@ -23,5 +26,14 @@ public enum Fahrzeugkategorie {
             }
         }
         return null;
+    }
+
+    public static String[] getArray() {
+        List<String> list = new ArrayList<>();
+        list.add("--Wählen--");
+        for (Fahrzeugkategorie f : Fahrzeugkategorie.values()) {
+            list.add(f.bezeichner);
+        }
+        return list.toArray(new String[list.size()]);
     }
 }

@@ -154,8 +154,7 @@ public class CustomTableComponent extends ObservableComponent {
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("okay");
-                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.DELETE_ROW, data));
+                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.EDIT_ROW, data));
                 }
             });
         }
@@ -169,7 +168,7 @@ public class CustomTableComponent extends ObservableComponent {
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.EDIT_ROW, data));
+                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.DELETE_ROW, data));
                 }
             });
         }

@@ -31,7 +31,8 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     public enum Commands implements EventCommand {
 
-        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Attribute.class);
+        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Attribute.class),
+        REMOVE_KUNDE( "MainComponentMitNavBar.remove_kunde", String.class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -148,7 +149,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         fahrzeugeTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{50, 150, 100, 50, 80, 115, 110, 60, 75, 33, 33})
+                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 85, 100, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
@@ -250,12 +251,12 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             });
             //this.card.show(this.content, (String) ge.getData());
         } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ROW.cmdText)) {
-//            int n = JOptionPane.showConfirmDialog(this, ((IDepictable)ge.getData()).toString(), "Wirklich löschen?", JOptionPane.YES_NO_OPTION);
-//            if(n == 0) {
-//                System.out.println("TODO: Lösche Datenobjekt");
-//            }
-
-
+            int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("profile_picture.png"));
+            if(n == 0) {
+                fireGUIEvent(ge);
+            }
+        } else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
+            fireGUIEvent(ge);
         }
     }
 
