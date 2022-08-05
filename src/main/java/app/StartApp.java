@@ -40,6 +40,12 @@ public class StartApp {
 
     private static final String sp = File.separator;
 
+    /**
+     * This method can be used to dynamically retrieve argument values from given run parameters during a JAR run.
+     * @param args Standard arguments passed by a Main method
+     * @param parameter Choose which parameter should be selected (e.g. "d")
+     * @return String containing the argument
+     */
     public String getParameterArgument(String[] args, String parameter) {
         int VMOptionPos = Arrays.stream(args).collect(Collectors.toList()).indexOf("-" + parameter);
         if (VMOptionPos < 0) {
@@ -48,9 +54,9 @@ public class StartApp {
         if (VMOptionPos+1 >= args.length || args[VMOptionPos+1].startsWith("-")) {
             throw new IllegalArgumentException("No argument for run parameter \"-"+parameter+"\" given.");
         }
-        String path = args[VMOptionPos+1];
-        if (!path.startsWith(sp)) path = sp + path;
-        if (!path.endsWith(sp)) path = path+sp;
-        return path;
+        String value = args[VMOptionPos+1];
+        if (!value.startsWith(sp)) value = sp + value;
+        if (!value.endsWith(sp)) value = value+sp;
+        return value;
     }
 }
