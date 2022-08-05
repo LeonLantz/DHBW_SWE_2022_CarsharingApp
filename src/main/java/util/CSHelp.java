@@ -10,10 +10,11 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class CSHelp {
     public static Font lato, lato_bold;
-    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar;
+    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBackground;
     public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row, table_cell_image;
     //public static Map<String, ImageIcon> images;
 
@@ -43,6 +44,10 @@ public class CSHelp {
         tableHeaderBackground = new Color(0xE8E8E8);
         tableDividerColor = new Color(0xDBDDE0);
         tableCellBackground = new Color(0xFFFFFF);
+        inputFieldBorder = new Color(0xDCDFE6);
+        inputFieldPlaceholder = new Color(0xC0C4CC);
+        inputFieldText = new Color(0x5F6377);
+        inputFieldBackground = new Color(0xFCFCFD);
     }
 
     public static void registerImages() {
@@ -63,45 +68,13 @@ public class CSHelp {
         }
     }
 
-    public static ImageIcon createCircle(File file) throws IOException {
-        BufferedImage master = ImageIO.read(file);
-        int diameter = Math.min(master.getWidth(), master.getHeight());
-        BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = mask.createGraphics();
-        applyQualityRenderingHints(g2d);
-        g2d.fillOval(0, 0, diameter - 1, diameter - 1);
-        g2d.dispose();
-
-        BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
-        g2d = masked.createGraphics();
-        applyQualityRenderingHints(g2d);
-        int x = (diameter - master.getWidth()) / 2;
-        int y = (diameter - master.getHeight()) / 2;
-        g2d.drawImage(master, x, y, null);
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
-        g2d.drawImage(mask, 0, 0, null);
-        g2d.dispose();
-
-        ImageIcon imageIcon = new ImageIcon(masked);
-        Image image = imageIcon.getImage();
-        Image newimg = image.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-
-        ImageIcon result = new ImageIcon(newimg);
-        Image abc = result.getImage();
-        BufferedImage bi = new BufferedImage(abc.getWidth(null), abc.getHeight(null), BufferedImage.SCALE_SMOOTH);
-        ImageIO.write(bi, "png", new File("src/main/resources/Images/tableImages/test.png"));
-        return new ImageIcon(newimg);
+    public static boolean isNumber(String input) {
+        String regex = "[0-9]+[\\.]?[0-9]*";
+        return Pattern.matches(regex, input);
     }
 
-    private static void applyQualityRenderingHints(Graphics2D g2d) {
-        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+    public static boolean isEmail(String input) {
+        String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        return Pattern.matches(regex, input);
     }
 }

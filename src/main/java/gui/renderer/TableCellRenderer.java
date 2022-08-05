@@ -43,12 +43,6 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             table.getColumn("Delete").setHeaderValue("");
             table.getColumn("Edit").setCellEditor(new JButtonEditor());
             table.getColumn("Delete").setCellEditor(new JButtonEditor());
-            try {
-                table.getColumn("Bild").setIdentifier("Bild");
-                table.getColumn("Bild").setHeaderValue("");
-            } catch (Exception ex) {
-                System.out.println(ex);
-            }
         }
 
         if( value == null ) {
@@ -91,7 +85,7 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             ((JLabel)guiComp).setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == File.class) {
-                guiComp = new JLabel(CSHelp.table_cell_image);
+                guiComp = new JLabel(CSHelp.imageList.get("profile_picture.png"));
                 ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Fahrzeugkategorie.class ) {
             ((JLabel)guiComp).setOpaque(true);

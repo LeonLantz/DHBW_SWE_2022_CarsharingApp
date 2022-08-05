@@ -190,8 +190,7 @@ public class Kunde implements IDepictable, IPersistable {
     @Override
     public String toString() {
         return this.attArr[ Attributes.NACHNAME.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.VORNAME.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.EMAIL.ordinal() ].getValue();
+                + this.attArr[ Attributes.VORNAME.ordinal() ].getValue();
     }
 
     @Override

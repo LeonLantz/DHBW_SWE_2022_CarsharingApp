@@ -82,7 +82,6 @@ public class ElementFactory {
 		}
 		else if( c == Fahrzeug.class) {
 			String id = csvData[ Fahrzeug.CSVPositions.ID.ordinal() ];
-			String imageFile = csvData[ Fahrzeug.CSVPositions.IMAGEFILE.ordinal() ];
 			String bezeichnung = csvData[ Fahrzeug.CSVPositions.BEZEICHNUNG.ordinal() ];
 			String marke = csvData[ Fahrzeug.CSVPositions.MARKE.ordinal() ];
 			String motor = csvData[ Fahrzeug.CSVPositions.MOTOR.ordinal() ];
@@ -97,7 +96,7 @@ public class ElementFactory {
 			String farbe = csvData[ Fahrzeug.CSVPositions.FARBE.ordinal() ];
 			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Fahrzeug(id, new File(imageFile), bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
+			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];

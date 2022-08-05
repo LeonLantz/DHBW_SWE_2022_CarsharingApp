@@ -1,6 +1,6 @@
 package gui;
 
-import gui.customComponents.ObjectCreationPanel;
+import gui.customComponents.userInput.GUIFahrzeugAnlegen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class CreateKundeView extends JDialog {
         this.setSize(new Dimension(500, 700));
     }
 
-    public void setContent(ObjectCreationPanel ocp) {
+    public void setContent(GUIFahrzeugAnlegen ocp) {
         this.add(ocp, BorderLayout.CENTER);
     }
 }

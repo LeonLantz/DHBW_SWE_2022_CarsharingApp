@@ -16,7 +16,6 @@ public class Fahrzeug implements IDepictable, IPersistable {
 
     public enum CSVPositions{
         ID,
-        IMAGEFILE,
         BEZEICHNUNG,
         MARKE,
         MOTOR,
@@ -45,7 +44,6 @@ public class Fahrzeug implements IDepictable, IPersistable {
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
         ID( "ID", String.class, false, false, false ),
-        IMAGEFILE( "Bild", File.class, true, false, false ),
         BEZEICHNUNG( "Bezeichnung", String.class, true, false, false ),
         MARKE( "Marke", String.class, true, false, false ),
         MOTOR( "Motor", String.class, true, false, false ),
@@ -129,18 +127,17 @@ public class Fahrzeug implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Fahrzeug(File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String color, LocalDateTime last_edit) {
-        this(null, imageFile, bezeichnung, marke, motor, türen, sitze, kofferraumvolumen, gewicht, kategorie, führerscheinklasse, nummernschild, tüv_bis, color, last_edit);
+    public Fahrzeug(String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String color, LocalDateTime last_edit) {
+        this(null, bezeichnung, marke, motor, türen, sitze, kofferraumvolumen, gewicht, kategorie, führerscheinklasse, nummernschild, tüv_bis, color, last_edit);
     }
 
-    public Fahrzeug(String iD, File imageFile, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String farbe, LocalDateTime last_edit ) {
+    public Fahrzeug(String iD, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String farbe, LocalDateTime last_edit ) {
         super();
 
         boolean modifiable = true;
 
         String randID = UUID.randomUUID().toString();
         this.attArr[ Attributes.ID.ordinal() ] = Fahrzeug.Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
-        this.attArr[ Attributes.IMAGEFILE.ordinal() ] = Fahrzeug.Attributes.IMAGEFILE.createAttribute( this, imageFile, null );
         this.attArr[ Attributes.BEZEICHNUNG.ordinal() ] = Fahrzeug.Attributes.BEZEICHNUNG.createAttribute( this, bezeichnung, "--" );
         this.attArr[ Attributes.MARKE.ordinal() ] = Fahrzeug.Attributes.MARKE.createAttribute( this, marke, "--" );
         this.attArr[ Attributes.MOTOR.ordinal() ] = Fahrzeug.Attributes.MOTOR.createAttribute( this, motor, "" );
