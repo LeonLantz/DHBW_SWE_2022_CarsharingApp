@@ -33,11 +33,13 @@ public class CustomNavBarButton extends JPanel {
             @Override
             public void mouseEntered(MouseEvent e) {
                 CustomNavBarButton.this.button.setForeground(CSHelp.navBarTextActive);
+                CustomNavBarButton.this.button.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 CustomNavBarButton.this.button.setForeground(Color.BLACK);
+                CustomNavBarButton.this.button.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
 

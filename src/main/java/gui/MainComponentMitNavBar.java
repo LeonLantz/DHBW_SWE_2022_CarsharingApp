@@ -13,6 +13,7 @@ import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
 import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
+import gui.customComponents.userInput.CustomNavBarButton;
 import model.*;
 import util.CSHelp;
 
@@ -21,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -217,11 +220,27 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             this.setPreferredSize(new Dimension(300,54));
             this.setBorder(new EmptyBorder(0,0,0,0));
             this.setIcon(imageIcon);
-            this.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    MainComponentMitNavBar.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, modelClass));
 
+            this.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    MainComponentMitNavBar.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, modelClass));
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {}
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
             });
         }
