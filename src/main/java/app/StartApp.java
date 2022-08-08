@@ -28,6 +28,8 @@ public class StartApp {
         mainComp.addObserver( controller );
         controller.init(csvDirectory, propDirectory);
 
+        //UIManager.put("Button.font", CSHelp.lato.deriveFont(14f));
+
         JFrame frame = new JFrame("Carsharing Buchungssoftware");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1080, 720);
@@ -52,5 +54,15 @@ public class StartApp {
         if (!path.startsWith(sp)) path = sp + path;
         if (!path.endsWith(sp)) path = path+sp;
         return path;
+    }
+
+    public static void setUIFont (javax.swing.plaf.FontUIResource f){
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get (key);
+            if (value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put (key, f);
+        }
     }
 }

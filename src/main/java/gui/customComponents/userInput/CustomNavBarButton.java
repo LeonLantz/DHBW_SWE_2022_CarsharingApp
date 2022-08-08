@@ -18,6 +18,7 @@ public class CustomNavBarButton extends JPanel {
         this.setBackground(Color.white);
 
         this.button = new JButton(title);
+        this.button.setFont(CSHelp.lato_bold.deriveFont(13f));
         this.button.setBorder(new EmptyBorder(0,15,0,0));
         this.button.addMouseListener(new MouseListener() {
             @Override
