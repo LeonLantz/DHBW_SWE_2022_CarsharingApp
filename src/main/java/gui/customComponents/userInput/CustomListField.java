@@ -2,6 +2,7 @@ package gui.customComponents.userInput;
 
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
+import de.dhbwka.swe.utils.model.IDepictable;
 import gui.customComponents.CustomTableComponent;
 import model.Kunde;
 
@@ -13,8 +14,9 @@ import java.util.List;
 public class CustomListField extends CustomInputField {
 
 //    private Class aClass;
+    private SimpleListComponent slc;
 
-    public CustomListField(String title, String placeholder, IGUIEventListener observer, List<Kunde> lstKunde) {
+    public CustomListField(String title, String placeholder, IGUIEventListener observer) {
         this.title = title;
         this.placeholder = placeholder;
         this.value = "";
@@ -25,23 +27,18 @@ public class CustomListField extends CustomInputField {
         this.setBorder(new EmptyBorder(5,10,5,10));
         this.setBackground(Color.WHITE);
 
-        SimpleListComponent slc = SimpleListComponent.builder("okayy")
+        slc = SimpleListComponent.builder("okayy")
                 .title(title)
+                .observer(observer)
                 .componentSize(new Dimension(300,200))
                 .build();
 
-        slc.setListElements(lstKunde, true);
-
-
-
-
-//        CustomTableComponent ctc = CustomTableComponent.builder(title+"-Table")
-//                .observer(observer)
-//                .columnWidths(new int[]{50, 100})
-//                .modelClass(Kunde.class)
-//                .build();
 
         this.add(slc, BorderLayout.CENTER);
+    }
+
+    public void setListElements(List<IDepictable> objectList) {
+        slc.setListElements(objectList, true);
     }
 
     @Override

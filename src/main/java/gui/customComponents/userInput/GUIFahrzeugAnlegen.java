@@ -6,6 +6,7 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import model.Bild;
 import model.Fahrzeugkategorie;
 import model.Motorisierung;
 import util.CSHelp;
@@ -62,6 +63,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     private JButton save_fahrzeug;
 
     private IDepictable iDepictable;
+    private List bildList, documentList;
 
     private CustomInputField inputBezeichnung, inputMarke, inputMotor, inputTüren, inputSitze, inputKofferraumvolumen, inputGewicht, inputFahrzeugkategorie, inputFührerscheinklasse, inputNummernschild, inputTüvBis, inputFarbe, inputLastEdit;
 
@@ -73,10 +75,11 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     }
 
     //constructor for editing an existing Object
-    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
+    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable, List<Bild> bildList) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
+        this.bildList = bildList;
         initUI(false);
     }
 
@@ -144,6 +147,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         inputFieldMap.put("Führerscheinklasse", new CustomTextField("Führerscheinklasse", "bsp.: A, B, ..."));
         inputFieldMap.put("Nummernschild",  new CustomTextField("Nummernschild", "bsp.: DÜW LL 140"));
         //TODO: Fahrzeugbilder und Dokumente
+        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer ));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer ));
         inputFieldMap.put("TüvBis", new CustomTextField("TüvBis", "Format: TT.MM.YYYY"));
         inputFieldMap.put("Farbe", new CustomTextField("Farbe", "Farbe des Fahrzeuges"));
 
@@ -193,8 +198,14 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         inputFieldMap.get("Fahrzeugkategorie").setValue(String.valueOf(fahrzeugkategorieIndex));
         inputFieldMap.get("Führerscheinklasse").setValue(attributes[9].getValue().toString());
         inputFieldMap.get("Nummernschild").setValue(attributes[10].getValue().toString());
+        CustomListField customListField = (CustomListField) inputFieldMap.get("Bilder");
+        customListField.setListElements(bildList);
         inputFieldMap.get("TüvBis").setValue(attributes[11].getValue().toString());
         inputFieldMap.get("Farbe").setValue(attributes[12].getValue().toString());
+
+        for (Object bild : bildList) {
+            System.out.println(bild);
+        }
 
         save_fahrzeug.requestFocus();
     }

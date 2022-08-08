@@ -6,8 +6,10 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
+import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.CSVReader;
 import de.dhbwka.swe.utils.util.CSVWriter;
@@ -18,14 +20,18 @@ import gui.CreateKundeView;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.customComponents.userInput.GUIFahrzeugAnlegen;
+import model.Bild;
 import model.Fahrzeug;
 import model.Kunde;
 import util.ElementFactory;
 import util.WorkingCSVReader;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 	
@@ -119,6 +125,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		Map<String, Class> modelClasses = new HashMap<>();
 		modelClasses.put("Kunden.csv", Kunde.class);
 		modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
+		modelClasses.put("Bilder.csv", Bild.class);
 
 		for (String fileName : modelClasses.keySet()) {
 			System.out.println(fileName);
@@ -134,8 +141,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				}
 			});
 		}
-
-
 
 //		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Fahrzeuge.csv", ";", true);
 //		List<String[]> csvData = workingCSVReader.readData();
@@ -174,12 +179,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
 		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
 			System.out.println(ge.getData());
-
-			CreateKundeView createKundeView = new CreateKundeView();
-
-			GUIFahrzeugAnlegen ocp = new GUIFahrzeugAnlegen(this);
-
-			createKundeView.setContent(ocp);
+			GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
+			CreateKundeView createKundeView = new CreateKundeView(guiFahrzeugAnlegen);
 			createKundeView.setVisible(true);
 		}else if (ge.getCmdText().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG.cmdText)) {
 			logger.debug( ge.getData().toString() );
@@ -198,14 +199,33 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
 		}else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
 			System.out.println(ge.getData());
-			IDepictable d = (IDepictable)ge.getData();
+			IDepictable iDepictable = (IDepictable)ge.getData();
+			String iD = iDepictable.getElementID().toString();
 
-			CreateKundeView createKundeView = new CreateKundeView();
+			List<IPersistable> allImages = entityManager.findAll(Bild.class);
+			List<Bild> bildList = new ArrayList<>();
+			for (IPersistable iPersistable : allImages) {
+				bildList.add((Bild) iPersistable);
+			}
 
-			GUIFahrzeugAnlegen ocp = new GUIFahrzeugAnlegen(this, d);
+			bildList = bildList.stream()
+					.filter(b -> b.getSecondaryKey().equals(iD))
+					.collect(Collectors.toList());
 
-			createKundeView.setContent(ocp);
+
+			GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this, iDepictable, bildList);
+			CreateKundeView createKundeView = new CreateKundeView(guiFahrzeugAnlegen);
 			createKundeView.setVisible(true);
+		}else if (ge.getCmdText().equals(SimpleListComponent.Commands.ELEMENT_SELECTED.cmdText)) {
+			if (ge.getData().getClass() == Bild.class) {
+				Bild bild = (Bild) ge.getData();
+
+				ImageIcon imageIcon = bild.getImage();
+
+
+				JOptionPane.showMessageDialog(null, bild.getAttributeValueOf(Bild.Attributes.TITLE), bild.getAttributeValueOf(Bild.Attributes.FILEPATH), JOptionPane.INFORMATION_MESSAGE, imageIcon);
+
+			}
 		}
 
 /*

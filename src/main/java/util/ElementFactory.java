@@ -4,11 +4,13 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
+import model.Bild;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Kunde;
 //import model.Kunde;
 
+import javax.swing.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -97,6 +99,15 @@ public class ElementFactory {
 			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
 
 			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
+		}
+		else if( c == Bild.class ) {
+			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
+			String title = csvData[ Bild.CSVPositions.TITLE.ordinal() ];
+			String filePath = csvData[ Bild.CSVPositions.FILEPATH.ordinal() ];
+			ImageIcon imageIcon = new ImageIcon(filePath);
+			String key = csvData[ Bild.CSVPositions.KEY.ordinal() ];
+
+			persistableElement = new Bild(id, title, filePath, imageIcon, key);
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];
