@@ -57,6 +57,8 @@ public class CustomTextField extends CustomInputField {
     @Override
     public void setValue(String value) {
         this.value = value;
+        this.textfield.setForeground(Color.black);
         this.textfield.setText(value);
     }
+
 }

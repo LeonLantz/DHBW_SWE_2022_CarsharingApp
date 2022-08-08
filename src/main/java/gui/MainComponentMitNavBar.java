@@ -138,7 +138,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         buchungenPanel = ContentPanel.builder(CPB)
                 .title(title)
                 .table(buchungenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Buchung.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -149,13 +149,13 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         fahrzeugeTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 85, 100, 33, 33})
+                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 89, 100, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
         fahrzeugePanel = ContentPanel.builder(CPF)
                 .title(title)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Fahrzeug.class))
                 .observer(this)
                 .table(fahrzeugeTable)
                 .propManager(this.propManager)
@@ -168,14 +168,14 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
          kundenTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{50, 100, 140, 150, 130, 145, 75, 33, 33})
+                .columnWidths(new int[]{100, 100, 160, 130, 130, 149, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
 
         kundenPanel = ContentPanel.builder(CPK)
                 .title(title)
                 .table(kundenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Kunde.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();

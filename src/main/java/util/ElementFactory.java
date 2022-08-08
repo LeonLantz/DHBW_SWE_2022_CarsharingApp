@@ -68,7 +68,6 @@ public class ElementFactory {
 		}
 		else if( c == Kunde.class ) {
 			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
-			String imageFile = csvData[ Kunde.CSVPositions.IMAGEFILE.ordinal() ];
 			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
 			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
 			String email = csvData[ Kunde.CSVPositions.EMAIL.ordinal() ];
@@ -77,7 +76,7 @@ public class ElementFactory {
 			String dateOfBirth = csvData[ Kunde.CSVPositions.DATEOFBIRTH.ordinal() ];
 			String last_edit = csvData[ Kunde.CSVPositions.LAST_EDITED.ordinal() ];
 
-			persistableElement = new Kunde( id, new File(imageFile), vorName, nachName, email, phone, iban, LocalDate.parse(dateOfBirth), LocalDate.parse(last_edit));
+			persistableElement = new Kunde( id, vorName, nachName, email, phone, iban, LocalDate.parse(dateOfBirth), LocalDateTime.parse(last_edit));
 			/**
 			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
 			 */

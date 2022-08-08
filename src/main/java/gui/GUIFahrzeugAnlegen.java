@@ -1,4 +1,4 @@
-package gui.customComponents.userInput;
+package gui;
 
 import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
@@ -6,6 +6,10 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import gui.customComponents.userInput.CustomComboBox;
+import gui.customComponents.userInput.CustomInputField;
+import gui.customComponents.userInput.CustomListField;
+import gui.customComponents.userInput.CustomTextField;
 import model.Bild;
 import model.Fahrzeugkategorie;
 import model.Motorisierung;
@@ -25,7 +29,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     public enum Commands implements EventCommand {
 
-        ADD_FAHRZEUG( "GUIKundeAnlegen.addFahrzeug", String[].class );
+        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -214,7 +218,9 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         List<String> allValues = new ArrayList<>();
         allValues.add(randID);
         for(CustomInputField customInputField : inputFieldMap.values()) {
+            if(customInputField.getClass() != CustomListField.class) {
                 allValues.add(customInputField.getValue());
+            }
         }
         allValues.add(LocalDateTime.now().toString());
         return allValues.toArray(new String[allValues.size()]);
@@ -222,12 +228,14 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     @Override
     public boolean validateInput() {
+        boolean state = true;
         if (!(CSHelp.isNumber(inputFieldMap.get("Sitze").getValue()))) {
-            return false;
-        }else if (!(CSHelp.isNumber(inputFieldMap.get("Türen").getValue()))) {
-            return false;
+            state = false;
+        }
+        if (!(CSHelp.isNumber(inputFieldMap.get("Türen").getValue()))) {
+            state = false;
         }
 
-        return true;
+        return state;
     }
 }

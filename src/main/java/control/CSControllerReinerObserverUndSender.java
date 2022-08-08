@@ -7,7 +7,6 @@ import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
-import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
@@ -16,10 +15,11 @@ import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
 
-import gui.CreateKundeView;
+import gui.EditIDepicatableDialog;
+import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
-import gui.customComponents.userInput.GUIFahrzeugAnlegen;
+import gui.GUIFahrzeugAnlegen;
 import model.Bild;
 import model.Fahrzeug;
 import model.Kunde;
@@ -178,10 +178,18 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		System.out.println(ge.getCmdText());
 
 		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
-			System.out.println(ge.getData());
-			GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
-			CreateKundeView createKundeView = new CreateKundeView(guiFahrzeugAnlegen);
-			createKundeView.setVisible(true);
+			EditIDepicatableDialog editIDepicatableDialog;
+
+			if (ge.getData() == Kunde.class) {
+				GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this);
+				editIDepicatableDialog = new EditIDepicatableDialog(guiKundeAnlegen, new Dimension(500, 400));
+				editIDepicatableDialog.setVisible(true);
+			}else if (ge.getData() == Fahrzeug.class) {
+				GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
+				editIDepicatableDialog = new EditIDepicatableDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
+				editIDepicatableDialog.setVisible(true);
+			}
+
 		}else if (ge.getCmdText().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG.cmdText)) {
 			logger.debug( ge.getData().toString() );
 			String[] fahrzeugAtts = (String[])ge.getData();
@@ -189,7 +197,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				// element wird erzeugt und in ElementManager gespeichert
 				elementFactory.createElement(Fahrzeug.class, fahrzeugAtts);
 				fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -199,6 +206,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
 		}else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
 			System.out.println(ge.getData());
+
 			IDepictable iDepictable = (IDepictable)ge.getData();
 			String iD = iDepictable.getElementID().toString();
 
@@ -212,10 +220,19 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 					.filter(b -> b.getSecondaryKey().equals(iD))
 					.collect(Collectors.toList());
 
+			EditIDepicatableDialog editIDepicatableDialog;
 
-			GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this, iDepictable, bildList);
-			CreateKundeView createKundeView = new CreateKundeView(guiFahrzeugAnlegen);
-			createKundeView.setVisible(true);
+			if (iDepictable.getClass() == Kunde.class) {
+				GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this, iDepictable, bildList);
+				editIDepicatableDialog = new EditIDepicatableDialog(guiKundeAnlegen, new Dimension(500, 700));
+				editIDepicatableDialog.setVisible(true);
+			}else if (iDepictable.getClass() == Fahrzeug.class) {
+				GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this, iDepictable, bildList);
+				editIDepicatableDialog = new EditIDepicatableDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
+				editIDepicatableDialog.setVisible(true);
+			}
+
+
 		}else if (ge.getCmdText().equals(SimpleListComponent.Commands.ELEMENT_SELECTED.cmdText)) {
 			if (ge.getData().getClass() == Bild.class) {
 				Bild bild = (Bild) ge.getData();
