@@ -242,7 +242,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 public void run() {
                     MainComponentMitNavBar.this.card.show(MainComponentMitNavBar.this.content, (String) ge.getData());
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
