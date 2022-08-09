@@ -50,10 +50,7 @@ public class CustomDatePicker extends CustomInputField {
         textField.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("okayyy");
                 JDialog datePicker = new JDialog();
-
-
                 datePicker.add(calendarComponent);
                 datePicker.setModal(true);
                 datePicker.setSize(new Dimension(400,500));
@@ -62,31 +59,20 @@ public class CustomDatePicker extends CustomInputField {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
+            public void mousePressed(MouseEvent e) {}
 
             @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
+            public void mouseReleased(MouseEvent e) {}
 
             @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
+            public void mouseEntered(MouseEvent e) {}
 
             @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+            public void mouseExited(MouseEvent e) {}
         });
-
-
 
         this.add(field_description, BorderLayout.NORTH);
         this.add(textField, BorderLayout.SOUTH);
-
     }
 
     @Override

@@ -98,14 +98,16 @@ public class NavigationBar extends ObservableComponent {
         JLabel navBar_label_profilname = new JLabel("Lutz Gröll");
         navBar_panel_profilname.setBackground(Color.white);
         navBar_label_profilname.setFont(CSHelp.lato_bold.deriveFont(18f));
-        navBar_label_profilname.setBorder(new EmptyBorder(0,10,0,0));
+        navBar_label_profilname.setBorder(new EmptyBorder(0,10,0,30));
         navBar_panel_profilname.add(navBar_label_profilname);
+        ImageIcon arrow = CSHelp.imageList.get("nameArrow.png");
+        navBar_panel_profilname.add(new JLabel(arrow));
         section_1.add(navBar_panel_profilname);
 
         //Teilkomponente: Sektion 2
-        section_2 = new JPanel(new FlowLayout(0,0,0));
+        section_2 = new JPanel(new FlowLayout(0,0,5));
         section_2.setBackground(Color.white);
-        section_2.setPreferredSize(new Dimension(180, 240));
+        section_2.setPreferredSize(new Dimension(180, 280));
 
         //Button Übersicht
         JPanel navBar_panel_übersicht = new JPanel();
@@ -199,7 +201,7 @@ public class NavigationBar extends ObservableComponent {
         //Teilkomponente: Sektion 3
         section_3 = new JPanel();
         section_3.setBackground(Color.white);
-        section_3.setPreferredSize(new Dimension(180, 320));
+        section_3.setPreferredSize(new Dimension(180, 280));
         section_3.setBorder(border_top);
         this.add(section_3, BorderLayout.SOUTH);
 
