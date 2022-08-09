@@ -231,8 +231,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         //HeaderEast
         JPanel header_east = new JPanel(new BorderLayout(0,0));
-        header_east.setBackground(Color.black);
+        header_east.setBackground(CSHelp.main);
         header_east.setPreferredSize(new Dimension(130, 130));
+        header_east.add(new JLabel(CSHelp.imageList.get("logo.png")));
+        header_east.setBorder(BorderFactory.createMatteBorder(0,1,0,0, CSHelp.tableDividerColor));
         header.add(header_east, BorderLayout.EAST);
 
         jPanel.add(header, BorderLayout.NORTH);
@@ -321,12 +323,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     public void processGUIEvent(GUIEvent ge) {
         //System.out.println(ge.getCmdText());
         //System.out.println(ge.getSource().getClass());
-//        System.out.println(ge.getData());
-
+        //System.out.println(ge.getData());
 
         if(ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             nvb.setActive((String)ge.getData());
-            //System.out.println("New tab selected: " + ge.getData());
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -337,9 +337,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                         e.printStackTrace();
                     }
                 }
-
             });
-            //this.card.show(this.content, (String) ge.getData());
         } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ROW.cmdText)) {
             int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("profile_picture.png"));
             if(n == 0) {
@@ -353,7 +351,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     @Override
     public void processUpdateEvent(UpdateEvent ue) {
 
-        System.out.println("UPDATE");
+        System.out.println("UPDATE DATA");
 
         if( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN ) {
             List<Kunde> lstKunde = (List<Kunde>)ue.getData();

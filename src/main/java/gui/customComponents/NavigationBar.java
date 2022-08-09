@@ -98,8 +98,10 @@ public class NavigationBar extends ObservableComponent {
         JLabel navBar_label_profilname = new JLabel("Lutz Gröll");
         navBar_panel_profilname.setBackground(Color.white);
         navBar_label_profilname.setFont(CSHelp.lato_bold.deriveFont(18f));
-        navBar_label_profilname.setBorder(new EmptyBorder(0,10,0,0));
+        navBar_label_profilname.setBorder(new EmptyBorder(0,10,0,30));
         navBar_panel_profilname.add(navBar_label_profilname);
+        ImageIcon arrow = CSHelp.imageList.get("nameArrow.png");
+        navBar_panel_profilname.add(new JLabel(arrow));
         section_1.add(navBar_panel_profilname);
 
         //Teilkomponente: Sektion 2
