@@ -4,11 +4,13 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
+import model.Bild;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Kunde;
 //import model.Kunde;
 
+import javax.swing.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,7 +68,6 @@ public class ElementFactory {
 		}
 		else if( c == Kunde.class ) {
 			String id = csvData[ Kunde.CSVPositions.ID.ordinal() ];
-			String imageFile = csvData[ Kunde.CSVPositions.IMAGEFILE.ordinal() ];
 			String vorName = csvData[ Kunde.CSVPositions.VORNAME.ordinal() ];
 			String nachName = csvData[ Kunde.CSVPositions.NACHNAME.ordinal() ];
 			String email = csvData[ Kunde.CSVPositions.EMAIL.ordinal() ];
@@ -75,7 +76,7 @@ public class ElementFactory {
 			String dateOfBirth = csvData[ Kunde.CSVPositions.DATEOFBIRTH.ordinal() ];
 			String last_edit = csvData[ Kunde.CSVPositions.LAST_EDITED.ordinal() ];
 
-			persistableElement = new Kunde( id, new File(imageFile), vorName, nachName, email, phone, iban, LocalDate.parse(dateOfBirth), LocalDate.parse(last_edit));
+			persistableElement = new Kunde( id, vorName, nachName, email, phone, iban, LocalDate.parse(dateOfBirth), LocalDateTime.parse(last_edit));
 			/**
 			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
 			 */
@@ -97,6 +98,15 @@ public class ElementFactory {
 			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
 
 			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
+		}
+		else if( c == Bild.class ) {
+			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
+			String title = csvData[ Bild.CSVPositions.TITLE.ordinal() ];
+			String filePath = csvData[ Bild.CSVPositions.FILEPATH.ordinal() ];
+			ImageIcon imageIcon = new ImageIcon(filePath);
+			String key = csvData[ Bild.CSVPositions.KEY.ordinal() ];
+
+			persistableElement = new Bild(id, title, filePath, imageIcon, key);
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];

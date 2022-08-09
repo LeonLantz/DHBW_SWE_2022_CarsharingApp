@@ -13,6 +13,7 @@ import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
 import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
+import gui.customComponents.userInput.CustomNavBarButton;
 import model.*;
 import util.CSHelp;
 
@@ -21,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -138,7 +141,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         buchungenPanel = ContentPanel.builder(CPB)
                 .title(title)
                 .table(buchungenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Buchung.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -149,13 +152,13 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         fahrzeugeTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 85, 100, 33, 33})
+                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 89, 100, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
         fahrzeugePanel = ContentPanel.builder(CPF)
                 .title(title)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Fahrzeug.class))
                 .observer(this)
                 .table(fahrzeugeTable)
                 .propManager(this.propManager)
@@ -168,14 +171,14 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
          kundenTable = CustomTableComponent.builder(title+"-Table")
                 .observer(this)
                 .propManager(this.propManager)
-                .columnWidths(new int[]{50, 100, 140, 150, 130, 145, 75, 33, 33})
+                .columnWidths(new int[]{100, 100, 160, 130, 130, 149, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
 
         kundenPanel = ContentPanel.builder(CPK)
                 .title(title)
                 .table(kundenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Kunde.class))
                 .observer(this)
                 .propManager(this.propManager)
                 .build();
@@ -217,11 +220,27 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             this.setPreferredSize(new Dimension(300,54));
             this.setBorder(new EmptyBorder(0,0,0,0));
             this.setIcon(imageIcon);
-            this.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    MainComponentMitNavBar.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, modelClass));
 
+            this.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    MainComponentMitNavBar.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, modelClass));
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {}
+
+                @Override
+                public void mouseReleased(MouseEvent e) {}
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
             });
         }
@@ -242,7 +261,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 public void run() {
                     MainComponentMitNavBar.this.card.show(MainComponentMitNavBar.this.content, (String) ge.getData());
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

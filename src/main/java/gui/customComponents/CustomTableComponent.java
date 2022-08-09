@@ -122,7 +122,7 @@ public class CustomTableComponent extends ObservableComponent {
                 .build();
         JScrollPane p = (JScrollPane) stc.getComponent(0);
         System.out.println(stc.getComponentCount());
-        p.getComponent(1).setPreferredSize(new Dimension(4,0));
+        p.getComponent(1).setPreferredSize(new Dimension(0,0));
         p.setBackground(CSHelp.main);
         p.setBorder(new EmptyBorder(0,0,0,0));
         this.add(stc, BorderLayout.CENTER);

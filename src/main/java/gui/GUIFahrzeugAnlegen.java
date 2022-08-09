@@ -1,4 +1,4 @@
-package gui.customComponents.userInput;
+package gui;
 
 import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
@@ -6,6 +6,11 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import gui.customComponents.userInput.CustomComboBox;
+import gui.customComponents.userInput.CustomInputField;
+import gui.customComponents.userInput.CustomListField;
+import gui.customComponents.userInput.CustomTextField;
+import model.Bild;
 import model.Fahrzeugkategorie;
 import model.Motorisierung;
 import util.CSHelp;
@@ -24,7 +29,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     public enum Commands implements EventCommand {
 
-        ADD_FAHRZEUG( "GUIKundeAnlegen.addFahrzeug", String[].class );
+        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -62,6 +67,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     private JButton save_fahrzeug;
 
     private IDepictable iDepictable;
+    private List bildList, documentList;
 
     private CustomInputField inputBezeichnung, inputMarke, inputMotor, inputTüren, inputSitze, inputKofferraumvolumen, inputGewicht, inputFahrzeugkategorie, inputFührerscheinklasse, inputNummernschild, inputTüvBis, inputFarbe, inputLastEdit;
 
@@ -73,10 +79,11 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     }
 
     //constructor for editing an existing Object
-    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
+    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable, List<Bild> bildList) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
+        this.bildList = bildList;
         initUI(false);
     }
 
@@ -144,6 +151,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         inputFieldMap.put("Führerscheinklasse", new CustomTextField("Führerscheinklasse", "bsp.: A, B, ..."));
         inputFieldMap.put("Nummernschild",  new CustomTextField("Nummernschild", "bsp.: DÜW LL 140"));
         //TODO: Fahrzeugbilder und Dokumente
+        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer ));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer ));
         inputFieldMap.put("TüvBis", new CustomTextField("TüvBis", "Format: TT.MM.YYYY"));
         inputFieldMap.put("Farbe", new CustomTextField("Farbe", "Farbe des Fahrzeuges"));
 
@@ -193,8 +202,14 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         inputFieldMap.get("Fahrzeugkategorie").setValue(String.valueOf(fahrzeugkategorieIndex));
         inputFieldMap.get("Führerscheinklasse").setValue(attributes[9].getValue().toString());
         inputFieldMap.get("Nummernschild").setValue(attributes[10].getValue().toString());
+        CustomListField customListField = (CustomListField) inputFieldMap.get("Bilder");
+        customListField.setListElements(bildList);
         inputFieldMap.get("TüvBis").setValue(attributes[11].getValue().toString());
         inputFieldMap.get("Farbe").setValue(attributes[12].getValue().toString());
+
+        for (Object bild : bildList) {
+            System.out.println(bild);
+        }
 
         save_fahrzeug.requestFocus();
     }
@@ -203,7 +218,9 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         List<String> allValues = new ArrayList<>();
         allValues.add(randID);
         for(CustomInputField customInputField : inputFieldMap.values()) {
+            if(customInputField.getClass() != CustomListField.class) {
                 allValues.add(customInputField.getValue());
+            }
         }
         allValues.add(LocalDateTime.now().toString());
         return allValues.toArray(new String[allValues.size()]);
@@ -211,12 +228,14 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     @Override
     public boolean validateInput() {
+        boolean state = true;
         if (!(CSHelp.isNumber(inputFieldMap.get("Sitze").getValue()))) {
-            return false;
-        }else if (!(CSHelp.isNumber(inputFieldMap.get("Türen").getValue()))) {
-            return false;
+            state = false;
+        }
+        if (!(CSHelp.isNumber(inputFieldMap.get("Türen").getValue()))) {
+            state = false;
         }
 
-        return true;
+        return state;
     }
 }

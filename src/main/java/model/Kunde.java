@@ -7,6 +7,7 @@ import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,6 @@ public class Kunde implements IDepictable, IPersistable {
 
     public enum CSVPositions{
         ID,
-        IMAGEFILE,
         VORNAME,
         NACHNAME,
         EMAIL,
@@ -51,14 +51,13 @@ public class Kunde implements IDepictable, IPersistable {
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
         ID( "ID", String.class, false, false, false ),
-        IMAGEFILE( "Bild", File.class, true, false, false ),
         VORNAME( "Vorname", String.class, true, false, false ),
         NACHNAME( "Nachname", String.class, true, false, false ),
         EMAIL( "Email", String.class, true, false, false ),
         PHONE("Telefon", String.class, true, false, false),
         IBAN("Kontonummer", String.class, false, false, false),
         DATEOFBIRTH( "Geburtsdatum", LocalDate.class, true, false, false ),
-        LAST_EDITED( "zul.", LocalDate.class, true, false, false );
+        LAST_EDITED( "Zeitstempel", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -125,15 +124,15 @@ public class Kunde implements IDepictable, IPersistable {
      * Default-Konstruktor
      */
     public Kunde() {
-        this( null, null, null, null, null, null, null, null);
+        this( null, null, null, null, null, null, null);
     }
 
     public Kunde( String vorName, String nachName ) {
-        this( null, null, vorName, nachName, "--", null, null, null, null);
+        this( null, vorName, nachName, "--", null, null, null, null);
     }
 
-    public Kunde(File imageFile, String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDate last_edit) {
-        this(null, imageFile, vorName, nachName, email, phone, iban, dateOfBirth, last_edit);
+    public Kunde(String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDateTime last_edit) {
+        this(null, vorName, nachName, email, phone, iban, dateOfBirth, last_edit);
     }
 
     /**
@@ -145,14 +144,13 @@ public class Kunde implements IDepictable, IPersistable {
      * @param email
      * @param dateOfBirth
      */
-    public Kunde(String iD, File imageFile, String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDate last_edit ) {
+    public Kunde(String iD, String vorName, String nachName, String email, String phone, String iban, LocalDate dateOfBirth, LocalDateTime last_edit ) {
         super();
 
         boolean modifiable = true;
 
         String randID = UUID.randomUUID().toString();
         this.attArr[ Attributes.ID.ordinal() ] = Attributes.ID.createAttribute( this, ( iD == null || iD.isEmpty() ? randID : iD ), randID );
-        this.attArr[ Attributes.IMAGEFILE.ordinal() ] = Attributes.IMAGEFILE.createAttribute( this, imageFile, null );
         this.attArr[ Attributes.NACHNAME.ordinal() ] = Attributes.NACHNAME.createAttribute( this, nachName, "--" );
         this.attArr[ Attributes.VORNAME.ordinal() ] = Attributes.VORNAME.createAttribute( this, vorName, "--" );
         this.attArr[ Attributes.EMAIL.ordinal() ] = Attributes.EMAIL.createAttribute( this, email, "" );
