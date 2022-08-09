@@ -69,7 +69,8 @@ public class WorkingCSVReader {
             return csvData;
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("Error in reading resource: "+this.csvFilename);
+            e.printStackTrace();
+            throw new IllegalArgumentException("Error in reading resource: "+this.absoluteFilePath);
         }
     }
 }

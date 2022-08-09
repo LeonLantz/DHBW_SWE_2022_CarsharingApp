@@ -32,41 +32,17 @@
 		</pluginManagement>
 		<plugins>
 <!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-source-plugin</artifactId>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>attach-sources</id>-->
-<!--						<goals>-->
-<!--							<goal>jar</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
+<!--				<artifactId>maven-jar-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<archive>-->
+<!--						<manifest>-->
+<!--							<mainClass>app.StartApp</mainClass>-->
+<!--						</manifest>-->
+<!--						<manifestEntries>-->
+<!--						</manifestEntries>-->
+<!--					</archive>-->
+<!--				</configuration>-->
 <!--			</plugin>-->
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>app.StartApp</mainClass>
-						</manifest>
-						<manifestEntries>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<!-- 			<plugin> -->
-			<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-			<!-- 				<artifactId>maven-javadoc-plugin</artifactId> -->
-			<!-- 				<executions> -->
-			<!-- 					<execution> -->
-			<!-- 						<id>attach-javadocs</id> -->
-			<!-- 						<goals> -->
-			<!-- 							<goal>jar</goal> -->
-			<!-- 						</goals> -->
-			<!-- 					</execution> -->
-			<!-- 				</executions> -->
-			<!-- 			</plugin> -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -80,7 +56,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<addClasspath>true</addClasspath>
+									<addClasspath>false</addClasspath>
 									<!-- <mainClass>app.MqttViewerApp</mainClass> -->
 									<mainClass>app.StartApp</mainClass>
 								</manifest>
@@ -93,11 +69,11 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+<!--		<resources>-->
+<!--			<resource>-->
+<!--				<directory>src/main/resources</directory>-->
+<!--			</resource>-->
+<!--		</resources>-->
 	</build>
 
 	<repositories>

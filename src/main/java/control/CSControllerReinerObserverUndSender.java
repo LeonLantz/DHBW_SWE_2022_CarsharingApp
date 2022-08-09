@@ -142,21 +142,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			});
 		}
 
-//		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Fahrzeuge.csv", ";", true);
-//		List<String[]> csvData = workingCSVReader.readData();
-//
-//		//TODO: DELETE these two lines
-//		// since those are only demo code to show csv writing functionality
-//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+"writetest.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+
+		//TODO: Use these two lines for csv writing functionality
+//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+fileName, ";", "#ID;Name;Vorname;engagiert;Beschreibung");
 //		workingCSVWriter.writeData(csvData);
-//
-//		csvData.forEach( e -> {
-//			try {
-//				elementFactory.createElement(Fahrzeug.class, e);
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
-//		});
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
