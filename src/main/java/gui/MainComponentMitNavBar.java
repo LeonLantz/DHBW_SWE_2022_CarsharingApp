@@ -19,6 +19,7 @@ import util.CSHelp;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -122,13 +123,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         return navigationBar;
     }
 
-    private JPanel createÜbersichtTab() {
-        JPanel demo = new JPanel();
-        demo.setBackground(CSHelp.main);
-        demo.add(new JLabel("Übersicht"), BorderLayout.CENTER);
-        return demo;
-    }
-
     private ContentPanel createBuchungenTab(String title) {
 
         buchungenTable = CustomTableComponent.builder("buchungen")
@@ -212,6 +206,83 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 .propManager(this.propManager)
                 .build();
         return dokumentePanel;
+    }
+
+    private JPanel createÜbersichtTab() {
+        JPanel jPanel = new JPanel(new BorderLayout(0,0));
+
+        //Kopfzeile
+        JPanel header = new JPanel(new BorderLayout(0,0));
+        header.setPreferredSize(new Dimension(900, 130));
+        header.setBorder(BorderFactory.createMatteBorder(0,0,1,0, CSHelp.tableDividerColor));
+
+        //HeaderCenter
+        JPanel header_center = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 10));
+        header_center.setPreferredSize(new Dimension(770, 130));
+        header_center.setBackground(CSHelp.main);
+        header.add(header_center, BorderLayout.CENTER);
+
+        //HeaderCenterKacheln
+        header_center.add(new HeaderTile("Kunden", CSHelp.imageList.get("kundenIcon.png"), 72));
+        header_center.add(new HeaderTile("Buchungen", CSHelp.imageList.get("buchungen.png"), 31));
+        header_center.add(new HeaderTile("Fahrzeuge", CSHelp.imageList.get("fahrzeuge.png"), 14));
+        header_center.add(new HeaderTile("Standorte", CSHelp.imageList.get("standorte.png"), 5));
+
+
+        //HeaderEast
+        JPanel header_east = new JPanel(new BorderLayout(0,0));
+        header_east.setBackground(Color.black);
+        header_east.setPreferredSize(new Dimension(130, 130));
+        header.add(header_east, BorderLayout.EAST);
+
+        jPanel.add(header, BorderLayout.NORTH);
+
+        return jPanel;
+    }
+
+    public class HeaderTile extends JPanel {
+
+        JPanel pSymbol;
+        JLabel lCount, lTitle;
+
+        public HeaderTile(String title, ImageIcon imageIcon, int count) {
+            this.setLayout(new BorderLayout(0,0));
+            this.setPreferredSize(new Dimension(110, 110));
+            this.setBorder(new LineBorder(CSHelp.navBar));
+            this.setBackground(Color.WHITE);
+
+            //Icon
+            pSymbol = new JPanel();
+            pSymbol.setBorder(new EmptyBorder(10,0,0,0));
+            pSymbol.setBackground(Color.white);
+            pSymbol.setPreferredSize(new Dimension(130, 50));
+            pSymbol.add(new JLabel(imageIcon), BorderLayout.CENTER);
+            this.add(pSymbol, BorderLayout.NORTH);
+
+            //Count
+            lCount = new JLabel();
+            lCount.setPreferredSize(new Dimension(110, 25));
+            lCount.setHorizontalAlignment(JLabel.CENTER);
+            lCount.setVerticalAlignment(JLabel.NORTH);
+            lCount.setFont(CSHelp.lato_bold.deriveFont(16f));
+            lCount.setForeground(CSHelp.tileCountColor);
+            this.add(lCount, BorderLayout.CENTER);
+
+            //Title
+            lTitle = new JLabel(title);
+            lTitle.setPreferredSize(new Dimension(110, 25));
+            lTitle.setHorizontalAlignment(JLabel.CENTER);
+            lTitle.setVerticalAlignment(JLabel.NORTH);
+            lTitle.setFont(CSHelp.lato_bold.deriveFont(10f));
+            lTitle.setForeground(CSHelp.tileCountColor);
+            this.add(lTitle, BorderLayout.SOUTH);
+
+            updateCount(count);
+        }
+
+        public void updateCount(int count) {
+            lCount.setText(String.valueOf(count));
+        }
     }
 
     public class NewObjectButton extends JButton {

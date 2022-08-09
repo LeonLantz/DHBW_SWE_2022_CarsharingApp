@@ -103,9 +103,9 @@ public class NavigationBar extends ObservableComponent {
         section_1.add(navBar_panel_profilname);
 
         //Teilkomponente: Sektion 2
-        section_2 = new JPanel(new FlowLayout(0,0,0));
+        section_2 = new JPanel(new FlowLayout(0,0,5));
         section_2.setBackground(Color.white);
-        section_2.setPreferredSize(new Dimension(180, 240));
+        section_2.setPreferredSize(new Dimension(180, 280));
 
         //Button Übersicht
         JPanel navBar_panel_übersicht = new JPanel();
@@ -199,7 +199,7 @@ public class NavigationBar extends ObservableComponent {
         //Teilkomponente: Sektion 3
         section_3 = new JPanel();
         section_3.setBackground(Color.white);
-        section_3.setPreferredSize(new Dimension(180, 320));
+        section_3.setPreferredSize(new Dimension(180, 280));
         section_3.setBorder(border_top);
         this.add(section_3, BorderLayout.SOUTH);
 
