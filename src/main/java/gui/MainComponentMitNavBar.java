@@ -26,8 +26,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -88,10 +90,15 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private CustomTableComponent standorteTable;
     private CustomTableComponent dokumenteTable;
 
-    public MainComponentMitNavBar(PropertyManager propertyManager) {
+    public MainComponentMitNavBar(PropertyManager propertyManager) throws Exception {
         this.propManager = propertyManager;
         CSHelp.init();
         initUI();
+
+        //TODO: Delete following lines since those only being for demonstrating propertyManager functionality
+//        System.out.println("Server Username is: "+this.propManager.getProperty("dummy_server_username"));
+//        this.propManager.setProperty("dummy_server_description", "description_of_a_server");
+//        this.propManager.saveConfiguration();
     }
 
     private void initUI() {

@@ -3,30 +3,30 @@ package app;
 import control.CSControllerReinerObserverUndSender;
 import gui.MainComponentMitNavBar;
 import util.CSHelp;
+import util.PManager;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class StartApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new StartApp(args);
     }
 
-    public StartApp(String[] args) {
+    public StartApp(String[] args) throws Exception {
         CSHelp.init();
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }
 
-    public void initWithObserver(String csvDirectory, String propDirectory) {
-        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(null);
+    public void initWithObserver(String csvDirectory, String propFile) throws Exception {
+        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager());
 
         CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
         controller.addObserver( mainComp );
         mainComp.addObserver( controller );
-        controller.init(csvDirectory, propDirectory);
+        controller.init(csvDirectory, propFile);
 
         //UIManager.put("Button.font", CSHelp.lato.deriveFont(14f));
 
@@ -39,8 +39,6 @@ public class StartApp {
         frame.setVisible(true);
         //IOUtilities.openInJFrame(mainComp, 600, 500, 800, 300, "CarsharingApp", null, true);
     }
-
-    private static final String sp = File.separator;
 
     /**
      * This method can be used to dynamically retrieve argument values from given run parameters during a JAR run.
@@ -56,10 +54,7 @@ public class StartApp {
         if (VMOptionPos+1 >= args.length || args[VMOptionPos+1].startsWith("-")) {
             throw new IllegalArgumentException("No argument for run parameter \"-"+parameter+"\" given.");
         }
-        String value = args[VMOptionPos+1];
-        if (!value.startsWith(sp)) value = sp + value;
-        if (!value.endsWith(sp)) value = value+sp;
-        return value;
+        return args[VMOptionPos+1];
     }
 
     public static void setUIFont (javax.swing.plaf.FontUIResource f){
