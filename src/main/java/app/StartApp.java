@@ -3,30 +3,30 @@ package app;
 import control.CSControllerReinerObserverUndSender;
 import gui.MainComponentMitNavBar;
 import util.CSHelp;
+import util.PManager;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class StartApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new StartApp(args);
     }
 
-    public StartApp(String[] args) {
+    public StartApp(String[] args) throws Exception {
         CSHelp.init();
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }
 
-    public void initWithObserver(String csvDirectory, String propDirectory) {
-        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(null);
+    public void initWithObserver(String csvDirectory, String propFile) throws Exception {
+        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager());
 
         CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
         controller.addObserver( mainComp );
         mainComp.addObserver( controller );
-        controller.init(csvDirectory, propDirectory);
+        controller.init(csvDirectory, propFile);
 
         //UIManager.put("Button.font", CSHelp.lato.deriveFont(14f));
 
@@ -40,8 +40,12 @@ public class StartApp {
         //IOUtilities.openInJFrame(mainComp, 600, 500, 800, 300, "CarsharingApp", null, true);
     }
 
-    private static final String sp = File.separator;
-
+    /**
+     * This method can be used to dynamically retrieve argument values from given run parameters during a JAR run.
+     * @param args Standard arguments passed by a Main method
+     * @param parameter Choose which parameter should be selected (e.g. "d")
+     * @return String containing the argument
+     */
     public String getParameterArgument(String[] args, String parameter) {
         int VMOptionPos = Arrays.stream(args).collect(Collectors.toList()).indexOf("-" + parameter);
         if (VMOptionPos < 0) {
@@ -50,10 +54,7 @@ public class StartApp {
         if (VMOptionPos+1 >= args.length || args[VMOptionPos+1].startsWith("-")) {
             throw new IllegalArgumentException("No argument for run parameter \"-"+parameter+"\" given.");
         }
-        String path = args[VMOptionPos+1];
-        if (!path.startsWith(sp)) path = sp + path;
-        if (!path.endsWith(sp)) path = path+sp;
-        return path;
+        return args[VMOptionPos+1];
     }
 
     public static void setUIFont (javax.swing.plaf.FontUIResource f){

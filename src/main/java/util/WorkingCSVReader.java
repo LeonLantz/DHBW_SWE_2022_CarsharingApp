@@ -65,11 +65,14 @@ public class WorkingCSVReader {
             List<String[]> csvData = new ArrayList<>();
             List<String> allLines = Files.readAllLines(Paths.get(absoluteFilePath), StandardCharsets.UTF_8);
             if (this.ignoreHeaderLine) allLines.remove(0);
-            allLines.forEach(line -> csvData.add(line.split(this.separator)));
+            allLines.forEach(line -> {
+                if (!line.equals("") && line.contains(this.separator)) csvData.add(line.split(this.separator));
+            });
             return csvData;
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("Error in reading resource: "+this.csvFilename);
+            e.printStackTrace();
+            throw new IllegalArgumentException("Error in reading resource: "+this.absoluteFilePath);
         }
     }
 }
