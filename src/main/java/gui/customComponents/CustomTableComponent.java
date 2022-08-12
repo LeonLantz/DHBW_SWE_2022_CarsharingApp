@@ -121,7 +121,6 @@ public class CustomTableComponent extends ObservableComponent {
                 .sorter()
                 .build();
         JScrollPane p = (JScrollPane) stc.getComponent(0);
-        System.out.println(stc.getComponentCount());
         p.getComponent(1).setPreferredSize(new Dimension(0,0));
         p.setBackground(CSHelp.main);
         p.setBorder(new EmptyBorder(0,0,0,0));
@@ -148,7 +147,7 @@ public class CustomTableComponent extends ObservableComponent {
 
     public class EditButton extends JButton {
         public EditButton(IDepictable data) {
-            this.setIcon(CSHelp.imageList.get("edit.png"));
+            this.setIcon(CSHelp.imageList.get("icon_edit.png"));
             this.setBorder(BorderFactory.createEmptyBorder());
             this.setContentAreaFilled(false);
             this.addActionListener(new ActionListener() {
@@ -162,7 +161,7 @@ public class CustomTableComponent extends ObservableComponent {
 
     public class DeleteButton extends JButton {
         public DeleteButton(IDepictable data) {
-            this.setIcon(CSHelp.imageList.get("delete.png"));
+            this.setIcon(CSHelp.imageList.get("icon_delete.png"));
             this.setBorder(BorderFactory.createEmptyBorder());
             this.setContentAreaFilled(false);
             this.addActionListener(new ActionListener() {

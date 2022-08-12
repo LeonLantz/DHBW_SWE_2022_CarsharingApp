@@ -111,14 +111,8 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] test = getValues();
-                System.out.println("------------------------------");
-                for (String t : test) {
-                    System.out.println(t);
-                }
-                System.out.println("------------------------------");
                 if(validateInput()) {
-                    System.out.println("Speichern!");
-                    int a = JOptionPane.showConfirmDialog(GUIKundeAnlegen.this, "Wollen sie den Kunden speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("profile_picture.png"));
+                    int a = JOptionPane.showConfirmDialog(GUIKundeAnlegen.this, "Wollen sie den Kunden speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
                         fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, test ));
                     }

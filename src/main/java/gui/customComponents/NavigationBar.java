@@ -72,7 +72,7 @@ public class NavigationBar extends ObservableComponent {
         JPanel navbarPanelProfilbild = new JPanel(new FlowLayout(FlowLayout.LEFT));
         navbarPanelProfilbild.setPreferredSize(new Dimension(180, 90));
         navbarPanelProfilbild.setBackground(Color.white);
-        JLabel imageIcon = new JLabel(CSHelp.imageList.get("gröll.png"));
+        JLabel imageIcon = new JLabel(CSHelp.imageList.get("image_user.png"));
         imageIcon.setBorder(new EmptyBorder(35,10,0,0));
         navbarPanelProfilbild.add(imageIcon);
         _sectionOne.add(navbarPanelProfilbild, BorderLayout.NORTH);
@@ -84,7 +84,7 @@ public class NavigationBar extends ObservableComponent {
         navbarLabelProfilname.setFont(CSHelp.lato_bold.deriveFont(18f));
         navbarLabelProfilname.setBorder(new EmptyBorder(0,10,0,30));
         navbarPanelProfilname.add(navbarLabelProfilname);
-        ImageIcon arrow = CSHelp.imageList.get("nameArrow.png");
+        ImageIcon arrow = CSHelp.imageList.get("icon_arrow.png");
         navbarPanelProfilname.add(new JLabel(arrow));
         _sectionOne.add(navbarPanelProfilname);
 
@@ -97,7 +97,7 @@ public class NavigationBar extends ObservableComponent {
         navbarPanelÜbersicht = new JPanel();
         navbarPanelÜbersicht.setPreferredSize(new Dimension(180, 40));
         navbarPanelÜbersicht.setBackground(Color.white);
-        _navbarButtonÜbersicht = new CustomNavBarButton("Übersicht", CSHelp.imageList.get("übersicht.png"));
+        _navbarButtonÜbersicht = new CustomNavBarButton("Übersicht", CSHelp.imageList.get("icon_übersicht.png"));
         _navbarButtonÜbersicht.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +111,7 @@ public class NavigationBar extends ObservableComponent {
         navbarPanelBuchungen = new JPanel();
         navbarPanelBuchungen.setPreferredSize(new Dimension(180, 40));
         navbarPanelBuchungen.setBackground(Color.white);
-        _navbarButtonBuchungen = new CustomNavBarButton("Buchungen", CSHelp.imageList.get("buchungen.png"));
+        _navbarButtonBuchungen = new CustomNavBarButton("Buchungen", CSHelp.imageList.get("icon_buchung.png"));
         _navbarButtonBuchungen.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,7 +125,7 @@ public class NavigationBar extends ObservableComponent {
         navbarPanelFahrzeuge = new JPanel();
         navbarPanelFahrzeuge.setPreferredSize(new Dimension(180, 40));
         navbarPanelFahrzeuge.setBackground(Color.white);
-        _navbarButtonFahrzeuge = new CustomNavBarButton("Fahrzeuge", CSHelp.imageList.get("fahrzeuge.png"));
+        _navbarButtonFahrzeuge = new CustomNavBarButton("Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"));
         _navbarButtonFahrzeuge.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,7 +139,7 @@ public class NavigationBar extends ObservableComponent {
         JPanel navBar_panel_kunden = new JPanel();
         navBar_panel_kunden.setPreferredSize(new Dimension(180, 40));
         navBar_panel_kunden.setBackground(Color.white);
-        _navbarButtonKunden = new CustomNavBarButton("Kunden", CSHelp.imageList.get("kundenIcon.png"));
+        _navbarButtonKunden = new CustomNavBarButton("Kunden", CSHelp.imageList.get("icon_kunde.png"));
         _navbarButtonKunden.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -153,7 +153,7 @@ public class NavigationBar extends ObservableComponent {
         JPanel navBar_panel_standorte = new JPanel();
         navBar_panel_standorte.setPreferredSize(new Dimension(180, 40));
         navBar_panel_standorte.setBackground(Color.white);
-        _navbarButtonStandorte = new CustomNavBarButton("Standorte", CSHelp.imageList.get("standorte.png"));
+        _navbarButtonStandorte = new CustomNavBarButton("Standorte", CSHelp.imageList.get("icon_standort.png"));
         _navbarButtonStandorte.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -167,7 +167,7 @@ public class NavigationBar extends ObservableComponent {
         JPanel navBar_panel_dokumente = new JPanel();
         navBar_panel_dokumente.setPreferredSize(new Dimension(180, 40));
         navBar_panel_dokumente.setBackground(Color.white);
-        _navbarButtonDokumente = new CustomNavBarButton("Dokumente", CSHelp.imageList.get("dokumente.png"));
+        _navbarButtonDokumente = new CustomNavBarButton("Dokumente", CSHelp.imageList.get("icon_dokument.png"));
         _navbarButtonDokumente.getButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

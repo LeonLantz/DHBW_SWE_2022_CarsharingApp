@@ -122,7 +122,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenPanel = ContentPanel.builder(CONTENT_PANEL_BUCHUNGEN)
                 .title(title)
                 .table(_buchungenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Buchung.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Buchung.class))
                 .observer(this)
                 .propManager(this._propManager)
                 .build();
@@ -140,7 +140,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         _fahrzeugePanel = ContentPanel.builder(CONTENT_PANEL_FAHRZEUGE)
                 .title(title)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Fahrzeug.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Fahrzeug.class))
                 .observer(this)
                 .table(_fahrzeugeTable)
                 .propManager(this._propManager)
@@ -160,7 +160,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _kundenPanel = ContentPanel.builder(CONTENT_PANEL_KUNDEN)
                 .title(title)
                 .table(_kundenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Kunde.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Kunde.class))
                 .observer(this)
                 .propManager(this._propManager)
                 .build();
@@ -199,7 +199,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 .title(title)
                 .observer(this)
                 .table(_dokumenteTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("kunden.png"), Standort.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Standort.class))
                 .propManager(this._propManager)
                 .build();
 
@@ -221,16 +221,16 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header.add(headerCenter, BorderLayout.CENTER);
 
         //HeaderCenterKacheln
-        headerCenter.add(new HeaderTile("Kunden", CSHelp.imageList.get("kundenIcon.png"), 72));
-        headerCenter.add(new HeaderTile("Buchungen", CSHelp.imageList.get("buchungen.png"), 31));
-        headerCenter.add(new HeaderTile("Fahrzeuge", CSHelp.imageList.get("fahrzeuge.png"), 14));
-        headerCenter.add(new HeaderTile("Standorte", CSHelp.imageList.get("standorte.png"), 5));
+        headerCenter.add(new HeaderTile("Kunden", CSHelp.imageList.get("icon_kunde.png"), 72));
+        headerCenter.add(new HeaderTile("Buchungen", CSHelp.imageList.get("icon_buchung.png"), 31));
+        headerCenter.add(new HeaderTile("Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"), 14));
+        headerCenter.add(new HeaderTile("Standorte", CSHelp.imageList.get("icon_standort.png"), 5));
 
         //HeaderEast
         JPanel headerEast = new JPanel(new BorderLayout(0, 0));
         headerEast.setBackground(CSHelp.main);
         headerEast.setPreferredSize(new Dimension(130, 130));
-        headerEast.add(new JLabel(CSHelp.imageList.get("logo.png")));
+        headerEast.add(new JLabel(CSHelp.imageList.get("image_logo.png")));
         headerEast.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, CSHelp.tableDividerColor));
         header.add(headerEast, BorderLayout.EAST);
 
@@ -259,7 +259,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         //ContentBottomEastLabel
         JLabel contentBottomEastLabel = new JLabel();
-        contentBottomEastLabel.setIcon(CSHelp.imageList.get("porsche_buchen.png"));
+        contentBottomEastLabel.setIcon(CSHelp.imageList.get("image_porscheBuchen.png"));
         contentBottomEastLabel.setBorder(new EmptyBorder(25, 0, 0, 0));
         contentBottomEast.add(contentBottomEastLabel, BorderLayout.CENTER);
 
@@ -402,7 +402,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 }
             });
         } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ROW.cmdText)) {
-            int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("profile_picture.png"));
+            int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
             if (n == 0) {
                 fireGUIEvent(ge);
             }
@@ -432,7 +432,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                         ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().getSlc().clearSelection();
                     }
                 } else if (answer == 1) {
-                    System.out.println("Löschen");
                     fireGUIEvent(new GUIEvent(this, CSControllerReinerObserverUndSender.Commands.DELETE_BILD, bild));
                 }
             }
@@ -443,7 +442,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     @Override
     public void processUpdateEvent(UpdateEvent ue) {
-        System.out.println("UPDATE EVENT TRIGGERED");
+        this._logger.info("UPDATE EVENT TRIGGERED: " + ue.getCmd());
 
         if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN) {
             List<Kunde> lstKunde = (List<Kunde>) ue.getData();
@@ -477,7 +476,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
             } else if (_currentObject.getClass() == Fahrzeug.class) {
                 ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(bildList);
-                System.out.println(bildList);
             }
         }
     }

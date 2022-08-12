@@ -94,7 +94,7 @@ public class ContentPanel extends ObservableComponent {
         header_east = new JPanel(new BorderLayout(0,0));
         header_east.setBackground(CSHelp.main);
         header_east.setPreferredSize(new Dimension(130, 130));
-        header_east.add(new JLabel(CSHelp.imageList.get("logo.png")));
+        header_east.add(new JLabel(CSHelp.imageList.get("image_logo.png")));
         header_east.setBorder(BorderFactory.createMatteBorder(0,1,1,0, CSHelp.tableDividerColor));
         header.add(header_east, BorderLayout.EAST);
 
