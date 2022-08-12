@@ -29,7 +29,6 @@ public enum Motorisierung {
 
     public static String[] getArray() {
         List<String> list = new ArrayList<>();
-        list.add("--Wählen--");
         for (Motorisierung motorisierung : Motorisierung.values()) {
             list.add(motorisierung.bezeichner);
         }

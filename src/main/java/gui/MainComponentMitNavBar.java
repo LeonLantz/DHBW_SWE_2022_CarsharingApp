@@ -4,8 +4,10 @@ import control.CSControllerReinerObserverUndSender;
 import de.dhbwka.swe.utils.event.*;
 import de.dhbwka.swe.utils.gui.AttributeElement;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.IAppLogger;
 import de.dhbwka.swe.utils.util.IPropertyManager;
@@ -13,6 +15,8 @@ import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
 import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
+import gui.customComponents.userInput.CustomInputField;
+import gui.customComponents.userInput.CustomListField;
 import gui.customComponents.userInput.CustomNavBarButton;
 import model.*;
 import util.CSHelp;
@@ -30,13 +34,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainComponentMitNavBar extends ObservableComponent implements IGUIEventListener, IUpdateEventListener {
 
     public enum Commands implements EventCommand {
 
         BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Attribute.class),
-        REMOVE_KUNDE( "MainComponentMitNavBar.remove_kunde", String.class );
+        REMOVE_KUNDE( "MainComponentMitNavBar.remove_kunde", String.class ),
+        UPDATE_IMAGES( "MainComponentMitNavBar.update_images", IDepictable.class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -87,6 +93,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private CustomTableComponent kundenTable;
     private CustomTableComponent standorteTable;
     private CustomTableComponent dokumenteTable;
+
+    private ObservableComponent dialogWindow;
+
+    private IDepictable currentObject;
 
     public MainComponentMitNavBar(PropertyManager propertyManager) {
         this.propManager = propertyManager;
@@ -325,6 +335,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         //System.out.println(ge.getSource().getClass());
         //System.out.println(ge.getData());
 
+        if (ge.getData() == null) {
+            return;
+        }
+
         if(ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             nvb.setActive((String)ge.getData());
             SwingUtilities.invokeLater(new Runnable() {
@@ -344,6 +358,46 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 fireGUIEvent(ge);
             }
         } else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
+
+            currentObject = (IDepictable)ge.getData();
+            System.out.println(currentObject);
+
+
+            if (currentObject.getClass() == Kunde.class) {
+                dialogWindow = new GUIKundeAnlegen(this, currentObject);
+                fireGUIEvent(new GUIEvent(this, Commands.UPDATE_IMAGES, currentObject));
+                CSHelp.createJDialog(dialogWindow, new Dimension(500, 400));
+            }else if (currentObject.getClass() == Fahrzeug.class) {
+                dialogWindow = new GUIFahrzeugAnlegen(this, currentObject);
+                fireGUIEvent(new GUIEvent(this, Commands.UPDATE_IMAGES, currentObject));
+                CSHelp.createJDialog(dialogWindow, new Dimension(500, 700));
+            }
+
+
+            //fireUpdateEvent(new UpdateEvent(this, CSControllerReinerObserverUndSender.Commands.SET_BILDER));
+//            fireUpdateEvent( new UpdateEvent(this, CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
+        } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
+            fireGUIEvent(ge);
+        } else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
+            if (ge.getData().getClass() == Bild.class) {
+                Bild bild = (Bild) ge.getData();
+
+                ImageIcon imageIcon = bild.getImage();
+                String[] options = new String[]{"Schließen", "Löschen"};
+                int answer = JOptionPane.showOptionDialog(null, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
+                if (answer == 0) {
+                    //TODO: Clear list selection
+                    if(currentObject.getClass() == Kunde.class) {
+                        ((GUIKundeAnlegen)dialogWindow).getBildList().getSlc().clearSelection();
+                    }else if (currentObject.getClass() == Fahrzeug.class) {
+                        ((GUIFahrzeugAnlegen)dialogWindow).getBildList().getSlc().clearSelection();
+                    }
+                } else if (answer == 1) {
+                    System.out.println("Löschen");
+                    fireGUIEvent(new GUIEvent(this, CSControllerReinerObserverUndSender.Commands.DELETE_BILD, bild));
+                }
+            }
+        } else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
             fireGUIEvent(ge);
         }
     }
@@ -351,18 +405,40 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     @Override
     public void processUpdateEvent(UpdateEvent ue) {
 
-        System.out.println("UPDATE DATA");
+        System.out.println("UPDATE EVENT TRIGGERED");
 
         if( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN ) {
             List<Kunde> lstKunde = (List<Kunde>)ue.getData();
             IDepictable[] modelData = new IDepictable[lstKunde.size()];
             lstKunde.toArray(modelData);
             kundenTable.setModelData(modelData);
-        }else if( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE ) {
+        } else if ( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE ) {
             List<Fahrzeug> lstFahrzeug = (List<Fahrzeug>)ue.getData();
             IDepictable[] modelData = new IDepictable[lstFahrzeug.size()];
             lstFahrzeug.toArray(modelData);
             fahrzeugeTable.setModelData(modelData);
+        } else if ( ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BILDER ) {
+            List<IPersistable> allImages = (List<IPersistable>) ue.getData();
+            List<Bild> bildList = new ArrayList<>();
+            for (IPersistable iPersistable : allImages) {
+                bildList.add((Bild) iPersistable);
+            }
+            String primaryKey = currentObject.getElementID();
+
+            System.out.println(primaryKey);
+            System.out.println("----------------");
+            System.out.println(bildList);
+
+            bildList = bildList.stream()
+                    .filter(b -> b.getSecondaryKey().equals(primaryKey))
+                    .collect(Collectors.toList());
+
+            if (currentObject.getClass() == Kunde.class) {
+
+            }else if (currentObject.getClass() == Fahrzeug.class) {
+                ((GUIFahrzeugAnlegen)dialogWindow).updateBildList(bildList);
+                System.out.println(bildList);
+            }
         }
 
     }

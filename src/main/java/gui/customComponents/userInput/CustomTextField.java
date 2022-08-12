@@ -5,6 +5,7 @@ import util.CSHelp;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -21,15 +22,19 @@ public class CustomTextField extends CustomInputField {
 
         //InitUI
         this.setLayout(new BorderLayout(0,0));
-        this.setPreferredSize(new Dimension(200,50));
+        this.setPreferredSize(new Dimension(200,65));
         this.setBorder(new EmptyBorder(5,10,5,10));
-        this.setBackground(Color.WHITE);
         field_description = new JLabel(title);
         field_description.setFont(CSHelp.lato.deriveFont(13f));
+        field_description.setPreferredSize(new Dimension(200, 20));
         field_description.setForeground(CSHelp.inputFieldText);
+        field_description.setBorder(new EmptyBorder(5,0,7,0));
+
+
         textfield = new JTextField(placeholder);
         textfield.setBorder(BorderFactory.createEmptyBorder(7,12,7,12));
         textfield.setFont(CSHelp.lato.deriveFont(12f));
+        textfield.setPreferredSize(new Dimension(200, 30));
         textfield.setForeground(CSHelp.inputFieldPlaceholder);
         textfield.setBackground(CSHelp.inputFieldBackground);
         textfield.addFocusListener(new FocusListener() {
@@ -50,7 +55,12 @@ public class CustomTextField extends CustomInputField {
             }
         });
         this.add(field_description, BorderLayout.NORTH);
-        this.add(textfield, BorderLayout.SOUTH);
+
+        JPanel borderPanel = new JPanel(new BorderLayout(0,0));
+        borderPanel.setBorder(new LineBorder(CSHelp.inputFieldBorderColor));
+        borderPanel.add(textfield);
+
+        this.add(borderPanel, BorderLayout.SOUTH);
     }
 
 

@@ -30,7 +30,6 @@ public enum Fahrzeugkategorie {
 
     public static String[] getArray() {
         List<String> list = new ArrayList<>();
-        list.add("--Wählen--");
         for (Fahrzeugkategorie f : Fahrzeugkategorie.values()) {
             list.add(f.bezeichner);
         }

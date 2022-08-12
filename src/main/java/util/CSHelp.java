@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class CSHelp {
     public static Font lato, lato_bold;
-    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBackground, navBarItemActive, navBarTextActive, tileCountColor;
+    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBorderColor, inputFieldBackground, navBarItemActive, navBarTextActive, tileCountColor;
     public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row, table_cell_image;
     //public static Map<String, ImageIcon> images;
 
@@ -51,6 +51,7 @@ public class CSHelp {
         navBarItemActive = new Color(0xE3F2FD);
         navBarTextActive = new Color(0x2196F3);
         tileCountColor = new Color(0x9E9E9E);
+        inputFieldBorderColor = new Color(0xCFD0D7);
     }
 
     public static void registerImages() {
@@ -69,6 +70,17 @@ public class CSHelp {
                 }
             }
         }
+    }
+
+    public static void createJDialog(Component component, Dimension dimension) {
+        JDialog dialog = new JDialog();
+        dialog.setLayout(new BorderLayout());
+        dialog.setModal(true);
+        dialog.setResizable(false);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(dimension);
+        dialog.add(component, BorderLayout.CENTER);
+        dialog.setVisible(true);
     }
 
     public static boolean isNumber(String input) {
