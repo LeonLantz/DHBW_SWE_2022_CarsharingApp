@@ -219,7 +219,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     }
 
     private JPanel createÜbersichtTab() {
-        JPanel jPanel = new JPanel(new BorderLayout(0,0));
+        JPanel übersicht_Tab = new JPanel(new BorderLayout(0,0));
 
         //Kopfzeile
         JPanel header = new JPanel(new BorderLayout(0,0));
@@ -238,7 +238,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header_center.add(new HeaderTile("Fahrzeuge", CSHelp.imageList.get("fahrzeuge.png"), 14));
         header_center.add(new HeaderTile("Standorte", CSHelp.imageList.get("standorte.png"), 5));
 
-
         //HeaderEast
         JPanel header_east = new JPanel(new BorderLayout(0,0));
         header_east.setBackground(CSHelp.main);
@@ -247,9 +246,77 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header_east.setBorder(BorderFactory.createMatteBorder(0,1,0,0, CSHelp.tableDividerColor));
         header.add(header_east, BorderLayout.EAST);
 
-        jPanel.add(header, BorderLayout.NORTH);
+        übersicht_Tab.add(header, BorderLayout.NORTH);
 
-        return jPanel;
+        //Inhalt
+        JPanel übersichtContent = new JPanel(new BorderLayout(0,0));
+        übersichtContent.setPreferredSize(new Dimension(770, 590));
+
+        //ContentTop
+        JPanel contentTop = new JPanel();
+        contentTop.setPreferredSize(new Dimension(720, 282));
+        contentTop.setBackground(Color.white);
+        übersichtContent.add(contentTop, BorderLayout.NORTH);
+
+        //ContentBottom
+        JPanel contentBottom = new JPanel(new BorderLayout(0,0));
+        contentBottom.setPreferredSize(new Dimension(720, 308));
+        contentBottom.setBackground(Color.black);
+        übersichtContent.add(contentBottom, BorderLayout.SOUTH);
+
+        //ContentBottomEast
+        JPanel contentBottomEast = new JPanel(new BorderLayout(0,0));
+        contentBottomEast.setPreferredSize(new Dimension(300, 308));
+        contentBottomEast.setBackground(CSHelp.main);
+
+        //ContentBottomEastLabel
+        JLabel contentBottomEastLabel = new JLabel();
+        contentBottomEastLabel.setIcon(CSHelp.imageList.get("porsche_buchen.png"));
+        contentBottomEastLabel.setBorder(new EmptyBorder(25,0,0,0));
+        contentBottomEast.add(contentBottomEastLabel, BorderLayout.CENTER);
+
+        //ContentBottomEastButton
+        JButton contentBottomEastButton = new JButton("Buchen");
+        contentBottomEastButton.setBorder(new EmptyBorder(0,15,5,0));
+        contentBottomEastButton.setFont(CSHelp.lato_bold.deriveFont(12f));
+        contentBottomEastButton.setForeground(CSHelp.navBarTextActive);
+        contentBottomEastButton.setHorizontalAlignment(SwingConstants.LEFT);
+        contentBottomEastButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //TODO: Neue Buchung für Fahrzeug "Porsche Taycan" anlegen
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+        contentBottomEast.add(contentBottomEastButton, BorderLayout.SOUTH);
+
+        contentBottom.add(contentBottomEast, BorderLayout.EAST);
+
+        //ContentBottomCenter
+        JPanel contentBottomCenter = new JPanel(new BorderLayout(0,0));
+        contentBottomCenter.setBackground(Color.darkGray);
+        contentBottom.add(contentBottomCenter, BorderLayout.CENTER);
+
+
+
+        übersicht_Tab.add(übersichtContent, BorderLayout.CENTER);
+
+        return übersicht_Tab;
     }
 
     public class HeaderTile extends JPanel {
@@ -358,10 +425,8 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 fireGUIEvent(ge);
             }
         } else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
-
             currentObject = (IDepictable)ge.getData();
             System.out.println(currentObject);
-
 
             if (currentObject.getClass() == Kunde.class) {
                 dialogWindow = new GUIKundeAnlegen(this, currentObject);
@@ -372,10 +437,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 fireGUIEvent(new GUIEvent(this, Commands.UPDATE_IMAGES, currentObject));
                 CSHelp.createJDialog(dialogWindow, new Dimension(500, 700));
             }
-
-
-            //fireUpdateEvent(new UpdateEvent(this, CSControllerReinerObserverUndSender.Commands.SET_BILDER));
-//            fireUpdateEvent( new UpdateEvent(this, CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
         } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             fireGUIEvent(ge);
         } else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
