@@ -31,6 +31,7 @@ import util.WorkingCSVReader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -107,13 +108,14 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public CSControllerReinerObserverUndSender() {
 //		logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
 	}
-	
+
+	//TODO: probably delete unused parameter "propFile"
 	/**
 	 * "start" the controller.
 	 * Das muss separat gemacht werden, da beim Verknüpfen der Observer (Controller+MainGUI)
 	 * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
 	 */
-	public void init(String csvDirectory, String propDirectory) {
+	public void init(String csvDirectory, String propFile) {
 		try {
 			loadCSVData(csvDirectory);
 			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
@@ -123,9 +125,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			e.printStackTrace();
 		}
 	}
-
+	private static final String sp = File.separator;
 	private void loadCSVData(String csvDirectory) throws IOException {
-		// Fixed CSV Reading and Writing (works even with built Maven JARs)
+
+		if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
+		if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
 
 		Map<String, Class> modelClasses = new HashMap<>();
 		modelClasses.put("Kunden.csv", Kunde.class);
@@ -147,21 +151,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			});
 		}
 
-//		WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+"Fahrzeuge.csv", ";", true);
-//		List<String[]> csvData = workingCSVReader.readData();
-//
-//		//TODO: DELETE these two lines
-//		// since those are only demo code to show csv writing functionality
-//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+"writetest.csv", ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+
+		//TODO: Use these two lines for csv writing functionality
+//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+fileName, ";", "#ID;Name;Vorname;engagiert;Beschreibung");
 //		workingCSVWriter.writeData(csvData);
-//
-//		csvData.forEach( e -> {
-//			try {
-//				elementFactory.createElement(Fahrzeug.class, e);
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
-//		});
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
