@@ -68,7 +68,7 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
     private JButton save_kunde;
 
     private IDepictable iDepictable;
-    private List bildList, documentList;
+    //private List bildList, documentList;
 
     private CustomInputField inputVorname, inputNachname, inputEmail, inputPhone, inputIBAN, inputDOB;
 
@@ -81,11 +81,10 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
     }
 
     //constructor for editing an existing Object
-    public GUIKundeAnlegen(IGUIEventListener observer, IDepictable iDepictable, List<Bild> bildList) {
+    public GUIKundeAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
-        this.bildList = bildList;
         initUI(false);
     }
 
@@ -141,13 +140,13 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         inputFieldMap = new LinkedHashMap<>();
         inputFieldMap.put("Vorname", new CustomTextField("Bezeichnung", "Fahrzeugbezeichnung"));
         inputFieldMap.put("Nachname", new CustomTextField("Marke", "bsp.: Audi, Mercedes, ..."));
-        inputFieldMap.put("Email", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray()));
+        inputFieldMap.put("Email", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray(), observer));
         inputFieldMap.put("Phone", new CustomTextField("Türen", "Anzahl der Türen"));
         inputFieldMap.put("IBAN", new CustomTextField("Sitze", "Anzahl der Sitze"));
         inputFieldMap.put("DOB", new CustomTextField("Kofferraumvolumen (l)", "Volumen in Liter"));;
         //TODO: Fahrzeugbilder und Dokumente
-        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer ));
-        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer ));
+        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer, this.iDepictable ));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer, this.iDepictable ));
 
         int leftPanelCount = 0;
         for (CustomInputField customInputField : inputFieldMap.values()) {
@@ -191,6 +190,9 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         return allValues.toArray(new String[allValues.size()]);
     }
 
+    public CustomListField getBildList() {
+        return (CustomListField) inputFieldMap.get("Bilder");
+    }
 
     @Override
     public boolean validateInput() {

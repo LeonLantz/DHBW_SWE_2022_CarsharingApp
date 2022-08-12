@@ -20,9 +20,12 @@ import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
+import gui.customComponents.userInput.CustomInputField;
+import gui.customComponents.userInput.CustomListField;
 import model.Bild;
 import model.Fahrzeug;
 import model.Kunde;
+import util.CSHelp;
 import util.ElementFactory;
 import util.WorkingCSVReader;
 
@@ -49,7 +52,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 		SET_BUCHUNGEN( "Controller.setBuchungen", List.class ),
 		SET_FAHRZEUGE( "Controller.setFahrzeuge", List.class ),
 		SET_KUNDEN( "Controller.setKunden", List.class ),
-		SET_STANDORTE( "Controller.setStandorte", List.class );
+		SET_STANDORTE( "Controller.setStandorte", List.class ),
+		SET_BILDER( "Controller.setBilder", IDepictable.class ),
+		DELETE_BILD( "Controller.deleteBild", IDepictable.class );
 
 		public final Class<?> payloadType;
 		public final String cmdText;
@@ -168,22 +173,18 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public void processGUIEvent(GUIEvent ge) {
 
 		//logger.debug("Hier ist der Controller!   Event: " + ge);
-		System.out.println(ge.getCmdText());
+		//System.out.println(ge.getCmdText());
 
 		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
-			EditIDepicatableDialog editIDepicatableDialog;
-
 			if (ge.getData() == Kunde.class) {
 				GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this);
-				editIDepicatableDialog = new EditIDepicatableDialog(guiKundeAnlegen, new Dimension(500, 400));
-				editIDepicatableDialog.setVisible(true);
+				CSHelp.createJDialog(guiKundeAnlegen, new Dimension(500, 400));
 			}else if (ge.getData() == Fahrzeug.class) {
 				GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
-				editIDepicatableDialog = new EditIDepicatableDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
-				editIDepicatableDialog.setVisible(true);
+				CSHelp.createJDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
 			}
 
-		}else if (ge.getCmdText().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG.cmdText)) {
+		}else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
 			logger.debug( ge.getData().toString() );
 			String[] fahrzeugAtts = (String[])ge.getData();
 			try {
@@ -193,51 +194,28 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ROW.cmdText)) {
+
+			System.out.println(entityManager.findAll(Fahrzeug.class));
+		}
+		else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ROW)) {
 			System.out.println("TODO: Objekt löschen");
 			//entityManager.remove((IPersistable)ge.getData());
 			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
-		}else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
-			System.out.println(ge.getData());
 
-			IDepictable iDepictable = (IDepictable)ge.getData();
-			String iD = iDepictable.getElementID().toString();
-
-			List<IPersistable> allImages = entityManager.findAll(Bild.class);
-			List<Bild> bildList = new ArrayList<>();
-			for (IPersistable iPersistable : allImages) {
-				bildList.add((Bild) iPersistable);
+		}else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
+			try {
+				// element wird erzeugt und in ElementManager gespeichert
+				elementFactory.createElement(Bild.class, (String[]) ge.getData());
+				fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			bildList = bildList.stream()
-					.filter(b -> b.getSecondaryKey().equals(iD))
-					.collect(Collectors.toList());
-
-			EditIDepicatableDialog editIDepicatableDialog;
-
-			if (iDepictable.getClass() == Kunde.class) {
-				GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this, iDepictable, bildList);
-				editIDepicatableDialog = new EditIDepicatableDialog(guiKundeAnlegen, new Dimension(500, 700));
-				editIDepicatableDialog.setVisible(true);
-			}else if (iDepictable.getClass() == Fahrzeug.class) {
-				GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this, iDepictable, bildList);
-				editIDepicatableDialog = new EditIDepicatableDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
-				editIDepicatableDialog.setVisible(true);
-			}
-
-
-		}else if (ge.getCmdText().equals(SimpleListComponent.Commands.ELEMENT_SELECTED.cmdText)) {
-			if (ge.getData().getClass() == Bild.class) {
-				Bild bild = (Bild) ge.getData();
-
-				ImageIcon imageIcon = bild.getImage();
-
-
-				JOptionPane.showMessageDialog(null, bild.getAttributeValueOf(Bild.Attributes.TITLE), bild.getAttributeValueOf(Bild.Attributes.FILEPATH), JOptionPane.INFORMATION_MESSAGE, imageIcon);
-
-			}
+		}else if (ge.getCmd().equals(MainComponentMitNavBar.Commands.UPDATE_IMAGES)) {
+			fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
+		}else if (ge.getCmd().equals(Commands.DELETE_BILD)) {
+			entityManager.remove((IPersistable) ge.getData());
+			fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
 		}
-
 /*
 		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_KUNDE ) {
 			logger.debug( ge.getData().toString() );

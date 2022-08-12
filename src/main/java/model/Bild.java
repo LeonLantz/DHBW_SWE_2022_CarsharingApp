@@ -139,8 +139,7 @@ public class Bild implements IDepictable, IPersistable {
 
     @Override
     public String toString() {
-        return this.attArr[ Attributes.TITLE.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.FILEPATH.ordinal() ].getValue();
+        return this.attArr[ Attributes.TITLE.ordinal() ].getValue().toString();
     }
 
     @Override

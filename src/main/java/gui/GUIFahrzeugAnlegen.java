@@ -29,7 +29,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     public enum Commands implements EventCommand {
 
-        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class );
+        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class ),
+        ADD_BILD("GUIFahrzeugAnlegen.addBild", String[].class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -67,7 +68,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     private JButton save_fahrzeug;
 
     private IDepictable iDepictable;
-    private List bildList, documentList;
+    //private List bildList, documentList;
 
     private CustomInputField inputBezeichnung, inputMarke, inputMotor, inputTüren, inputSitze, inputKofferraumvolumen, inputGewicht, inputFahrzeugkategorie, inputFührerscheinklasse, inputNummernschild, inputTüvBis, inputFarbe, inputLastEdit;
 
@@ -79,25 +80,25 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     }
 
     //constructor for editing an existing Object
-    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable, List<Bild> bildList) {
+    public GUIFahrzeugAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
-        this.bildList = bildList;
         initUI(false);
     }
 
     private void initUI(Boolean isNewObject) {
         this.setLayout(new BorderLayout(0,0));
         this.setPreferredSize(new Dimension(500,700));
-        this.setBackground(CSHelp.main);
+        this.setBackground(Color.WHITE);
 
         topPanel = new JPanel(new BorderLayout(0,0));
+        topPanel.setBackground(Color.white);
         topLabelDescription = new JLabel("ID: ");
-        topLabelDescription.setBorder(new EmptyBorder(20,20,0,5));
-        topLabelDescription.setFont(CSHelp.lato.deriveFont(11f));
+        topLabelDescription.setBorder(new EmptyBorder(10,20,0,5));
+        topLabelDescription.setFont(CSHelp.lato.deriveFont(12f));
         topLabelValue = new JLabel();
-        topLabelValue.setBorder(new EmptyBorder(20,0,0,20));
+        topLabelValue.setBorder(new EmptyBorder(12,0,0,20));
         topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
         topPanel.add(topLabelDescription, BorderLayout.WEST);
         topPanel.add(topLabelValue, BorderLayout.CENTER);
@@ -129,10 +130,10 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         });
         bottomPanel.add(save_fahrzeug);
 
-        leftPanel = new JPanel();
-        rightPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        leftPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        rightPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        leftPanel.setBackground(Color.WHITE);
+        rightPanel.setBackground(Color.WHITE);
         leftPanel.setPreferredSize(new Dimension(250, 600));
         rightPanel.setPreferredSize(new Dimension(250, 600));
         leftPanel.setBorder(new EmptyBorder(10,10,10,10));
@@ -142,24 +143,27 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         inputFieldMap = new LinkedHashMap<>();
         inputFieldMap.put("Bezeichnung", new CustomTextField("Bezeichnung", "Fahrzeugbezeichnung"));
         inputFieldMap.put("Marke", new CustomTextField("Marke", "bsp.: Audi, Mercedes, ..."));
-        inputFieldMap.put("Motorisierung", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray()));
+        inputFieldMap.put("Motorisierung", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray(), observer));
         inputFieldMap.put("Türen", new CustomTextField("Türen", "Anzahl der Türen"));
         inputFieldMap.put("Sitze", new CustomTextField("Sitze", "Anzahl der Sitze"));
         inputFieldMap.put("Kofferraumvolumen", new CustomTextField("Kofferraumvolumen (l)", "Volumen in Liter"));
         inputFieldMap.put("Gewicht", new CustomTextField("Gewicht (kg)", "Gewicht in kg"));
-        inputFieldMap.put("Fahrzeugkategorie", new CustomComboBox("Fahrzeugkategorie", "bsp.: Mittelklasse, ...", Fahrzeugkategorie.getArray()));
+        inputFieldMap.put("Fahrzeugkategorie", new CustomComboBox("Fahrzeugkategorie", "bsp.: Mittelklasse, ...", Fahrzeugkategorie.getArray(), observer));
         inputFieldMap.put("Führerscheinklasse", new CustomTextField("Führerscheinklasse", "bsp.: A, B, ..."));
         inputFieldMap.put("Nummernschild",  new CustomTextField("Nummernschild", "bsp.: DÜW LL 140"));
         //TODO: Fahrzeugbilder und Dokumente
-        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer ));
-        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer ));
         inputFieldMap.put("TüvBis", new CustomTextField("TüvBis", "Format: TT.MM.YYYY"));
         inputFieldMap.put("Farbe", new CustomTextField("Farbe", "Farbe des Fahrzeuges"));
+        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer, this.iDepictable ));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer, this.iDepictable ));
 
 
         int leftPanelCount = 0;
         for (CustomInputField customInputField : inputFieldMap.values()) {
-            if (leftPanelCount < 10) {
+            if(leftPanelCount == 6) {
+                System.out.println(customInputField.getValue());
+            }
+            if (leftPanelCount < 8) {
                 leftPanel.add(customInputField);
             } else {
                 rightPanel.add(customInputField);
@@ -192,26 +196,25 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         topLabelValue.setText(randID);
         inputFieldMap.get("Bezeichnung").setValue(attributes[1].getValue().toString());
         inputFieldMap.get("Marke").setValue(attributes[2].getValue().toString());
-        int motorisierungIndex = Motorisierung.fromString(attributes[3].getValue().toString()).ordinal() + 1;
+        int motorisierungIndex = Motorisierung.fromString(attributes[3].getValue().toString()).ordinal();
         inputFieldMap.get("Motorisierung").setValue(String.valueOf(motorisierungIndex));
         inputFieldMap.get("Türen").setValue(attributes[4].getValue().toString());
         inputFieldMap.get("Sitze").setValue(attributes[5].getValue().toString());
         inputFieldMap.get("Kofferraumvolumen").setValue(attributes[6].getValue().toString());
         inputFieldMap.get("Gewicht").setValue(attributes[7].getValue().toString());
-        int fahrzeugkategorieIndex = Fahrzeugkategorie.fromString(attributes[8].getValue().toString()).ordinal() + 1;
+        int fahrzeugkategorieIndex = Fahrzeugkategorie.fromString(attributes[8].getValue().toString()).ordinal();
         inputFieldMap.get("Fahrzeugkategorie").setValue(String.valueOf(fahrzeugkategorieIndex));
         inputFieldMap.get("Führerscheinklasse").setValue(attributes[9].getValue().toString());
         inputFieldMap.get("Nummernschild").setValue(attributes[10].getValue().toString());
-        CustomListField customListField = (CustomListField) inputFieldMap.get("Bilder");
-        customListField.setListElements(bildList);
         inputFieldMap.get("TüvBis").setValue(attributes[11].getValue().toString());
         inputFieldMap.get("Farbe").setValue(attributes[12].getValue().toString());
 
-        for (Object bild : bildList) {
-            System.out.println(bild);
-        }
-
         save_fahrzeug.requestFocus();
+    }
+
+    public void updateBildList(List<Bild> bilder) {
+        CustomListField customListField = (CustomListField) inputFieldMap.get("Bilder");
+        customListField.setListElements(bilder);
     }
 
     private String[] getValues() {
@@ -238,4 +241,10 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
         return state;
     }
+
+    public CustomListField getBildList() {
+        return (CustomListField) inputFieldMap.get("Bilder");
+    }
+
+
 }
