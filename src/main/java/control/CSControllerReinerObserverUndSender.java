@@ -125,11 +125,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			e.printStackTrace();
 		}
 	}
-	private static final String sp = File.separator;
-	private void loadCSVData(String csvDirectory) throws IOException {
 
-		if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
-		if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
+	private void loadCSVData(String csvDirectory) throws IOException {
 
 		Map<String, Class> modelClasses = new HashMap<>();
 		modelClasses.put("Kunden.csv", Kunde.class);
@@ -150,11 +147,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 				}
 			});
 		}
-
-
-		//TODO: Use these two lines for csv writing functionality
-//		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+fileName, ";", "#ID;Name;Vorname;engagiert;Beschreibung");
-//		workingCSVWriter.writeData(csvData);
 	}
 
 	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
@@ -243,6 +235,16 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 			}
 		}
 	}
-		
 
+	public List<EventListener> getAllListeners() {
+		return allListeners;
+	}
+
+	public CommonEntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public ElementFactory getElementFactory() {
+		return elementFactory;
+	}
 }

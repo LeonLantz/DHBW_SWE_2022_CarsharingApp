@@ -1,12 +1,18 @@
 package app;
 
 import control.CSControllerReinerObserverUndSender;
+import de.dhbwka.swe.utils.util.CommonEntityManager;
 import gui.MainComponentMitNavBar;
 import util.CSHelp;
+import util.ElementFactory;
 import util.PManager;
 
 import javax.swing.*;
+
+import java.io.File;
 import java.util.Arrays;
+import java.util.EventListener;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class StartApp {
@@ -20,7 +26,12 @@ public class StartApp {
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }
 
+    private static final String sp = File.separator;
+
     public void initWithObserver(String csvDirectory, String propFile) throws Exception {
+        if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
+        if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
+
         MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager());
 
         CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
@@ -38,6 +49,18 @@ public class StartApp {
         frame.add(mainComp);
         frame.setVisible(true);
         //IOUtilities.openInJFrame(mainComp, 600, 500, 800, 300, "CarsharingApp", null, true);
+
+
+        //TODO: add support for Close-Event of whole application
+        // get EntityManager to write all persisted data via WorkingCSVWriter
+        // ->
+        // Use these two lines for csv writing functionality
+        //		WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvDirectory+fileName, ";", "#ID;Name;Vorname;engagiert;Beschreibung");
+        //		workingCSVWriter.writeData(csvData);
+
+        CommonEntityManager entityManager = controller.getEntityManager();
+
+        System.out.println("debug");
     }
 
     /**
