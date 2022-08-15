@@ -4,18 +4,11 @@ import de.dhbwka.swe.utils.model.Gruppe;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
-import model.Bild;
-import model.Fahrzeug;
-import model.Fahrzeugkategorie;
-import model.Kunde;
-//import model.Kunde;
-
+import model.*;
 import javax.swing.*;
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,7 +92,7 @@ public class ElementFactory {
 
 			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
 		}
-		else if( c == Bild.class ) {
+		else if ( c == Bild.class ) {
 			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
 			String title = csvData[ Bild.CSVPositions.TITLE.ordinal() ];
 			String filePath = csvData[ Bild.CSVPositions.FILEPATH.ordinal() ];
@@ -107,6 +100,18 @@ public class ElementFactory {
 			String key = csvData[ Bild.CSVPositions.KEY.ordinal() ];
 
 			persistableElement = new Bild(id, title, filePath, imageIcon, key);
+		}
+		else if ( c == Standort.class ) {
+			String id = csvData[ Standort.CSVPositions.ID.ordinal() ];
+			String strasse = csvData[ Standort.CSVPositions.STRASSE.ordinal() ];
+			String plz = csvData[ Standort.CSVPositions.PLZ.ordinal() ];
+			String ort = csvData[ Standort.CSVPositions.ORT.ordinal() ];
+			String land = csvData[ Standort.CSVPositions.LAND.ordinal() ];
+			String koordinaten = csvData[ Standort.CSVPositions.KOORDINATEN.ordinal() ];
+			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
+			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
+
+			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];

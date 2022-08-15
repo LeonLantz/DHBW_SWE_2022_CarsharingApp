@@ -5,6 +5,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,14 @@ import java.util.UUID;
 
 public class Standort implements IDepictable, IPersistable {
     public enum CSVPositions{
+        ID,
+        STRASSE,
+        PLZ,
+        ORT,
+        LAND,
+        KOORDINATEN,
+        KAPAZITÄT,
+        LAST_EDIT
 
     }
 
@@ -34,7 +43,7 @@ public class Standort implements IDepictable, IPersistable {
         LAND( "Land", String.class, true, false, false ),
         KOORDINATEN( "Koordinaten", String.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
-        LAST_EDIT( "Zuletzt bearbeitet", String.class, true, false, false );
+        LAST_EDIT( "Zuletzt bearbeitet", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -98,11 +107,11 @@ public class Standort implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null);
     }
 
-    public Standort(String strasse, String plz, String ort, String land, String koordinaten, String kapazität, Date last_edit) {
+    public Standort(String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit) {
         this(null, strasse, plz, ort, land, koordinaten, kapazität, last_edit);
     }
 
-    public Standort(String iD, String strasse, String plz, String ort, String land, String koordinaten, String kapazität, Date last_edit ) {
+    public Standort(String iD, String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();

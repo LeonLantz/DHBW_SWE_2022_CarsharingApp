@@ -6,223 +6,193 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
-import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
-import de.dhbwka.swe.utils.util.CSVReader;
-import de.dhbwka.swe.utils.util.CSVWriter;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
-
-import gui.EditIDepicatableDialog;
 import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
-import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import model.Bild;
 import model.Fahrzeug;
 import model.Kunde;
+import model.Standort;
 import util.CSHelp;
 import util.ElementFactory;
 import util.WorkingCSVReader;
-
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
-	
-	/**
-	 * Folgende Commands deklarieren! Es sind die Commands, welche der Controller 
-	 * z.B. an die MainGUI als UpdateEvent sendet
-	 * Die Commands müssen nur oben deklariert werden, der Rest des enums ist copy/paste (s. SWE-utils-GUIs)
-	 */
-	public enum Commands implements EventCommand {
 
-		/**
-		 * Command:  ID + gelieferter Payload-Typ
-		 */
-		SET_BUCHUNGEN( "Controller.setBuchungen", List.class ),
-		SET_FAHRZEUGE( "Controller.setFahrzeuge", List.class ),
-		SET_KUNDEN( "Controller.setKunden", List.class ),
-		SET_STANDORTE( "Controller.setStandorte", List.class ),
-		SET_BILDER( "Controller.setBilder", IDepictable.class ),
-		DELETE_BILD( "Controller.deleteBild", IDepictable.class );
+    /**
+     * Folgende Commands deklarieren! Es sind die Commands, welche der Controller
+     * z.B. an die MainGUI als UpdateEvent sendet
+     * Die Commands müssen nur oben deklariert werden, der Rest des enums ist copy/paste (s. SWE-utils-GUIs)
+     */
+    public enum Commands implements EventCommand {
 
-		public final Class<?> payloadType;
-		public final String cmdText;
+        /**
+         * Command:  ID + gelieferter Payload-Typ
+         */
+        SET_BUCHUNGEN("Controller.setBuchungen", List.class),
+        SET_FAHRZEUGE("Controller.setFahrzeuge", List.class),
+        SET_KUNDEN("Controller.setKunden", List.class),
+        SET_STANDORTE("Controller.setStandorte", List.class),
+        SET_BILDER("Controller.setBilder", IDepictable.class),
+        DELETE_BILD("Controller.deleteBild", IDepictable.class);
 
-		private Commands( String cmdText, Class<?> payloadType ) {
-			this.cmdText = cmdText;
-			this.payloadType = payloadType;
-		}
+        public final Class<?> payloadType;
+        public final String cmdText;
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public String getCmdText() {
-			return this.cmdText;
-		}
+        Commands(String cmdText, Class<?> payloadType) {
+            this.cmdText = cmdText;
+            this.payloadType = payloadType;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public Class<?> getPayloadType() {
-			return this.payloadType;
-		}
-	}
-	
-	/**
-	 * alle Listener, die auf Updates warten
-	 */
-	List<EventListener> allListeners = new ArrayList<>();
-	
-	/**
-	 * entityManager für die Elemente (können auch mehrere EntityManager sein ...
-	 */
-	CommonEntityManager entityManager = new CommonEntityManager();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getCmdText() {
+            return this.cmdText;
+        }
 
-	/**
-	 * entityFactory für die Elemente 
-	 */
-	ElementFactory elementFactory = new ElementFactory( entityManager );
-	
-	/**
-	 * Lesen und schreiben der Elemente. Attribut kann (muss nicht) 
-	 * zum Lesen/Schreiben wiederverwendet werden (csvReader = new CSVReader() ...)
-	 */
-	CSVReader csvReader = null;
-	CSVWriter csvWriter = null;
-	
-	IAppLogger logger = AppLogger.getInstance();
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Class<?> getPayloadType() {
+            return this.payloadType;
+        }
+    }
 
-	public CSControllerReinerObserverUndSender() {
-//		logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
-	}
+    /**
+     * alle Listener, die auf Updates warten
+     */
+    List<EventListener> allListeners = new ArrayList<>();
 
-	//TODO: probably delete unused parameter "propFile"
-	/**
-	 * "start" the controller.
-	 * Das muss separat gemacht werden, da beim Verknüpfen der Observer (Controller+MainGUI)
-	 * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
-	 */
-	public void init(String csvDirectory, String propFile) {
-		try {
-			loadCSVData(csvDirectory);
-			fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
-			fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll( Fahrzeug.class) ) );
-			System.out.println(entityManager.findAll(Fahrzeug.class));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * entityManager für die Elemente (können auch mehrere EntityManager sein ...
+     */
+    CommonEntityManager entityManager = new CommonEntityManager();
 
-	private void loadCSVData(String csvDirectory) throws IOException {
+    /**
+     * entityFactory für die Elemente
+     */
+    ElementFactory elementFactory = new ElementFactory(entityManager);
 
-		Map<String, Class> modelClasses = new HashMap<>();
-		modelClasses.put("Kunden.csv", Kunde.class);
-		modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
-		modelClasses.put("Bilder.csv", Bild.class);
+    IAppLogger _logger = AppLogger.getInstance();
 
-		for (String fileName : modelClasses.keySet()) {
-			System.out.println(fileName);
+    WorkingCSVReader _workingCSVReader;
 
-			WorkingCSVReader workingCSVReader = new WorkingCSVReader(csvDirectory+fileName, ";", true);
-			List<String[]> csvData = workingCSVReader.readData();
+    private static final String sp = File.separator;
 
-			csvData.forEach( e -> {
-				try {
-					elementFactory.createElement(modelClasses.get(fileName), e);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			});
-		}
-	}
+    public CSControllerReinerObserverUndSender() {
+		_logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
+    }
 
-	// fuer alle GUI-Elemente, die aktualisiert werden sollen:
-	@Override
-	public boolean addObserver(EventListener eL) {
-		return this.allListeners.add(eL);
-	}
+    //TODO: probably delete unused parameter "propFile"
 
-	@Override
-	public boolean removeObserver(EventListener eL) {
-		return this.allListeners.remove(eL);
-	}
+    /**
+     * "start" the controller.
+     * Das muss separat gemacht werden, da beim Verknüpfen der Observer (Controller+MainGUI)
+     * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
+     */
+    public void init(String csvDirectory, String propFile) {
+        try {
+            this.loadCSVData(csvDirectory);
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	// die GUI-Events verarbeiten, die von den GUIs kommen:
-	@Override
-	public void processGUIEvent(GUIEvent ge) {
+    private void loadCSVData(String csvDirectory) throws IOException {
 
-		//logger.debug("Hier ist der Controller!   Event: " + ge);
-		//System.out.println(ge.getCmdText());
+        if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
+        if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory + sp;
 
-		if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
-			if (ge.getData() == Kunde.class) {
-				GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this);
-				CSHelp.createJDialog(guiKundeAnlegen, new Dimension(500, 400));
-			}else if (ge.getData() == Fahrzeug.class) {
-				GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
-				CSHelp.createJDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
-			}
+        Map<String, Class> modelClasses = new HashMap<>();
+        modelClasses.put("Kunden.csv", Kunde.class);
+        modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
+        modelClasses.put("Bilder.csv", Bild.class);
+        modelClasses.put("Standorte.csv", Standort.class);
 
-		}else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
-			logger.debug( ge.getData().toString() );
-			String[] fahrzeugAtts = (String[])ge.getData();
-			try {
-				// element wird erzeugt und in ElementManager gespeichert
-				elementFactory.createElement(Fahrzeug.class, fahrzeugAtts);
-				fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+        for (String fileName : modelClasses.keySet()) {
+            _workingCSVReader = new WorkingCSVReader(csvDirectory + fileName, ";", true);
+            List<String[]> csvData = _workingCSVReader.readData();
 
-			System.out.println(entityManager.findAll(Fahrzeug.class));
-		}
-		else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ROW)) {
-			System.out.println("TODO: Objekt löschen");
-			//entityManager.remove((IPersistable)ge.getData());
-			//fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+            csvData.forEach(e -> {
+                try {
+                    elementFactory.createElement(modelClasses.get(fileName), e);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            });
+        }
+    }
 
-		}else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
-			try {
-				// element wird erzeugt und in ElementManager gespeichert
-				elementFactory.createElement(Bild.class, (String[]) ge.getData());
-				fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}else if (ge.getCmd().equals(MainComponentMitNavBar.Commands.UPDATE_IMAGES)) {
-			fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
-		}else if (ge.getCmd().equals(Commands.DELETE_BILD)) {
-			entityManager.remove((IPersistable) ge.getData());
-			fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
-		}
-/*
-		if( ge.getCmd() == MainComponentMitTabbedPane.Commands.ADD_KUNDE ) {
-			logger.debug( ge.getData().toString() );
-			String[] kundenAtts = (String[])ge.getData();
-			try {
-				// element wird erzeugt und in ElementManager gespeichert
-				elementFactory.createElement(Kunde.class, kundenAtts);
-				fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll( Kunde.class) ) );
+    // fuer alle GUI-Elemente, die aktualisiert werden sollen:
+    @Override
+    public boolean addObserver(EventListener eL) {
+        return this.allListeners.add(eL);
+    }
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-*/
-	}
+    @Override
+    public boolean removeObserver(EventListener eL) {
+        return this.allListeners.remove(eL);
+    }
+
+    // die GUI-Events verarbeiten, die von den GUIs kommen:
+    @Override
+    public void processGUIEvent(GUIEvent ge) {
+        _logger.debug("Hier ist der Controller!   Event: " + ge);
+
+        if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
+            if (ge.getData() == Kunde.class) {
+                GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this);
+                CSHelp.createJDialog(guiKundeAnlegen, new Dimension(500, 400));
+            } else if (ge.getData() == Fahrzeug.class) {
+                GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
+                CSHelp.createJDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
+            } else if (ge.getData() == Standort.class) {
+                //TODO: Standort anlegen und bearbeiten ausarbeiten
+            }
+        } else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
+            String[] fahrzeugAttribute = (String[]) ge.getData();
+            try {
+                this.elementFactory.createElement(Fahrzeug.class, fahrzeugAttribute);
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ROW)) {
+            //TODO: Element löschen
+            //entityManager.remove((IPersistable)ge.getData());
+            //fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+        } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
+            try {
+                this.elementFactory.createElement(Bild.class, (String[]) ge.getData());
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (ge.getCmd().equals(MainComponentMitNavBar.Commands.UPDATE_IMAGES)) {
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
+        } else if (ge.getCmd().equals(Commands.DELETE_BILD)) {
+            this.entityManager.remove((IPersistable) ge.getData());
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
+        }
+    }
 		
 	/**
 	 * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
@@ -247,4 +217,19 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public ElementFactory getElementFactory() {
 		return elementFactory;
 	}
+
+    
+
+    /**
+     * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
+     *
+     * @param ue
+     */
+    private void fireUpdateEvent(UpdateEvent ue) {
+        for (EventListener eventListener : allListeners) {
+            if (eventListener instanceof IUpdateEventListener) {
+                ((IUpdateEventListener) eventListener).processUpdateEvent(ue);
+            }
+        }
+    }
 }

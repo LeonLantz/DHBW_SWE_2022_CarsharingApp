@@ -111,14 +111,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] test = getValues();
-                System.out.println("------------------------------");
-                for (String t : test) {
-                    System.out.println(t);
-                }
-                System.out.println("------------------------------");
                 if(validateInput()) {
-                    System.out.println("Speichern!");
-                    int a = JOptionPane.showConfirmDialog(GUIFahrzeugAnlegen.this, "Wollen sie das Fahrzeug speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("profile_picture.png"));
+                    int a = JOptionPane.showConfirmDialog(GUIFahrzeugAnlegen.this, "Wollen sie das Fahrzeug speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
                         fireGUIEvent( new GUIEvent(this, Commands.ADD_FAHRZEUG, test ));
                         Component component = (Component) e.getSource();
@@ -160,9 +154,6 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
         int leftPanelCount = 0;
         for (CustomInputField customInputField : inputFieldMap.values()) {
-            if(leftPanelCount == 6) {
-                System.out.println(customInputField.getValue());
-            }
             if (leftPanelCount < 8) {
                 leftPanel.add(customInputField);
             } else {

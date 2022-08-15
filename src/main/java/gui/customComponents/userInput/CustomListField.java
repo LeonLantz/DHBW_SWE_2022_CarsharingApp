@@ -4,10 +4,8 @@ import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
-import gui.GUIFahrzeugAnlegen;
 import model.Bild;
 import util.CSHelp;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,13 +15,10 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class CustomListField extends CustomInputField {
@@ -81,15 +76,13 @@ public class CustomListField extends CustomInputField {
                 // if the user selects a file
                 if (r == JFileChooser.APPROVE_OPTION) {
                     // set the label to the path of the selected file
-                    System.out.println(j.getSelectedFile().getAbsolutePath());
-
                     String path = j.getSelectedFile().getAbsolutePath();
                     try {
                         BufferedImage image = ImageIO.read(new File(path));
                         String answer = JOptionPane.showInputDialog(null, "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
                         slc.clearSelection();
                         String imageID = UUID.randomUUID().toString();
-                        String filePath = "src/main/resources/Images/" + imageID + ".png";
+                        String filePath = "src/main/resources/SystemImages/" + imageID + ".png";
                         ImageIO.write(image, "png", new File(filePath));
                         String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
                         fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues ));

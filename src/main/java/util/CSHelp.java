@@ -16,7 +16,6 @@ public class CSHelp {
     public static Font lato, lato_bold;
     public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBorderColor, inputFieldBackground, navBarItemActive, navBarTextActive, tileCountColor;
     public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row, table_cell_image;
-    //public static Map<String, ImageIcon> images;
 
     public static File[] imageFiles;
     public static HashMap<String, ImageIcon> imageList;
@@ -56,7 +55,7 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        imageFiles = new File("src/main/resources/Images").listFiles();
+        imageFiles = new File("src/main/resources/SystemImages").listFiles();
         imageList = new HashMap<>();
         for(File file :  imageFiles) {
             if (!file.isHidden()) {
@@ -64,7 +63,7 @@ public class CSHelp {
                 try {
                     bufferedImage = ImageIO.read(file);
                     imageList.put(file.getName(), new ImageIcon(bufferedImage));
-                    System.out.println("Image:" + file.getName() + " successfully registered!");
+                    //System.out.println("Image:" + file.getName() + " successfully registered!");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

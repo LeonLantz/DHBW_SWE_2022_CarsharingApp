@@ -6,7 +6,8 @@ import java.util.List;
 public enum Fahrzeugkategorie {
     KLEINFAHRZEUG("Kleinfahrzeug"),
     MITTELKLASSE("Mittelklasse"),
-    GEHOBENE_MITTELKLASSE("Gehobene_Mittelklasse"),
+    MITTELKLASSE_PLUS("Mittelklasse+"),
+    LUXUSKLASSE("Luxusklasse"),
     TRANSPORTFAHRZEUG("Transportfahrzeug");
 
     String bezeichner;

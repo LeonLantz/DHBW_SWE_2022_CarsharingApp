@@ -85,7 +85,7 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             ((JLabel)guiComp).setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == File.class) {
-                guiComp = new JLabel(CSHelp.imageList.get("profile_picture.png"));
+                guiComp = new JLabel(CSHelp.imageList.get("icon_person.png"));
                 ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Fahrzeugkategorie.class ) {
             ((JLabel)guiComp).setOpaque(true);
