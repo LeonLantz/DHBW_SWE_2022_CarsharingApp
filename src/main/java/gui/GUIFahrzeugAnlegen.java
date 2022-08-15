@@ -115,9 +115,9 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
                     int a = JOptionPane.showConfirmDialog(GUIFahrzeugAnlegen.this, "Wollen sie das Fahrzeug speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
                         fireGUIEvent( new GUIEvent(this, Commands.ADD_FAHRZEUG, test ));
-                        Component component = (Component) e.getSource();
-                        JDialog dialog = (JDialog) SwingUtilities.getRoot(component);
-                        dialog.dispose();
+//                        Component component = (Component) e.getSource();
+//                        JDialog dialog = (JDialog) SwingUtilities.getRoot(component);
+//                        dialog.dispose();
                     }
                 }
             }
