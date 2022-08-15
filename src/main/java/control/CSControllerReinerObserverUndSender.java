@@ -217,19 +217,4 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 	public ElementFactory getElementFactory() {
 		return elementFactory;
 	}
-
-    
-
-    /**
-     * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
-     *
-     * @param ue
-     */
-    private void fireUpdateEvent(UpdateEvent ue) {
-        for (EventListener eventListener : allListeners) {
-            if (eventListener instanceof IUpdateEventListener) {
-                ((IUpdateEventListener) eventListener).processUpdateEvent(ue);
-            }
-        }
-    }
 }
