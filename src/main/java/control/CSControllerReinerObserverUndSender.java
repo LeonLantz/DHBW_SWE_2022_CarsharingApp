@@ -16,10 +16,7 @@ import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
 import gui.customComponents.userInput.CustomListField;
-import model.Bild;
-import model.Fahrzeug;
-import model.Kunde;
-import model.Standort;
+import model.*;
 import util.CSHelp;
 import util.CSVHelper;
 import util.ElementFactory;
@@ -49,7 +46,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         SET_KUNDEN("Controller.setKunden", List.class),
         SET_STANDORTE("Controller.setStandorte", List.class),
         SET_BILDER("Controller.setBilder", IDepictable.class),
-        DELETE_BILD("Controller.deleteBild", IDepictable.class);
+        DELETE_BILD("Controller.deleteBild", IDepictable.class),
+        SET_STATISTICS("Controller.setStatistics", Integer[].class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -114,16 +112,24 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private Integer[] getCounts() {
+        Integer[] counts = new Integer[]{
+                entityManager.findAll(Kunde.class).size(),
+                entityManager.findAll(Buchung.class).size(),
+                entityManager.findAll(Fahrzeug.class).size(),
+                entityManager.findAll(Standort.class).size()
+        };
+        return counts;
+    }
+
     private void loadCSVData(String csvDirectory) throws IOException {
-
-        if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
-        if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory + sp;
-
         Map<String, Class> modelClasses = new HashMap<>();
         modelClasses.put("Kunden.csv", Kunde.class);
         modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
@@ -165,6 +171,27 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         workingCSVWriter.writeData(csvData);
     }
 
+    public void writeAllCSVData(String csvDirectory) throws IOException {
+        //TODO: add all persistable model classes
+        List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
+        List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
+        List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
+        List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
+
+        //TODO: generate 'headerLine' dynamically (according to current model attributes)
+        this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, ";", "#ID;ImageFile;Vorname;Nachname;Email;Phone;IBAN;dateOfBirth;last_edited;");
+        this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, ";", "#ID;Bezeichnung;Marke;Motor;Türen;Sitze;Kofferraumvolumen;Gewicht;Fahrzeugkategorie;Führerscheinklasse;Nummernschild;Tüv_Bis;Farbe;last_edited;");
+        this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, ";", "#ID;Title;FilePath;Key;");
+        this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, ";", "#ID;STRASSE;PLZ;ORT;LAND;KOORDINATEN;KAPAZITÄT;LAST_EDIT;");
+
+    }
+
+    public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
+        WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvFilename, separator, headerLine);
+        workingCSVWriter.writeData(csvData);
+    }
+
+
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
     @Override
     public boolean addObserver(EventListener eL) {
@@ -196,13 +223,17 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             try {
                 this.elementFactory.createElement(Fahrzeug.class, fahrzeugAttribute);
                 this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ROW)) {
+        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ENTITY)) {
             //TODO: Element löschen
-            //entityManager.remove((IPersistable)ge.getData());
-            //fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+            entityManager.remove((IPersistable)ge.getData());
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             try {
                 this.elementFactory.createElement(Bild.class, (String[]) ge.getData());
@@ -217,17 +248,28 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
         }
     }
+		
+	/**
+	 * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
+	 * @param ue
+	 */
+	private void fireUpdateEvent( UpdateEvent ue ) {
+		for (EventListener eventListener : allListeners) {
+			if( eventListener instanceof IUpdateEventListener ) {
+				((IUpdateEventListener)eventListener).processUpdateEvent(ue);
+			}
+		}
+	}
 
-    /**
-     * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
-     *
-     * @param ue
-     */
-    private void fireUpdateEvent(UpdateEvent ue) {
-        for (EventListener eventListener : allListeners) {
-            if (eventListener instanceof IUpdateEventListener) {
-                ((IUpdateEventListener) eventListener).processUpdateEvent(ue);
-            }
-        }
-    }
+	public List<EventListener> getAllListeners() {
+		return allListeners;
+	}
+
+	public CommonEntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public ElementFactory getElementFactory() {
+		return elementFactory;
+	}
 }
