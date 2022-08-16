@@ -16,10 +16,7 @@ import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
 import gui.customComponents.userInput.CustomListField;
-import model.Bild;
-import model.Fahrzeug;
-import model.Kunde;
-import model.Standort;
+import model.*;
 import util.CSHelp;
 import util.CSVHelper;
 import util.ElementFactory;
@@ -49,7 +46,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         SET_KUNDEN("Controller.setKunden", List.class),
         SET_STANDORTE("Controller.setStandorte", List.class),
         SET_BILDER("Controller.setBilder", IDepictable.class),
-        DELETE_BILD("Controller.deleteBild", IDepictable.class);
+        DELETE_BILD("Controller.deleteBild", IDepictable.class),
+        SET_STATISTICS("Controller.setStatistics", Integer[].class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -114,9 +112,21 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Integer[] getCounts() {
+        Integer[] counts = new Integer[]{
+                entityManager.findAll(Kunde.class).size(),
+                entityManager.findAll(Buchung.class).size(),
+                entityManager.findAll(Fahrzeug.class).size(),
+                entityManager.findAll(Standort.class).size()
+        };
+        return counts;
     }
 
     private void loadCSVData(String csvDirectory) throws IOException {
@@ -192,13 +202,17 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             try {
                 this.elementFactory.createElement(Fahrzeug.class, fahrzeugAttribute);
                 this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ROW)) {
+        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ENTITY)) {
             //TODO: Element löschen
-            //entityManager.remove((IPersistable)ge.getData());
-            //fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+            entityManager.remove((IPersistable)ge.getData());
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             try {
                 this.elementFactory.createElement(Bild.class, (String[]) ge.getData());

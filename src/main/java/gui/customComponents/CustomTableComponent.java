@@ -35,7 +35,7 @@ public class CustomTableComponent extends ObservableComponent {
 
         ROW_SELECTED( "customtablecomponent.tab_changed", String.class ),
         EDIT_ROW("customtablecomponent.row_edited", IDepictable.class),
-        DELETE_ROW("customtablecomponent.row_deleted", IDepictable.class);
+        DELETE_ENTITY("customtablecomponent.row_deleted", IDepictable.class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -167,12 +167,11 @@ public class CustomTableComponent extends ObservableComponent {
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.DELETE_ROW, data));
+                    CustomTableComponent.this.fireGUIEvent(new GUIEvent(this, Commands.DELETE_ENTITY, data));
                 }
             });
         }
     }
-
 
     public static SLCBuilder builder(String id ) {
         if( id == null || id.isEmpty() ) throw new IllegalArgumentException( "ID must be given!" );

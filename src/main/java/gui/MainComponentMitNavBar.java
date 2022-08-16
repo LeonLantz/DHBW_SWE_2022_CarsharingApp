@@ -83,6 +83,8 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private ObservableComponent _dialogWindowComponent;
     private IDepictable _currentObject;
 
+    private HeaderTile _tileKunden, _tileBuchungen, _tileFahrzeuge, _tileStandorte;
+
     public MainComponentMitNavBar(PropertyManager propertyManager) throws Exception {
         this._propManager = propertyManager;
         CSHelp.init();
@@ -221,10 +223,14 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header.add(headerCenter, BorderLayout.CENTER);
 
         //HeaderCenterKacheln
-        headerCenter.add(new HeaderTile("Kunden", CSHelp.imageList.get("icon_kunde.png"), 72));
-        headerCenter.add(new HeaderTile("Buchungen", CSHelp.imageList.get("icon_buchung.png"), 31));
-        headerCenter.add(new HeaderTile("Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"), 14));
-        headerCenter.add(new HeaderTile("Standorte", CSHelp.imageList.get("icon_standort.png"), 5));
+        _tileKunden = new HeaderTile("Kunden", CSHelp.imageList.get("icon_kunde.png"), 0);
+        _tileBuchungen = new HeaderTile("Buchungen", CSHelp.imageList.get("icon_buchung.png"), 0);
+        _tileFahrzeuge = new HeaderTile("Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"), 0);
+        _tileStandorte = new HeaderTile("Standorte", CSHelp.imageList.get("icon_standort.png"), 0);
+        headerCenter.add(_tileKunden);
+        headerCenter.add(_tileBuchungen);
+        headerCenter.add(_tileFahrzeuge);
+        headerCenter.add(_tileStandorte);
 
         //HeaderEast
         JPanel headerEast = new JPanel(new BorderLayout(0, 0));
@@ -401,7 +407,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                     }
                 }
             });
-        } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ROW.cmdText)) {
+        } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ENTITY.cmdText)) {
             int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
             if (n == 0) {
                 fireGUIEvent(ge);
@@ -460,23 +466,30 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BILDER) {
-            String primaryKey = _currentObject.getElementID();
-            List<IPersistable> allImages = (List<IPersistable>) ue.getData();
-            List<Bild> bildList = new ArrayList<>();
+            if(_currentObject != null) {
+                String primaryKey = _currentObject.getElementID();
+                List<Bild> bildList = new ArrayList<>();
 
-            for (IPersistable iPersistable : allImages) {
-                bildList.add((Bild) iPersistable);
+                for (IPersistable iPersistable : (List<IPersistable>) ue.getData()) {
+                    bildList.add((Bild) iPersistable);
+                }
+
+                bildList = bildList.stream()
+                        .filter(b -> b.getSecondaryKey().equals(primaryKey))
+                        .collect(Collectors.toList());
+
+                if (_currentObject.getClass() == Kunde.class) {
+
+                } else if (_currentObject.getClass() == Fahrzeug.class) {
+                    ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(bildList);
+                }
             }
-
-            bildList = bildList.stream()
-                    .filter(b -> b.getSecondaryKey().equals(primaryKey))
-                    .collect(Collectors.toList());
-
-            if (_currentObject.getClass() == Kunde.class) {
-
-            } else if (_currentObject.getClass() == Fahrzeug.class) {
-                ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(bildList);
-            }
+        } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STATISTICS) {
+            Integer[] counts = (Integer[]) ue.getData();
+            _tileKunden.updateCount(counts[0]);
+            _tileBuchungen.updateCount(counts[1]);
+            _tileFahrzeuge.updateCount(counts[2]);
+            _tileStandorte.updateCount(counts[3]);
         }
     }
 }
