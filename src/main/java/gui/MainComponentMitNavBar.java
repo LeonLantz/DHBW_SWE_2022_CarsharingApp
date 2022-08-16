@@ -16,6 +16,7 @@ import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
 import model.*;
 import util.CSHelp;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -136,13 +137,13 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _fahrzeugeTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 89, 100, 33, 33})
+                .columnWidths(new int[]{35, 150, 100, 65, 50, 80, 115, 100, 99, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
         _fahrzeugePanel = ContentPanel.builder(CONTENT_PANEL_FAHRZEUGE)
                 .title(title)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Fahrzeug.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuesFahrzeugAnlegen.png"), Fahrzeug.class))
                 .observer(this)
                 .table(_fahrzeugeTable)
                 .propManager(this._propManager)
@@ -155,7 +156,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _kundenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{100, 100, 160, 130, 130, 149, 33, 33})
+                .columnWidths(new int[]{35, 100, 100, 180, 150, 130, 99, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
 
@@ -466,7 +467,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BILDER) {
-            if(_currentObject != null) {
+            if (_currentObject != null) {
                 String primaryKey = _currentObject.getElementID();
                 List<Bild> bildList = new ArrayList<>();
 

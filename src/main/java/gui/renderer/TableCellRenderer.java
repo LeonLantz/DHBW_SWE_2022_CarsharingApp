@@ -10,6 +10,8 @@ import util.CSHelp;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -59,10 +61,18 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             guiComp.setFont(CSHelp.lato.deriveFont(12f));
             guiComp.setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
-            if(value.toString().contains("https")) {
-                guiComp.setForeground(Color.BLUE.darker());
-                guiComp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
+        }else if ( clazz ==  Integer.class ) {
+            ((JLabel)guiComp).setOpaque(true);
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setForeground(CSHelp.tableCellText);
+            ((JLabel)guiComp).setBorder( border );
+        } else if( clazz ==  URL.class ) {
+            guiComp = new JButton(value.toString());
+            guiComp.setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setForeground(CSHelp.tableCellText);
+            ((JButton)guiComp).setBorder( border );
+            guiComp.setForeground(Color.BLUE.darker());
+            guiComp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class) {
             guiComp = (JButton)value;
             ((JButton)guiComp).setBorder( border );

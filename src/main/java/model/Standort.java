@@ -5,6 +5,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class Standort implements IDepictable, IPersistable {
         PLZ( "PLZ", String.class, true, false, false ),
         ORT( "Ort", String.class, true, false, false ),
         LAND( "Land", String.class, true, false, false ),
-        KOORDINATEN( "Koordinaten", String.class, true, false, false ),
+        KOORDINATEN( "Koordinaten", URL.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
         LAST_EDIT( "Zuletzt bearbeitet", LocalDateTime.class, true, false, false );
 
@@ -107,11 +108,11 @@ public class Standort implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null);
     }
 
-    public Standort(String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit) {
+    public Standort(String strasse, String plz, String ort, String land, URL koordinaten, String kapazität, LocalDateTime last_edit) {
         this(null, strasse, plz, ort, land, koordinaten, kapazität, last_edit);
     }
 
-    public Standort(String iD, String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit ) {
+    public Standort(String iD, String strasse, String plz, String ort, String land, URL koordinaten, String kapazität, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();

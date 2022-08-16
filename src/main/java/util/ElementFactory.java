@@ -6,6 +6,8 @@ import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
 import javax.swing.*;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -111,7 +113,7 @@ public class ElementFactory {
 			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
 			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
+			persistableElement = new Standort(id, strasse, plz, ort, land, new URL(koordinaten), kapazität, LocalDateTime.parse(last_edit));
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];
