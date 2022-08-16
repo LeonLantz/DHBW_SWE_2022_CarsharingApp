@@ -21,8 +21,11 @@ import model.Fahrzeug;
 import model.Kunde;
 import model.Standort;
 import util.CSHelp;
+import util.CSVHelper;
 import util.ElementFactory;
 import util.WorkingCSVReader;
+import util.WorkingCSVWriter;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -139,6 +142,27 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 }
             });
         }
+    }
+    public void writeAllCSVData(String csvDirectory) throws IOException {
+        //TODO: add all persistable model classes
+        List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
+        List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
+        List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
+        List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
+
+        //TODO: generate 'headerLine' dynamically (according to current model attributes)
+        String separator = ";";
+        this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
+        System.out.println("");
+
+    }
+
+    public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
+        WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvFilename, separator, headerLine);
+        workingCSVWriter.writeData(csvData);
     }
 
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
