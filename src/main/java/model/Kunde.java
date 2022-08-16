@@ -173,11 +173,10 @@ public class Kunde implements IDepictable, IPersistable {
             throw new IllegalArgumentException( "wrong class type for attribute '" + attribute.name() + "'!" );
     }
     public String getTableCellText() {
-        return "<html><body>"
+        return "<html><header>"
                 + this.attArr[ Attributes.NACHNAME.ordinal() ].getValue()
                 + ", " + this.attArr[ Attributes.VORNAME.ordinal() ].getValue()
-                + "<br>" + this.attArr[ Attributes.PHONE.ordinal() ].getValue()
-                + "</body></html>";
+                + "</header></html>";
     }
 
     @Override

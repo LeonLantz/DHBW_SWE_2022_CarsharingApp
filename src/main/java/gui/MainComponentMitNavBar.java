@@ -118,7 +118,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{145, 140, 140, 75, 75, 140, 75, 33, 33})
+                .columnWidths(new int[]{35, 120, 100, 105, 105, 90, 140, 99, 33, 33})
                 .modelClass(Buchung.class)
                 .build();
 
@@ -453,11 +453,25 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN) {
             List<Kunde> lstKunde = (List<Kunde>) ue.getData();
+            if (lstKunde.isEmpty()) {
+                lstKunde.add(new Kunde());
+            }
             IDepictable[] modelData = new IDepictable[lstKunde.size()];
             lstKunde.toArray(modelData);
             _kundenTable.setModelData(modelData);
+        } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BUCHUNGEN) {
+            List<Buchung> lstBuchung = (List<Buchung>) ue.getData();
+            if (lstBuchung.isEmpty()) {
+                lstBuchung.add(new Buchung());
+            }
+            IDepictable[] modelData = new IDepictable[lstBuchung.size()];
+            lstBuchung.toArray(modelData);
+            _buchungenTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE) {
             List<Fahrzeug> lstFahrzeug = (List<Fahrzeug>) ue.getData();
+            if (lstFahrzeug.isEmpty()) {
+                lstFahrzeug.add(new Fahrzeug());
+            }
             IDepictable[] modelData = new IDepictable[lstFahrzeug.size()];
             lstFahrzeug.toArray(modelData);
             _fahrzeugeTable.setModelData(modelData);

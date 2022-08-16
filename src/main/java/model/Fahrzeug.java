@@ -169,7 +169,6 @@ public class Fahrzeug implements IDepictable, IPersistable {
     public String getTableCellText() {
         return "<html><body>"
                 + this.attArr[ Attributes.BEZEICHNUNG.ordinal() ].getValue()
-                + "<br>" + this.attArr[ Attributes.NUMMERNSCHILD.ordinal() ].getValue()
                 + "</body></html>";
     }
 

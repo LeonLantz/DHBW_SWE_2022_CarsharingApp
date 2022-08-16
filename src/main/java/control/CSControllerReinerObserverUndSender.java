@@ -110,6 +110,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         try {
             this.loadCSVData(csvDirectory);
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
 
@@ -130,11 +131,13 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
     }
 
     private void loadCSVData(String csvDirectory) throws IOException {
-        Map<String, Class> modelClasses = new HashMap<>();
+        Map<String, Class> modelClasses = new LinkedHashMap<>();
         modelClasses.put("Kunden.csv", Kunde.class);
         modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
+        modelClasses.put("Buchungen.csv", Buchung.class);
         modelClasses.put("Bilder.csv", Bild.class);
         modelClasses.put("Standorte.csv", Standort.class);
+
 
         for (String fileName : modelClasses.keySet()) {
             _workingCSVReader = new WorkingCSVReader(csvDirectory + fileName, ";", true);
@@ -162,6 +165,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, ";", "#ID;Bezeichnung;Marke;Motor;Türen;Sitze;Kofferraumvolumen;Gewicht;Fahrzeugkategorie;Führerscheinklasse;Nummernschild;Tüv_Bis;Farbe;last_edited;");
         this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, ";", "#ID;Title;FilePath;Key;");
         this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, ";", "#ID;STRASSE;PLZ;ORT;LAND;KOORDINATEN;KAPAZITÄT;LAST_EDIT;");
+        //this.writeCSVData(csvDirectory+"Buchungen.csv", StandorteCSVOut, ";", "#ID;Buchungsnummer;Kunde;Fahrzeug;Start;End;Status;last_edited;");
 
     }
 
@@ -212,6 +216,40 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+
+            //---
+            for (IPersistable b : entityManager.findAll(Buchung.class)) {
+                Buchung buchung = (Buchung)b;
+                Kunde kunde = buchung.getAttributeValueOf(Buchung.Attributes.KUNDE);
+                Fahrzeug fahrzeug = buchung.getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
+                if (kunde != null) {
+                    if (entityManager.find(Kunde.class, kunde.getElementID()) == null) {
+                        try {
+                            buchung.setAttributeValueOf(Buchung.Attributes.STATUS, Buchungsstatus.INVALIDE);
+                            buchung.setAttributeValueOf(Buchung.Attributes.KUNDE, new Kunde("", ""));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                if (fahrzeug != null) {
+                    if (entityManager.find(Fahrzeug.class, fahrzeug.getElementID()) == null) {
+                        try {
+                            buchung.setAttributeValueOf(Buchung.Attributes.STATUS, Buchungsstatus.INVALIDE);
+                            buchung.setAttributeValueOf(Buchung.Attributes.FAHRZEUG, new Fahrzeug());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+
+
+
+            //---
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class) ) );
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             try {

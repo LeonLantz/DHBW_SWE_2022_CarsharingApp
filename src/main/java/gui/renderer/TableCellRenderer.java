@@ -48,7 +48,11 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
         }
 
         if( value == null ) {
-            return new JLabel( "NULL" );
+            JLabel labelNull = new JLabel("");
+            labelNull.setFont(CSHelp.lato.deriveFont(12f));
+            labelNull.setForeground(CSHelp.tableCellText);
+            labelNull.setBorder( border );
+            return labelNull;
         }
 
         Component guiComp = new JLabel( value.toString() );
@@ -105,6 +109,9 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
         }else if (clazz == Buchungsstatus.class ) {
             ((JLabel)guiComp).setOpaque(true);
             ((JLabel)guiComp).setText(((Buchungsstatus) value).getBezeichner());
+            if (value == Buchungsstatus.INVALIDE) {
+                ((JLabel)guiComp).setForeground(Color.red);
+            }
             guiComp.setFont(CSHelp.lato.deriveFont(12f));
             ((JLabel)guiComp).setBorder( border );
         }else if (clazz == Kunde.class) {

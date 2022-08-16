@@ -140,9 +140,14 @@ public class CustomTableComponent extends ObservableComponent {
             JButton deleteButton = new DeleteButton(modelData[finalI]);
 
             attributeVector.add(0, new Attribute("space", "", String.class, "", null, true, true, true, false));
+            if (attributeVector.get(1).getValue() != null) {
+                attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
+                attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
+            } else {
+                attributeVector.add( new Attribute("space", "", String.class, "", null, true, true, true, false));
+                attributeVector.add( new Attribute("space", "", String.class, "", null, true, true, true, false));
+            }
 
-            attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
-            attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
             this.data.add( attributeVector );
 
             this.stc.setData(this.data, this.columnNames);
