@@ -159,13 +159,14 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
         List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
         List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
+        List<String[]> BuchungenCSVOut = CSVHelper.getPersistedBuchungenCSVFormatted(this.entityManager);
 
         //TODO: generate 'headerLine' dynamically (according to current model attributes)
         this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, ";", "#ID;ImageFile;Vorname;Nachname;Email;Phone;IBAN;dateOfBirth;last_edited;");
         this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, ";", "#ID;Bezeichnung;Marke;Motor;Türen;Sitze;Kofferraumvolumen;Gewicht;Fahrzeugkategorie;Führerscheinklasse;Nummernschild;Tüv_Bis;Farbe;last_edited;");
         this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, ";", "#ID;Title;FilePath;Key;");
         this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, ";", "#ID;STRASSE;PLZ;ORT;LAND;KOORDINATEN;KAPAZITÄT;LAST_EDIT;");
-        //this.writeCSVData(csvDirectory+"Buchungen.csv", StandorteCSVOut, ";", "#ID;Buchungsnummer;Kunde;Fahrzeug;Start;End;Status;last_edited;");
+        this.writeCSVData(csvDirectory+"Buchungen.csv", BuchungenCSVOut, ";", "#ID;Buchungsnummer;Kunde;Fahrzeug;Start;End;Status;last_edited;");
 
     }
 
@@ -226,7 +227,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     if (entityManager.find(Kunde.class, kunde.getElementID()) == null) {
                         try {
                             buchung.setAttributeValueOf(Buchung.Attributes.STATUS, Buchungsstatus.INVALIDE);
-                            buchung.setAttributeValueOf(Buchung.Attributes.KUNDE, new Kunde("", ""));
+                            buchung.setAttributeValueOf(Buchung.Attributes.KUNDE, new Kunde());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
