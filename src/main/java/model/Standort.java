@@ -37,14 +37,14 @@ public class Standort implements IDepictable, IPersistable {
          * Attribute erzeugen, die folgende Einstellungen haben:
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
-        ID( "   ID", String.class, true, false, false ),
-        STRASSE( "Straße", String.class, true, false, false ),
+        ID( "ID", String.class, false, false, false ),
         PLZ( "PLZ", String.class, true, false, false ),
         ORT( "Ort", String.class, true, false, false ),
-        LAND( "Land", String.class, true, false, false ),
-        KOORDINATEN( "Koordinaten", URL.class, true, false, false ),
+        STRASSE( "Straße", String.class, true, false, false ),
+        LAND( "Land", String.class, false, false, false ),
+        KOORDINATEN( "Koordinaten", String.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
-        LAST_EDIT( "Zuletzt bearbeitet", LocalDateTime.class, true, false, false );
+        LAST_EDIT( "Zeitstempel", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -108,11 +108,11 @@ public class Standort implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null);
     }
 
-    public Standort(String strasse, String plz, String ort, String land, URL koordinaten, String kapazität, LocalDateTime last_edit) {
+    public Standort(String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit) {
         this(null, strasse, plz, ort, land, koordinaten, kapazität, last_edit);
     }
 
-    public Standort(String iD, String strasse, String plz, String ort, String land, URL koordinaten, String kapazität, LocalDateTime last_edit ) {
+    public Standort(String iD, String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();

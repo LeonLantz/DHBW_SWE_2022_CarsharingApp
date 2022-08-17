@@ -3,6 +3,7 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
@@ -68,7 +69,16 @@ public class CSVHelper {
     for (Object PersistableElement : allPersistedClassElements) {
       String[] attValue = new String[((Buchung) PersistableElement).getAttributes().toArray().length];
       for (int i = 0; i < attValue.length; i++) {
-        attValue[i] = ((Buchung) PersistableElement).getAttributes().get(i).getValue().toString();
+        Attribute a = ((Buchung) PersistableElement).getAttributes().get(i);
+        if (a.getClazz() == Kunde.class) {
+          attValue[i] = ((Kunde)a.getValue()).getElementID();
+        }else if (a.getClazz() == Fahrzeug.class) {
+          attValue[i] = ((Fahrzeug)a.getValue()).getElementID();
+        }else if (a.getClazz() == Buchungsstatus.class) {
+          attValue[i] = ((Buchungsstatus)a.getValue()).getBezeichner();
+        }else {
+          attValue[i] = a.getValue().toString();
+        }
       }
       data.add(attValue);
     }

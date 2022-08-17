@@ -217,6 +217,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class) ) );
 
             //---
             for (IPersistable b : entityManager.findAll(Buchung.class)) {

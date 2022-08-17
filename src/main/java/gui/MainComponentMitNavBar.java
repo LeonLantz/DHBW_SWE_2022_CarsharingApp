@@ -175,7 +175,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _standorteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{100, 100, 100, 100, 100, 100, 100, 90, 33, 33})
+                .columnWidths(new int[]{35, 60, 100, 140, 280, 80, 99, 33, 33})
                 .modelClass(Standort.class)
                 .build();
 
@@ -250,7 +250,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         //ContentTop
         JPanel contentTop = new JPanel(new BorderLayout(0, 0));
         contentTop.setPreferredSize(new Dimension(720, 282));
-        contentTop.setBackground(Color.white);
+        contentTop.setBackground(CSHelp.main);
         content.add(contentTop, BorderLayout.NORTH);
 
         //ContentBottom
@@ -305,7 +305,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         //ContentBottomCenter
         JPanel contentBottomCenter = new JPanel(new BorderLayout(0, 0));
-        contentBottomCenter.setBackground(Color.darkGray);
+        contentBottomCenter.setBackground(CSHelp.main);
         contentBottom.add(contentBottomCenter, BorderLayout.CENTER);
 
         _übersichtPanel.add(content, BorderLayout.CENTER);
@@ -477,6 +477,9 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             _fahrzeugeTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STANDORTE) {
             List<Standort> lstStandort = (List<Standort>) ue.getData();
+            if (lstStandort.isEmpty()) {
+                lstStandort.add(new Standort());
+            }
             IDepictable[] modelData = new IDepictable[lstStandort.size()];
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);

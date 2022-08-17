@@ -112,7 +112,7 @@ public class ElementFactory {
 			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
 			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Standort(id, strasse, plz, ort, land, new URL(koordinaten), kapazität, LocalDateTime.parse(last_edit));
+			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
 		}
 		else if ( c == Buchung.class ) {
 			String id = csvData[ Buchung.CSVPositions.ID.ordinal() ];
