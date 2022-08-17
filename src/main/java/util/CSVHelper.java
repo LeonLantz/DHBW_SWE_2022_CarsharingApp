@@ -9,10 +9,7 @@ import java.util.stream.Stream;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
-import model.Bild;
-import model.Fahrzeug;
-import model.Kunde;
-import model.Standort;
+import model.*;
 
 public class CSVHelper {
   //TODO: make methods dynamic for each model class (duplicate code)
@@ -104,6 +101,28 @@ public class CSVHelper {
     }
     return CSVRecords;
   }
+  
+  public static List<String[]> getPersistedBuchungenCSVFormatted(CommonEntityManager entityManager) {
+    List<IPersistable> allPersistedClassElements = entityManager.findAll(Buchung.class);
+    List<String[]> data = new ArrayList<>();
+    for (Object PersistableElement : allPersistedClassElements) {
+      String[] attValue = new String[((Buchung) PersistableElement).getAttributes().toArray().length];
+      for (int i = 0; i < attValue.length; i++) {
+        Attribute a = ((Buchung) PersistableElement).getAttributes().get(i);
+        if (a.getClazz() == Kunde.class) {
+          attValue[i] = ((Kunde)a.getValue()).getElementID();
+        }else if (a.getClazz() == Fahrzeug.class) {
+          attValue[i] = ((Fahrzeug)a.getValue()).getElementID();
+        }else if (a.getClazz() == Buchungsstatus.class) {
+          attValue[i] = ((Buchungsstatus)a.getValue()).getBezeichner();
+        }else {
+          attValue[i] = a.getValue().toString();
+        }
+      }
+      data.add(attValue);
+    }
+    return data;
+  }
 
 // --------------------------------------------------------------------------------------------------------
 
@@ -142,5 +161,4 @@ public class CSVHelper {
     }
     return out.toString();
   }
-
 }

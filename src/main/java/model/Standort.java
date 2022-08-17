@@ -5,6 +5,7 @@ import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
 import java.io.File;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,14 +37,14 @@ public class Standort implements IDepictable, IPersistable {
          * Attribute erzeugen, die folgende Einstellungen haben:
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
-        ID( "ID", String.class, true, false, false ),
-        STRASSE( "Straße", String.class, true, false, false ),
+        ID( "ID", String.class, false, false, false ),
         PLZ( "PLZ", String.class, true, false, false ),
         ORT( "Ort", String.class, true, false, false ),
-        LAND( "Land", String.class, true, false, false ),
+        STRASSE( "Straße", String.class, true, false, false ),
+        LAND( "Land", String.class, false, false, false ),
         KOORDINATEN( "Koordinaten", String.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
-        LAST_EDIT( "Zuletzt bearbeitet", LocalDateTime.class, true, false, false );
+        LAST_EDIT( "Zeitstempel", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;

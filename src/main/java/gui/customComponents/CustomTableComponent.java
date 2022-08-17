@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class CustomTableComponent extends ObservableComponent {
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         ArrayList namesList = new ArrayList<String>();
+        namesList.add("");
 
         if (Fahrzeug.class.equals(modelClass)) {
             for (String name : Fahrzeug.getAttributeNames(true)) {
@@ -110,7 +112,7 @@ public class CustomTableComponent extends ObservableComponent {
 
 
         stc = SimpleTableComponent.builder("STC")
-                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, LocalDate.class, File.class, Fahrzeugkategorie.class, Kunde.class, Fahrzeug.class, Buchungsstatus.class, LocalDateTime.class)
+                .cellRenderer(new TableCellRenderer(), String.class, JButton.class, LocalDate.class, File.class, Fahrzeugkategorie.class, Kunde.class, Fahrzeug.class, Buchungsstatus.class, LocalDateTime.class, URL.class, Integer.class)
                 .data(data)
                 .columnNames(columnNames)
                 .selectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -137,8 +139,15 @@ public class CustomTableComponent extends ObservableComponent {
             JButton editButton = new EditButton(modelData[finalI]);
             JButton deleteButton = new DeleteButton(modelData[finalI]);
 
-            attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
-            attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
+            attributeVector.add(0, new Attribute("space", "", String.class, "", null, true, true, true, false));
+            if (attributeVector.get(1).getValue() != null) {
+                attributeVector.add(new Attribute("Edit", modelData[i], JButton.class, editButton, null, true, true, true, false));
+                attributeVector.add(new Attribute("Delete", modelData[i], JButton.class, deleteButton, null, true, true, true, false));
+            } else {
+                attributeVector.add( new Attribute("space", "", String.class, "", null, true, true, true, false));
+                attributeVector.add( new Attribute("space", "", String.class, "", null, true, true, true, false));
+            }
+
             this.data.add( attributeVector );
 
             this.stc.setData(this.data, this.columnNames);

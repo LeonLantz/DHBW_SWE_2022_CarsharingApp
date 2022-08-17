@@ -4,15 +4,22 @@ import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class Buchung implements IDepictable, IPersistable {
 
     public enum CSVPositions{
-
+        ID,
+        BUCHUNGSNUMMER,
+        KUNDE,
+        FAHRZEUG,
+        START_DATE,
+        END_DATE,
+        STATUS,
+        LAST_EDIT;
     }
 
     /**
@@ -27,14 +34,14 @@ public class Buchung implements IDepictable, IPersistable {
          * Attribute erzeugen, die folgende Einstellungen haben:
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
-        ID( "   ID", String.class, false, false, false ),
+        ID( "ID", String.class, false, false, false ),
         BUCHUNGSNUMMER( "Buchungsnummer", String.class, true, false, false ),
-        KUNDE( "Kunde", Kunde.class, true, false, false ),
-        FAHRZEUG( "Fahrzeug", Fahrzeug.class, true, false, false ),
-        START_DATE( "Start", Date.class, true, false, false ),
-        END_DATE( "Ende", Date.class, true, false, false ),
-        STATUS( "Status", String.class, true, false, false ),
-        LAST_EDIT( "zul.", Date.class, true, false, false );
+        KUNDE( "Kunde", Kunde.class, true, true, false ),
+        FAHRZEUG( "Fahrzeug", Fahrzeug.class, true, true, false ),
+        START_DATE( "Start", LocalDateTime.class, true, false, false ),
+        END_DATE( "Ende", LocalDateTime.class, true, false, false ),
+        STATUS( "Status", Buchungsstatus.class, true, true, false ),
+        LAST_EDIT( "zul.", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -101,11 +108,11 @@ public class Buchung implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null);
     }
 
-    public Buchung(String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, Date start_date, Date end_date, Buchungsstatus status, Date last_edit) {
+    public Buchung(String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDateTime start_date, LocalDateTime end_date, Buchungsstatus status, LocalDateTime last_edit) {
         this(null, buchungsnummer, kunde, fahrzeug, start_date, end_date, status, last_edit);
     }
 
-    public Buchung(String iD, String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, Date start_date, Date end_date, Buchungsstatus status, Date last_edit ) {
+    public Buchung(String iD, String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDateTime start_date, LocalDateTime end_date, Buchungsstatus status, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();
@@ -126,7 +133,7 @@ public class Buchung implements IDepictable, IPersistable {
     public <T> void setAttributeValueOf(Buchung.Attributes attribute, T value ) throws Exception {
         if( ! attribute.modifiable )
             throw new IllegalArgumentException( "attribute '" + attribute.name() + "' is not modifiable!" );
-        if( value.getClass() == this.attArr[ attribute.ordinal() ].getClass() )
+        if ( value.getClass() == this.attArr[ attribute.ordinal() ].getValue().getClass() )
             this.attArr[ attribute.ordinal() ].setValue( value );
         else
             throw new IllegalArgumentException( "wrong class type for attribute '" + attribute.name() + "'!" );

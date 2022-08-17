@@ -110,6 +110,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         try {
             this.loadCSVData(csvDirectory);
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
 
@@ -130,11 +131,13 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
     }
 
     private void loadCSVData(String csvDirectory) throws IOException {
-        Map<String, Class> modelClasses = new HashMap<>();
+        Map<String, Class> modelClasses = new LinkedHashMap<>();
         modelClasses.put("Kunden.csv", Kunde.class);
         modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
+        modelClasses.put("Buchungen.csv", Buchung.class);
         modelClasses.put("Bilder.csv", Bild.class);
         modelClasses.put("Standorte.csv", Standort.class);
+
 
         for (String fileName : modelClasses.keySet()) {
             _workingCSVReader = new WorkingCSVReader(csvDirectory + fileName, ";", true);
@@ -155,14 +158,15 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
         List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
         List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
+        List<String[]> BuchungenCSVOut = CSVHelper.getPersistedBuchungenCSVFormatted(this.entityManager);
 
         String separator = ";";
         this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory+"Buchungen.csv", BuchungenCSVOut, ";", "#ID;Buchungsnummer;Kunde;Fahrzeug;Start;End;Status;last_edited;");
         System.out.println("");
-
     }
 
     public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
@@ -211,6 +215,41 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
             fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class) ) );
+
+            //---
+            for (IPersistable b : entityManager.findAll(Buchung.class)) {
+                Buchung buchung = (Buchung)b;
+                Kunde kunde = buchung.getAttributeValueOf(Buchung.Attributes.KUNDE);
+                Fahrzeug fahrzeug = buchung.getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
+                if (kunde != null) {
+                    if (entityManager.find(Kunde.class, kunde.getElementID()) == null) {
+                        try {
+                            buchung.setAttributeValueOf(Buchung.Attributes.STATUS, Buchungsstatus.INVALIDE);
+                            buchung.setAttributeValueOf(Buchung.Attributes.KUNDE, new Kunde());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                if (fahrzeug != null) {
+                    if (entityManager.find(Fahrzeug.class, fahrzeug.getElementID()) == null) {
+                        try {
+                            buchung.setAttributeValueOf(Buchung.Attributes.STATUS, Buchungsstatus.INVALIDE);
+                            buchung.setAttributeValueOf(Buchung.Attributes.FAHRZEUG, new Fahrzeug());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+
+
+
+            //---
+            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class) ) );
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             try {

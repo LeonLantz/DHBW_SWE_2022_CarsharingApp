@@ -16,6 +16,7 @@ import gui.customComponents.CustomTableComponent;
 import gui.customComponents.NavigationBar;
 import model.*;
 import util.CSHelp;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -117,7 +118,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{145, 140, 140, 75, 75, 140, 75, 33, 33})
+                .columnWidths(new int[]{35, 120, 100, 105, 105, 90, 140, 99, 33, 33})
                 .modelClass(Buchung.class)
                 .build();
 
@@ -136,13 +137,13 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _fahrzeugeTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{150, 100, 50, 80, 115, 110, 89, 100, 33, 33})
+                .columnWidths(new int[]{35, 150, 100, 65, 50, 80, 115, 100, 99, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
         _fahrzeugePanel = ContentPanel.builder(CONTENT_PANEL_FAHRZEUGE)
                 .title(title)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Fahrzeug.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuesFahrzeugAnlegen.png"), Fahrzeug.class))
                 .observer(this)
                 .table(_fahrzeugeTable)
                 .propManager(this._propManager)
@@ -155,7 +156,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _kundenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{100, 100, 160, 130, 130, 149, 33, 33})
+                .columnWidths(new int[]{35, 100, 100, 180, 150, 130, 99, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
 
@@ -174,7 +175,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _standorteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{100, 100, 100, 100, 100, 100, 100, 90, 33, 33})
+                .columnWidths(new int[]{35, 60, 100, 140, 280, 80, 99, 33, 33})
                 .modelClass(Standort.class)
                 .build();
 
@@ -249,7 +250,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         //ContentTop
         JPanel contentTop = new JPanel(new BorderLayout(0, 0));
         contentTop.setPreferredSize(new Dimension(720, 282));
-        contentTop.setBackground(Color.white);
+        contentTop.setBackground(CSHelp.main);
         content.add(contentTop, BorderLayout.NORTH);
 
         //ContentBottom
@@ -304,7 +305,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         //ContentBottomCenter
         JPanel contentBottomCenter = new JPanel(new BorderLayout(0, 0));
-        contentBottomCenter.setBackground(Color.darkGray);
+        contentBottomCenter.setBackground(CSHelp.main);
         contentBottom.add(contentBottomCenter, BorderLayout.CENTER);
 
         _übersichtPanel.add(content, BorderLayout.CENTER);
@@ -452,21 +453,38 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_KUNDEN) {
             List<Kunde> lstKunde = (List<Kunde>) ue.getData();
+            if (lstKunde.isEmpty()) {
+                lstKunde.add(new Kunde());
+            }
             IDepictable[] modelData = new IDepictable[lstKunde.size()];
             lstKunde.toArray(modelData);
             _kundenTable.setModelData(modelData);
+        } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BUCHUNGEN) {
+            List<Buchung> lstBuchung = (List<Buchung>) ue.getData();
+            if (lstBuchung.isEmpty()) {
+                lstBuchung.add(new Buchung());
+            }
+            IDepictable[] modelData = new IDepictable[lstBuchung.size()];
+            lstBuchung.toArray(modelData);
+            _buchungenTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_FAHRZEUGE) {
             List<Fahrzeug> lstFahrzeug = (List<Fahrzeug>) ue.getData();
+            if (lstFahrzeug.isEmpty()) {
+                lstFahrzeug.add(new Fahrzeug());
+            }
             IDepictable[] modelData = new IDepictable[lstFahrzeug.size()];
             lstFahrzeug.toArray(modelData);
             _fahrzeugeTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STANDORTE) {
             List<Standort> lstStandort = (List<Standort>) ue.getData();
+            if (lstStandort.isEmpty()) {
+                lstStandort.add(new Standort());
+            }
             IDepictable[] modelData = new IDepictable[lstStandort.size()];
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BILDER) {
-            if(_currentObject != null) {
+            if (_currentObject != null) {
                 String primaryKey = _currentObject.getElementID();
                 List<Bild> bildList = new ArrayList<>();
 

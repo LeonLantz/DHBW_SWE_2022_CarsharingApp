@@ -6,6 +6,8 @@ import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
 import javax.swing.*;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,7 +57,6 @@ public class ElementFactory {
 	 * @throws Exception
 	 */
 	public IPersistable createElement(Class<?> c, String[] csvData) throws Exception {
-
 		if (c == null) {
 			throw new IllegalArgumentException("Klasse muss angegeben werden ( Klasse ist null )!");
 		}
@@ -113,6 +114,24 @@ public class ElementFactory {
 
 			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
 		}
+		else if ( c == Buchung.class ) {
+			String id = csvData[ Buchung.CSVPositions.ID.ordinal() ];
+			String buchungsnummer = csvData[ Buchung.CSVPositions.BUCHUNGSNUMMER.ordinal() ];
+			String kunde = csvData[ Buchung.CSVPositions.KUNDE.ordinal() ];
+			String fahrzeug = csvData[ Buchung.CSVPositions.FAHRZEUG.ordinal() ];
+			String start_date = csvData[ Buchung.CSVPositions.START_DATE.ordinal() ];
+			String end_date = csvData[ Buchung.CSVPositions.END_DATE.ordinal() ];
+			String status = csvData[ Buchung.CSVPositions.STATUS.ordinal() ];
+			String last_edit = csvData[ Buchung.CSVPositions.LAST_EDIT.ordinal() ];
+
+			if ( entityManager.find(Kunde.class, kunde) == null ) {
+				status = Buchungsstatus.INVALIDE.getBezeichner();
+			}
+			if(  entityManager.find(Fahrzeug.class, fahrzeug) == null ) {
+				status = Buchungsstatus.INVALIDE.getBezeichner();
+			}
+			persistableElement = new Buchung(id, buchungsnummer, (Kunde) entityManager.find(Kunde.class, kunde), (Fahrzeug) entityManager.find(Fahrzeug.class, fahrzeug), LocalDateTime.parse(start_date), LocalDateTime.parse(end_date), Buchungsstatus.fromString(status), LocalDateTime.parse(last_edit));
+		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];
 //			String nachName = csvData[ Person.CSVPositions.NACHNAME.ordinal() ];
@@ -160,6 +179,12 @@ public class ElementFactory {
 		entityManager.persist( persistableElement );
 
 		return persistableElement;
+	}
+
+	private class InvalideBuchungException extends Exception {
+		public InvalideBuchungException(String message) {
+			super(message);
+		}
 	}
 
 	/**
