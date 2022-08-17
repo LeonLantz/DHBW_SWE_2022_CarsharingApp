@@ -109,38 +109,38 @@ public class CSVHelper {
 
   public static String getKundenHeaderLineCSVFormatted(String separator) {
     Kunde.CSVPositions[] attNames = Kunde.CSVPositions.values();
-    String out = "";
+    StringBuilder out = new StringBuilder("#");
     for (Object o : Arrays.stream(attNames).toArray()) {
-      out += o.toString() + separator;
+      out.append(o.toString()).append(separator);
     }
-    return out;
+    return out.toString();
   }
 
   public static String getFahrzeugeHeaderLineCSVFormatted(String separator) {
     Fahrzeug.CSVPositions[] attNames = Fahrzeug.CSVPositions.values();
-    String out = "";
+    StringBuilder out = new StringBuilder("#");
     for (Object o : Arrays.stream(attNames).toArray()) {
-      out += o.toString() + separator;
+      out.append(o.toString()).append(separator);
     }
-    return out;
+    return out.toString();
   }
 
   public static String getBilderHeaderLineCSVFormatted(String separator) {
     Bild.CSVPositions[] attNames = Bild.CSVPositions.values();
-    String out = "";
+    StringBuilder out = new StringBuilder("#");
     for (Object o : Arrays.stream(attNames).toArray()) {
-      out += o.toString() + separator;
+      out.append(o.toString()).append(separator);
     }
-    return out;
+    return out.toString();
   }
 
   public static String getStandorteHeaderLineCSVFormatted(String separator) {
     Standort.CSVPositions[] attNames = Standort.CSVPositions.values();
-    String out = "";
+    StringBuilder out = new StringBuilder("#");
     for (Object o : Arrays.stream(attNames).toArray()) {
-      out += o.toString() + separator;
+      out.append(o.toString()).append(separator);
     }
-    return out;
+    return out.toString();
   }
 
 }
