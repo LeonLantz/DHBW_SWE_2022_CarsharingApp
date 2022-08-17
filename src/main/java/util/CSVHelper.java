@@ -161,4 +161,13 @@ public class CSVHelper {
     }
     return out.toString();
   }
+
+  public static String getBuchungenHeaderLineCSVFormatted(String separator) {
+    Buchung.CSVPositions[] attNames = Buchung.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
+  }
 }

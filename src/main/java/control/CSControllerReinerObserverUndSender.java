@@ -165,7 +165,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
-        this.writeCSVData(csvDirectory+"Buchungen.csv", BuchungenCSVOut, ";", "#ID;Buchungsnummer;Kunde;Fahrzeug;Start;End;Status;last_edited;");
+        this.writeCSVData(csvDirectory+"Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
         System.out.println("");
     }
 
