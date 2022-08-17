@@ -156,7 +156,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
         List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
 
-        //TODO: generate 'headerLine' dynamically (according to current model attributes)
         String separator = ";";
         this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
@@ -170,27 +169,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvFilename, separator, headerLine);
         workingCSVWriter.writeData(csvData);
     }
-
-    public void writeAllCSVData(String csvDirectory) throws IOException {
-        //TODO: add all persistable model classes
-        List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
-        List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
-        List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
-        List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
-
-        //TODO: generate 'headerLine' dynamically (according to current model attributes)
-        this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, ";", "#ID;ImageFile;Vorname;Nachname;Email;Phone;IBAN;dateOfBirth;last_edited;");
-        this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, ";", "#ID;Bezeichnung;Marke;Motor;Türen;Sitze;Kofferraumvolumen;Gewicht;Fahrzeugkategorie;Führerscheinklasse;Nummernschild;Tüv_Bis;Farbe;last_edited;");
-        this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, ";", "#ID;Title;FilePath;Key;");
-        this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, ";", "#ID;STRASSE;PLZ;ORT;LAND;KOORDINATEN;KAPAZITÄT;LAST_EDIT;");
-
-    }
-
-    public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
-        WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvFilename, separator, headerLine);
-        workingCSVWriter.writeData(csvData);
-    }
-
 
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
     @Override

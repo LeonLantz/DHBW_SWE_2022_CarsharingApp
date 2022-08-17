@@ -36,7 +36,7 @@ public class Standort implements IDepictable, IPersistable {
          * Attribute erzeugen, die folgende Einstellungen haben:
          * Name, Klasse (Typ), sichtbar, aenderbar, editierbar
          */
-        ID( "   ID", String.class, true, false, false ),
+        ID( "ID", String.class, true, false, false ),
         STRASSE( "Straße", String.class, true, false, false ),
         PLZ( "PLZ", String.class, true, false, false ),
         ORT( "Ort", String.class, true, false, false ),
@@ -62,6 +62,9 @@ public class Standort implements IDepictable, IPersistable {
         private Attribute createAttribute(Object dedicatedInstance, Object value, Object defaultValue ) {
             return new Attribute( this.name, dedicatedInstance, this.clazz, value,
                     defaultValue, this.visible, this.modifiable, this.editable, false );  // mandatory
+        }
+        public String getName() {
+            return this.name;
         }
     }
 

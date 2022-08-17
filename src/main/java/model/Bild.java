@@ -23,11 +23,11 @@ public class Bild implements IDepictable, IPersistable {
 
     public enum Attributes {
 
-        ID( "   ID", String.class, false, false, false ),
+        ID( "ID", String.class, false, false, false ),
         TITLE( "Title", String.class, true, false, false ),
         FILEPATH( "FilePath", String.class, true, false, false ),
         IMAGE( "Image", ImageIcon.class, true, false, false ),
-        KEY( "Key", ImageIcon.class, true, false, false );
+        KEY( "Key", String.class, true, false, false );
 
         private final String name;
         private final boolean visible;
@@ -46,6 +46,9 @@ public class Bild implements IDepictable, IPersistable {
         private Attribute createAttribute(Object dedicatedInstance, Object value, Object defaultValue ) {
             return new Attribute( this.name, dedicatedInstance, this.clazz, value,
                     defaultValue, this.visible, this.modifiable, this.editable, false );  // mandatory
+        }
+        public String getName() {
+            return this.name;
         }
     }
 
