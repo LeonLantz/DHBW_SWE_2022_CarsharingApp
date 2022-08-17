@@ -76,6 +76,9 @@ public class Fahrzeug implements IDepictable, IPersistable {
             return new Attribute( this.name, dedicatedInstance, this.clazz, value,
                     defaultValue, this.visible, this.modifiable, this.editable, false );  // mandatory
         }
+        public String getName() {
+            return this.name;
+        }
     }
 
     /**

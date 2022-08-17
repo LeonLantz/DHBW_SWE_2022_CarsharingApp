@@ -1,7 +1,10 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IPersistable;
@@ -10,59 +13,95 @@ import model.*;
 
 public class CSVHelper {
   //TODO: make methods dynamic for each model class (duplicate code)
+  //  --> create generic interface with new getAttributeList() or similar, let it get extended by every model class
 
+
+  // Following methods provide all persisted entities for a given model class in a specific CSV-formatted form
+  // Only attributes for CSV writing are provided (according to CSVPosition Enums in model classes)
   public static List<String[]> getPersistedKundenCSVFormatted(CommonEntityManager entityManager) {
-    List<IPersistable> allPersistedClassElements = entityManager.findAll(Kunde.class);
-    List<String[]> data = new ArrayList<>();
-    for (Object PersistableElement : allPersistedClassElements) {
-      String[] attValue = new String[((Kunde) PersistableElement).getAttributes().toArray().length];
-      for (int i = 0; i < attValue.length; i++) {
-        attValue[i] = ((Kunde) PersistableElement).getAttributes().get(i).getValue().toString();
+    List<String[]> CSVRecords = new ArrayList<>();
+    List<String> CSVAttNames = Stream.of(Kunde.CSVPositions.values()).map(Kunde.CSVPositions::name).collect(Collectors.toList());
+    List<IPersistable> allPersistedModelEntities = entityManager.findAll(Kunde.class);
+
+    for (Object entity : allPersistedModelEntities) {
+      String[] SingleEntityRecord = new String[CSVAttNames.size()];
+      Attribute[] entityAttsAndValues = ((Kunde) entity).getAttributeArray();
+      for (Attribute specificAtt : entityAttsAndValues) {
+        for (int i = 0; i < CSVAttNames.size(); i++) {
+          if (specificAtt.getName() == Kunde.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
+            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            break;
+          }
+        }
       }
-      data.add(attValue);
+      CSVRecords.add(SingleEntityRecord);
     }
-    return data;
+    return CSVRecords;
   }
 
   public static List<String[]> getPersistedFahrzeugeCSVFormatted(CommonEntityManager entityManager) {
-    List<IPersistable> allPersistedClassElements = entityManager.findAll(Fahrzeug.class);
-    List<String[]> data = new ArrayList<>();
-    for (Object PersistableElement : allPersistedClassElements) {
-      String[] attValue = new String[((Fahrzeug) PersistableElement).getAttributes().toArray().length];
-      for (int i = 0; i < attValue.length; i++) {
-        attValue[i] = ((Fahrzeug) PersistableElement).getAttributes().get(i).getValue().toString();
+    List<String[]> CSVRecords = new ArrayList<>();
+    List<String> CSVAttNames = Stream.of(Fahrzeug.CSVPositions.values()).map(Fahrzeug.CSVPositions::name).collect(Collectors.toList());
+    List<IPersistable> allPersistedModelEntities = entityManager.findAll(Fahrzeug.class);
+
+    for (Object entity : allPersistedModelEntities) {
+      String[] SingleEntityRecord = new String[CSVAttNames.size()];
+      Attribute[] entityAttsAndValues = ((Fahrzeug) entity).getAttributeArray();
+      for (Attribute specificAtt : entityAttsAndValues) {
+        for (int i = 0; i < CSVAttNames.size(); i++) {
+          if (specificAtt.getName() == Fahrzeug.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
+            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            break;
+          }
+        }
       }
-      data.add(attValue);
+      CSVRecords.add(SingleEntityRecord);
     }
-    return data;
+    return CSVRecords;
   }
 
   public static List<String[]> getPersistedBilderCSVFormatted(CommonEntityManager entityManager) {
-    List<IPersistable> allPersistedClassElements = entityManager.findAll(Bild.class);
-    List<String[]> data = new ArrayList<>();
-    for (Object PersistableElement : allPersistedClassElements) {
-      String[] attValue = new String[((Bild) PersistableElement).getAttributes().toArray().length];
-      for (int i = 0; i < attValue.length; i++) {
-        attValue[i] = ((Bild) PersistableElement).getAttributes().get(i).getValue().toString();
+    List<String[]> CSVRecords = new ArrayList<>();
+    List<String> CSVAttNames = Stream.of(Bild.CSVPositions.values()).map(Bild.CSVPositions::name).collect(Collectors.toList());
+    List<IPersistable> allPersistedModelEntities = entityManager.findAll(Bild.class);
+
+    for (Object entity : allPersistedModelEntities) {
+      String[] SingleEntityRecord = new String[CSVAttNames.size()];
+      Attribute[] entityAttsAndValues = ((Bild) entity).getAttributeArray();
+      for (Attribute specificAtt : entityAttsAndValues) {
+        for (int i = 0; i < CSVAttNames.size(); i++) {
+          if (specificAtt.getName() == Bild.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
+            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            break;
+          }
+        }
       }
-      data.add(attValue);
+      CSVRecords.add(SingleEntityRecord);
     }
-    return data;
+    return CSVRecords;
   }
 
   public static List<String[]> getPersistedStandorteCSVFormatted(CommonEntityManager entityManager) {
-    List<IPersistable> allPersistedClassElements = entityManager.findAll(Standort.class);
-    List<String[]> data = new ArrayList<>();
-    for (Object PersistableElement : allPersistedClassElements) {
-      String[] attValue = new String[((Standort) PersistableElement).getAttributes().toArray().length];
-      for (int i = 0; i < attValue.length; i++) {
-        attValue[i] = ((Standort) PersistableElement).getAttributes().get(i).getValue().toString();
-      }
-      data.add(attValue);
-    }
-    return data;
-  }
+    List<String[]> CSVRecords = new ArrayList<>();
+    List<String> CSVAttNames = Stream.of(Standort.CSVPositions.values()).map(Standort.CSVPositions::name).collect(Collectors.toList());
+    List<IPersistable> allPersistedModelEntities = entityManager.findAll(Standort.class);
 
+    for (Object entity : allPersistedModelEntities) {
+      String[] SingleEntityRecord = new String[CSVAttNames.size()];
+      Attribute[] entityAttsAndValues = ((Standort) entity).getAttributeArray();
+      for (Attribute specificAtt : entityAttsAndValues) {
+        for (int i = 0; i < CSVAttNames.size(); i++) {
+          if (specificAtt.getName() == Standort.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
+            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            break;
+          }
+        }
+      }
+      CSVRecords.add(SingleEntityRecord);
+    }
+    return CSVRecords;
+  }
+  
   public static List<String[]> getPersistedBuchungenCSVFormatted(CommonEntityManager entityManager) {
     List<IPersistable> allPersistedClassElements = entityManager.findAll(Buchung.class);
     List<String[]> data = new ArrayList<>();
@@ -83,5 +122,43 @@ public class CSVHelper {
       data.add(attValue);
     }
     return data;
+  }
+
+// --------------------------------------------------------------------------------------------------------
+
+  public static String getKundenHeaderLineCSVFormatted(String separator) {
+    Kunde.CSVPositions[] attNames = Kunde.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
+  }
+
+  public static String getFahrzeugeHeaderLineCSVFormatted(String separator) {
+    Fahrzeug.CSVPositions[] attNames = Fahrzeug.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
+  }
+
+  public static String getBilderHeaderLineCSVFormatted(String separator) {
+    Bild.CSVPositions[] attNames = Bild.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
+  }
+
+  public static String getStandorteHeaderLineCSVFormatted(String separator) {
+    Standort.CSVPositions[] attNames = Standort.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
   }
 }
