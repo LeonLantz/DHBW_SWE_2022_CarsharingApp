@@ -6,11 +6,14 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
+import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.AppLogger;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import de.dhbwka.swe.utils.util.IAppLogger;
+import gui.GUIBuchungAnlegen;
 import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
@@ -23,11 +26,13 @@ import util.ElementFactory;
 import util.WorkingCSVReader;
 import util.WorkingCSVWriter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CSControllerReinerObserverUndSender implements IGUIEventListener, IUpdateEventSender {
 
@@ -45,8 +50,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         SET_FAHRZEUGE("Controller.setFahrzeuge", List.class),
         SET_KUNDEN("Controller.setKunden", List.class),
         SET_STANDORTE("Controller.setStandorte", List.class),
-        SET_BILDER("Controller.setBilder", IDepictable.class),
-        DELETE_BILD("Controller.deleteBild", IDepictable.class),
         SET_STATISTICS("Controller.setStatistics", Integer[].class);
 
         public final Class<?> payloadType;
@@ -96,8 +99,12 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
     private static final String sp = File.separator;
 
     public CSControllerReinerObserverUndSender() {
-		_logger.setSeverity(  IAppLogger.Severity.DEBUG_LOW );
+        _logger.setSeverity(IAppLogger.Severity.DEBUG_LOW);
     }
+
+    private Class _currentObjectClass;
+    private IDepictable _currentObject;
+    private ObservableComponent _dialogWindowComponent;
 
     //TODO: probably delete unused parameter "propFile"
 
@@ -152,6 +159,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             });
         }
     }
+
     public void writeAllCSVData(String csvDirectory) throws IOException {
         //TODO: add all persistable model classes
         List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
@@ -161,18 +169,37 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<String[]> BuchungenCSVOut = CSVHelper.getPersistedBuchungenCSVFormatted(this.entityManager);
 
         String separator = ";";
-        this.writeCSVData(csvDirectory+"Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
-        this.writeCSVData(csvDirectory+"Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
-        this.writeCSVData(csvDirectory+"Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
-        this.writeCSVData(csvDirectory+"Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
-        this.writeCSVData(csvDirectory+"Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
         System.out.println("");
+
     }
 
     public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
         WorkingCSVWriter workingCSVWriter = new WorkingCSVWriter(csvFilename, separator, headerLine);
         workingCSVWriter.writeData(csvData);
     }
+
+    private List<IDepictable> getBilderByKey(String primaryKey) {
+        List<IPersistable> alleBilder = entityManager.findAll(Bild.class);
+        List<Bild> lstBild = new ArrayList<>();
+        for (IPersistable iPersistable : alleBilder) {
+            lstBild.add((Bild) iPersistable);
+        }
+        lstBild = lstBild.stream()
+                .filter(b -> b.getSecondaryKey().equals(primaryKey))
+                .collect(Collectors.toList());
+
+        List<IDepictable> returnList = new ArrayList<>();
+        for (Bild bild : lstBild) {
+            returnList.add(bild);
+        }
+        return returnList;
+    }
+
 
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
     @Override
@@ -190,17 +217,85 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
     public void processGUIEvent(GUIEvent ge) {
         _logger.debug("Hier ist der Controller!   Event: " + ge);
 
+        // Button zum Erstellen eines neuen Entities (Kunde, Fahrzeug, ...) wurde gedrückt
         if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
-            if (ge.getData() == Kunde.class) {
-                GUIKundeAnlegen guiKundeAnlegen = new GUIKundeAnlegen(this);
-                CSHelp.createJDialog(guiKundeAnlegen, new Dimension(500, 400));
-            } else if (ge.getData() == Fahrzeug.class) {
-                GUIFahrzeugAnlegen guiFahrzeugAnlegen = new GUIFahrzeugAnlegen(this);
-                CSHelp.createJDialog(guiFahrzeugAnlegen, new Dimension(500, 700));
-            } else if (ge.getData() == Standort.class) {
+            _currentObjectClass = (Class) ge.getData();
+            if (_currentObjectClass == Buchung.class) {
+                _dialogWindowComponent = new GUIBuchungAnlegen(this, entityManager.findAll(Kunde.class), entityManager.findAll(Fahrzeug.class));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 500));
+            } else if (_currentObjectClass == Fahrzeug.class) {
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this);
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
+            } else if (_currentObjectClass == Kunde.class) {
+                _dialogWindowComponent = new GUIKundeAnlegen(this);
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
+            } else if (_currentObjectClass == Standort.class) {
                 //TODO: Standort anlegen und bearbeiten ausarbeiten
             }
-        } else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
+        }
+        // Button zum Bearbeiten eines Tabelleneintrags (Entity) wurde gedrückt
+        else if (ge.getCmd().equals(CustomTableComponent.Commands.EDIT_ROW)) {
+            _currentObjectClass = ((IDepictable) ge.getData()).getClass();
+            _currentObject = (IDepictable) ge.getData();
+
+            if (_currentObjectClass == Buchung.class) {
+
+            } else if (_currentObjectClass == Fahrzeug.class) {
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
+                ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
+            } else if (_currentObjectClass == Kunde.class) {
+                _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
+                //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
+            } else if (_currentObjectClass == Standort.class) {
+
+            }
+
+        }
+        // Eintrag einer SimpleListComponent wurde ausgewählt
+        else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
+            SimpleListComponent slc = null;
+
+            if (ge.getData() == null) {
+                return;
+            }
+
+            if (ge.getData().getClass() == Bild.class) {
+                if (_currentObjectClass == Kunde.class) {
+                    slc = ((GUIKundeAnlegen) _dialogWindowComponent).getBildList().getSlc();
+                } else if (_currentObjectClass == Fahrzeug.class) {
+                    slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().getSlc();
+                }
+                Bild bild = (Bild) ge.getData();
+                ImageIcon imageIcon = bild.getImage();
+                String[] options = new String[]{"Schließen", "Löschen"};
+                int answer = JOptionPane.showOptionDialog(null, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
+                if (answer == 0) {
+                    slc.clearSelection();
+                } else if (answer == 1) {
+                    this.entityManager.remove((IPersistable) ge.getData());
+                    if (_currentObjectClass == Fahrzeug.class) {
+                        ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                    } else if (_currentObjectClass == Kunde.class) {
+
+                    }
+                }
+            } else if (ge.getData().getClass() == Kunde.class) {
+                CustomListField clfKunden = ((GUIBuchungAnlegen) _dialogWindowComponent).getKundenSLC();
+                int a = JOptionPane.showConfirmDialog(null, "Wollen Sie der Buchung den Kunden: " + clfKunden.getSlc().getSelectedElement().toString() + " zuordnen?", "Sicher?", JOptionPane.YES_NO_OPTION);
+                if (a == 0) {
+                    //TODO: Neuen Kunden zuordnen
+                } else {
+                    clfKunden.getSlc().clearSelection();
+                }
+            } else if (ge.getData().getClass() == Fahrzeug.class) {
+                CustomListField clfFahrzeuge = ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC();
+                System.out.println(clfFahrzeuge.getSlc().getSelectedElement());
+            }
+        }
+        // Entity: Fahrzeug hinzufügen
+        else if (ge.getCmd().equals(GUIFahrzeugAnlegen.Commands.ADD_FAHRZEUG)) {
             String[] fahrzeugAttribute = (String[]) ge.getData();
             try {
                 this.elementFactory.createElement(Fahrzeug.class, fahrzeugAttribute);
@@ -209,17 +304,34 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ENTITY)) {
-            //TODO: Element löschen
-            entityManager.remove((IPersistable)ge.getData());
-            fireUpdateEvent( new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class) ) );
-            fireUpdateEvent( new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class) ) );
-            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class) ) );
-            fireUpdateEvent( new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class) ) );
+        }
+        // Entity: Bild hinzufügen
+        else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
+            String[] bildData = (String[]) ge.getData();
+            try {
+                this.elementFactory.createElement(Bild.class, bildData );
+                if (_currentObjectClass == Buchung.class) {
 
-            //---
+                } else if (_currentObjectClass == Fahrzeug.class) {
+                    ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(bildData[3]));
+                } else if (_currentObjectClass == Kunde.class) {
+                    //((GUIKundeAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
+                } else if (_currentObjectClass == Standort.class) {
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // Entity löschen
+        else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ENTITY)) {
+            entityManager.remove((IPersistable) ge.getData());
+            fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
+            fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
+            fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+
             for (IPersistable b : entityManager.findAll(Buchung.class)) {
-                Buchung buchung = (Buchung)b;
+                Buchung buchung = (Buchung) b;
                 Kunde kunde = buchung.getAttributeValueOf(Buchung.Attributes.KUNDE);
                 Fahrzeug fahrzeug = buchung.getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
                 if (kunde != null) {
@@ -244,49 +356,33 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     }
                 }
             }
-
-
-
-
-            //---
-            fireUpdateEvent( new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class) ) );
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
-        } else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
-            try {
-                this.elementFactory.createElement(Bild.class, (String[]) ge.getData());
-                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (ge.getCmd().equals(MainComponentMitNavBar.Commands.UPDATE_IMAGES)) {
-            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
-        } else if (ge.getCmd().equals(Commands.DELETE_BILD)) {
-            this.entityManager.remove((IPersistable) ge.getData());
-            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BILDER, entityManager.findAll(Bild.class)));
         }
     }
-		
-	/**
-	 * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
-	 * @param ue
-	 */
-	private void fireUpdateEvent( UpdateEvent ue ) {
-		for (EventListener eventListener : allListeners) {
-			if( eventListener instanceof IUpdateEventListener ) {
-				((IUpdateEventListener)eventListener).processUpdateEvent(ue);
-			}
-		}
-	}
 
-	public List<EventListener> getAllListeners() {
-		return allListeners;
-	}
+    /**
+     * zum Senden von UpdateEvents an entsprechende Listener (IUpdateEventListener)
+     *
+     * @param ue
+     */
+    private void fireUpdateEvent(UpdateEvent ue) {
+        for (EventListener eventListener : allListeners) {
+            if (eventListener instanceof IUpdateEventListener) {
+                ((IUpdateEventListener) eventListener).processUpdateEvent(ue);
+            }
+        }
+    }
 
-	public CommonEntityManager getEntityManager() {
-		return entityManager;
-	}
+    public List<EventListener> getAllListeners() {
+        return allListeners;
+    }
 
-	public ElementFactory getElementFactory() {
-		return elementFactory;
-	}
+    public CommonEntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public ElementFactory getElementFactory() {
+        return elementFactory;
+    }
 }

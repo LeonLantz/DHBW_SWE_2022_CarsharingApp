@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Buchungsstatus {
     ERSTELLT("Erstellt"),
     AKTIV("Aktiv"),
@@ -17,6 +20,14 @@ public enum Buchungsstatus {
             }
         }
         return null;
+    }
+
+    public static String[] getArray() {
+        List<String> list = new ArrayList<>();
+        for (Buchungsstatus buchungsstatus : Buchungsstatus.values()) {
+            list.add(buchungsstatus.bezeichner);
+        }
+        return list.toArray(new String[list.size()]);
     }
 
     Buchungsstatus(String bezeichner) {

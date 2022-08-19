@@ -68,9 +68,6 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
     private JButton save_fahrzeug;
 
     private IDepictable iDepictable;
-    //private List bildList, documentList;
-
-    private CustomInputField inputBezeichnung, inputMarke, inputMotor, inputTüren, inputSitze, inputKofferraumvolumen, inputGewicht, inputFahrzeugkategorie, inputFührerscheinklasse, inputNummernschild, inputTüvBis, inputFarbe, inputLastEdit;
 
     //constructor for creating new Object
     public GUIFahrzeugAnlegen(IGUIEventListener observer) {
@@ -148,8 +145,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         //TODO: Fahrzeugbilder und Dokumente
         inputFieldMap.put("TüvBis", new CustomTextField("TüvBis", "Format: TT.MM.YYYY"));
         inputFieldMap.put("Farbe", new CustomTextField("Farbe", "Farbe des Fahrzeuges"));
-        inputFieldMap.put("Bilder", new CustomListField("Bilder", "placeholder", this.observer, this.iDepictable ));
-        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer, this.iDepictable ));
+        inputFieldMap.put("Bilder", new CustomListField("Bilder", this.observer, this.iDepictable ));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this.observer, this.iDepictable ));
 
 
         int leftPanelCount = 0;
@@ -203,7 +200,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         save_fahrzeug.requestFocus();
     }
 
-    public void updateBildList(List<Bild> bilder) {
+    public void updateBildList(List<IDepictable> bilder) {
         CustomListField customListField = (CustomListField) inputFieldMap.get("Bilder");
         customListField.setListElements(bilder);
     }

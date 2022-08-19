@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class MainComponentMitNavBar extends ObservableComponent implements IGUIEventListener, IUpdateEventListener {
     public enum Commands implements EventCommand {
-        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Attribute.class),
+        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Class.class),
         REMOVE_KUNDE("MainComponentMitNavBar.remove_kunde", String.class),
         UPDATE_IMAGES("MainComponentMitNavBar.update_images", IDepictable.class);
 
@@ -81,9 +81,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private CustomTableComponent _standorteTable;
     private CustomTableComponent _dokumenteTable;
 
-    private ObservableComponent _dialogWindowComponent;
-    private IDepictable _currentObject;
-
     private HeaderTile _tileKunden, _tileBuchungen, _tileFahrzeuge, _tileStandorte;
 
     public MainComponentMitNavBar(PropertyManager propertyManager) throws Exception {
@@ -125,7 +122,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenPanel = ContentPanel.builder(CONTENT_PANEL_BUCHUNGEN)
                 .title(title)
                 .table(_buchungenTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Buchung.class))
+                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neueBuchungAnlegen.png"), Buchung.class))
                 .observer(this)
                 .propManager(this._propManager)
                 .build();
@@ -395,7 +392,9 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
         if (ge.getData() == null) {
             return;
-        } else if (ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
+        }
+        // Nutzer wählt einen Button in der NavigationBar aus
+        else if (ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             _navigationBar.setActive((String) ge.getData());
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
@@ -408,39 +407,12 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                     }
                 }
             });
-        } else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ENTITY.cmdText)) {
+        }
+        // Button zum Löschen eines Tabelleneintrags (Entity) wird gedrückt
+        else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ENTITY.cmdText)) {
             int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
             if (n == 0) {
                 fireGUIEvent(ge);
-            }
-        } else if (ge.getCmdText().equals(CustomTableComponent.Commands.EDIT_ROW.cmdText)) {
-            _currentObject = (IDepictable) ge.getData();
-
-            if (_currentObject.getClass() == Kunde.class) {
-                _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
-                this.fireGUIEvent(new GUIEvent(this, Commands.UPDATE_IMAGES, _currentObject));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
-            } else if (_currentObject.getClass() == Fahrzeug.class) {
-                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
-                this.fireGUIEvent(new GUIEvent(this, Commands.UPDATE_IMAGES, _currentObject));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
-            }
-        } else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
-            if (ge.getData().getClass() == Bild.class) {
-                Bild bild = (Bild) ge.getData();
-                ImageIcon imageIcon = bild.getImage();
-                String[] options = new String[]{"Schließen", "Löschen"};
-                int answer = JOptionPane.showOptionDialog(null, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
-                if (answer == 0) {
-                    //TODO: Clear list selection
-                    if (_currentObject.getClass() == Kunde.class) {
-                        ((GUIKundeAnlegen) _dialogWindowComponent).getBildList().getSlc().clearSelection();
-                    } else if (_currentObject.getClass() == Fahrzeug.class) {
-                        ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().getSlc().clearSelection();
-                    }
-                } else if (answer == 1) {
-                    fireGUIEvent(new GUIEvent(this, CSControllerReinerObserverUndSender.Commands.DELETE_BILD, bild));
-                }
             }
         } else {
             fireGUIEvent(ge);
@@ -483,25 +455,6 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             IDepictable[] modelData = new IDepictable[lstStandort.size()];
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);
-        } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BILDER) {
-            if (_currentObject != null) {
-                String primaryKey = _currentObject.getElementID();
-                List<Bild> bildList = new ArrayList<>();
-
-                for (IPersistable iPersistable : (List<IPersistable>) ue.getData()) {
-                    bildList.add((Bild) iPersistable);
-                }
-
-                bildList = bildList.stream()
-                        .filter(b -> b.getSecondaryKey().equals(primaryKey))
-                        .collect(Collectors.toList());
-
-                if (_currentObject.getClass() == Kunde.class) {
-
-                } else if (_currentObject.getClass() == Fahrzeug.class) {
-                    ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(bildList);
-                }
-            }
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STATISTICS) {
             Integer[] counts = (Integer[]) ue.getData();
             _tileKunden.updateCount(counts[0]);

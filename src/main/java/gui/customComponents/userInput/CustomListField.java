@@ -6,6 +6,7 @@ import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
 import model.Bild;
 import util.CSHelp;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,35 +24,71 @@ import java.util.UUID;
 
 public class CustomListField extends CustomInputField {
 
+    private IGUIEventListener observer;
+
     private SimpleListComponent slc;
     private IDepictable iDepictable;
 
-    public CustomListField(String title, String placeholder, IGUIEventListener observer, IDepictable iDepictable) {
+    // Für Kunde, Fahrzeug und Standort
+    public CustomListField(String title, IGUIEventListener observer, List<IDepictable> list) {
         this.addObserver(observer);
         this.title = title;
         this.iDepictable = iDepictable;
-        this.placeholder = placeholder;
         this.value = "";
+        this.observer = observer;
+        initUIEntity(list);
+    }
 
-        //InitUI
-        this.setLayout(new BorderLayout(0,0));
-        this.setPreferredSize(new Dimension(200,130));
-        this.setBorder(new EmptyBorder(10,10,0,10));
+    //Für Bild und Dokument (Kunde, Fahrzeug, Standort)
+    public CustomListField(String title, IGUIEventListener observer, IDepictable iDepictable) {
+        this.addObserver(observer);
+        this.title = title;
+        this.iDepictable = iDepictable;
+        this.value = "";
+        this.observer = observer;
+        initUIBild();
+    }
+
+    private void initUIEntity(List<IDepictable> list) {
+        this.setLayout(new BorderLayout(0, 0));
+        this.setBorder(new EmptyBorder(10, 10, 0, 10));
         this.setBackground(Color.WHITE);
 
-        slc = SimpleListComponent.builder("okayy")
+        slc = SimpleListComponent.builder("123456")
                 .title(title)
-                .observer(observer)
+                .observer(this.observer)
                 .font(CSHelp.lato.deriveFont(12f))
-                .componentSize(new Dimension(200,130))
+                .componentSize(new Dimension(182, 170))
+                .build();
+        slc.setListElements(list);
+
+        this.add(slc, BorderLayout.CENTER);
+    }
+
+    private void initUIBild() {
+        this.setLayout(new BorderLayout(0, 0));
+        this.setBorder(new EmptyBorder(10, 10, 0, 10));
+        this.setBackground(Color.WHITE);
+
+        slc = SimpleListComponent.builder("12345")
+                .title(title)
+                .observer(this.observer)
+                .font(CSHelp.lato.deriveFont(12f))
+                .componentSize(new Dimension(180, 130))
                 .build();
 
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         southPanel.setBackground(Color.white);
 
+        JPanel mainPanel = new JPanel(new BorderLayout(0,0));
+        mainPanel.add(slc, BorderLayout.CENTER);
+        mainPanel.add(southPanel, BorderLayout.EAST);
+
         JButton button = new JButton("+");
-        button.setBorder(new LineBorder(Color.black, 1));
-        button.setPreferredSize(new Dimension(20, 20));
+        button.setPreferredSize(new Dimension(15, 15));
+        button.setBorder(new EmptyBorder(0,0,0,0));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setToolTipText("Neues Objekt hinzufügen");
         southPanel.add(button);
 
         button.addActionListener(new ActionListener() {
@@ -81,24 +118,25 @@ public class CustomListField extends CustomInputField {
                         BufferedImage image = ImageIO.read(new File(path));
                         String answer = JOptionPane.showInputDialog(null, "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
                         slc.clearSelection();
+
                         String imageID = UUID.randomUUID().toString();
                         String filePath = "src/main/resources/SystemImages/" + imageID + ".png";
                         ImageIO.write(image, "png", new File(filePath));
                         String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
-                        fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues ));
+                        fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
 
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
+
                 }
             }
         });
 
-        this.add(southPanel, BorderLayout.SOUTH);
-        this.add(slc, BorderLayout.CENTER);
+        this.add(mainPanel, BorderLayout.CENTER);
     }
 
-    public void setListElements(List<Bild> objectList) {
+    public void setListElements(List<IDepictable> objectList) {
         slc.setListElements(objectList, true);
         slc.clearSelection();
     }
@@ -108,7 +146,10 @@ public class CustomListField extends CustomInputField {
     }
 
     @Override
-    public void setValue(String value) {}
+    public void setValue(String value) {
+    }
 
 
 }
+
+

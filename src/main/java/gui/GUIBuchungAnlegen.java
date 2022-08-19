@@ -4,13 +4,14 @@ import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
 import gui.customComponents.userInput.CustomComboBox;
 import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import gui.customComponents.userInput.CustomTextField;
 import model.Bild;
-import model.Fahrzeugkategorie;
+import model.Buchungsstatus;
 import model.Motorisierung;
 import util.CSHelp;
 import util.IValidate;
@@ -26,11 +27,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
+public class GUIBuchungAnlegen extends ObservableComponent implements IValidate {
 
     public enum Commands implements EventCommand {
 
-        ADD_KUNDE( "GUIKundeAnlegen.addKunde", String[].class );
+        ADD_BUCHUNG( "GUIBuchungAnlegen.addBuchung", String[].class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -61,27 +62,28 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
     private Map<String, CustomInputField> inputFieldMap;
 
     private IGUIEventListener observer;
-    private String randID;
 
     private JPanel topPanel, bottomPanel, leftPanel, rightPanel;
     private JLabel topLabelValue, topLabelDescription;
-    private JButton save_kunde;
+    private JButton save_buchung;
+
+    private String randID;
 
     private IDepictable iDepictable;
-    //private List bildList, documentList;
 
-    private CustomInputField inputVorname, inputNachname, inputEmail, inputPhone, inputIBAN, inputDOB;
-
+    private List<IDepictable> alleKunden, alleFahrzeuge;
 
     //constructor for creating new Object
-    public GUIKundeAnlegen(IGUIEventListener observer) {
+    public GUIBuchungAnlegen(IGUIEventListener observer, List alleKunden, List alleFahrzeuge) {
         this.addObserver(observer);
         this.observer = observer;
+        this.alleKunden = alleKunden;
+        this.alleFahrzeuge = alleFahrzeuge;
         initUI(true);
     }
 
     //constructor for editing an existing Object
-    public GUIKundeAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
+    public GUIBuchungAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
@@ -106,45 +108,43 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
 
         bottomPanel = new JPanel();
         bottomPanel.setBackground(Color.lightGray);
-        save_kunde = new JButton("Speichern!");
-        save_kunde.addActionListener(new ActionListener() {
+        save_buchung = new JButton("Speichern!");
+        save_buchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] test = getValues();
                 if(validateInput()) {
-                    int a = JOptionPane.showConfirmDialog(GUIKundeAnlegen.this, "Wollen sie den Kunden speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
+                    int a = JOptionPane.showConfirmDialog(GUIBuchungAnlegen.this, "Wollen Sie die Buchung speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
-                        fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, test ));
+                        fireGUIEvent( new GUIEvent(this, Commands.ADD_BUCHUNG, test ));
                     }
                 }
             }
         });
-        bottomPanel.add(save_kunde);
+        bottomPanel.add(save_buchung);
 
         leftPanel = new JPanel();
         rightPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+        rightPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
         leftPanel.setPreferredSize(new Dimension(250, 600));
         rightPanel.setPreferredSize(new Dimension(250, 600));
         leftPanel.setBorder(new EmptyBorder(10,10,10,10));
         rightPanel.setBorder(new EmptyBorder(10,10,10,10));
 
-
         inputFieldMap = new LinkedHashMap<>();
-        inputFieldMap.put("Vorname", new CustomTextField("Bezeichnung", "Fahrzeugbezeichnung"));
-        inputFieldMap.put("Nachname", new CustomTextField("Marke", "bsp.: Audi, Mercedes, ..."));
-        inputFieldMap.put("Email", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray(), observer));
-        inputFieldMap.put("Phone", new CustomTextField("Türen", "Anzahl der Türen"));
-        inputFieldMap.put("IBAN", new CustomTextField("Sitze", "Anzahl der Sitze"));
-        inputFieldMap.put("DOB", new CustomTextField("Kofferraumvolumen (l)", "Volumen in Liter"));;
-        //TODO: Fahrzeugbilder und Dokumente
-        inputFieldMap.put("Bilder", new CustomListField("Bilder", this.observer, this.iDepictable ));
-        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this.observer, this.iDepictable ));
+        inputFieldMap.put("Buchungsnummer", new CustomTextField("Buchungsnummer", "Buchungsnummer"));
+
+        inputFieldMap.put("Kunde", new CustomListField("Kunde", this.observer, this.alleKunden));
+        inputFieldMap.put("Start", new CustomTextField("Start", "Start"));
+        inputFieldMap.put("Status", new CustomComboBox("Status", "Buchungsstatus", Buchungsstatus.getArray(), observer));
+        inputFieldMap.put("Fahrzeug", new CustomListField("Fahrzeug", this.observer, this.alleFahrzeuge));
+        inputFieldMap.put("Ende", new CustomTextField("Ende", "Ende"));
+        //inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer, this.iDepictable ));
 
         int leftPanelCount = 0;
         for (CustomInputField customInputField : inputFieldMap.values()) {
-            if (leftPanelCount < 5) {
+            if (leftPanelCount < 3) {
                 leftPanel.add(customInputField);
             } else {
                 rightPanel.add(customInputField);
@@ -162,6 +162,16 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         } else {
             editKunde();
         }
+    }
+
+    private String[] getKunden() {
+        String[] alleKundenArray = new String[this.alleKunden.size()];
+        int index = 0;
+        for (IDepictable kunde : this.alleKunden) {
+            alleKundenArray[index] = kunde.toString();
+            index ++;
+        }
+        return alleKundenArray;
     }
 
     private void createKunde() {
@@ -184,8 +194,12 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         return allValues.toArray(new String[allValues.size()]);
     }
 
-    public CustomListField getBildList() {
-        return (CustomListField) inputFieldMap.get("Bilder");
+    public CustomListField getKundenSLC() {
+        return (CustomListField) inputFieldMap.get("Kunde");
+    }
+
+    public CustomListField getFahrzeugSLC() {
+        return (CustomListField) inputFieldMap.get("Fahrzeug");
     }
 
     @Override

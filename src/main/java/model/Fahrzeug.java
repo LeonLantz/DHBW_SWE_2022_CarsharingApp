@@ -183,8 +183,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
     @Override
     public String toString() {
         return this.attArr[ Attributes.MARKE.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.BEZEICHNUNG.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.FAHRZEUGKATEGORIE.ordinal() ].getValue();
+                + this.attArr[ Attributes.BEZEICHNUNG.ordinal() ].getValue();
     }
 
     @Override
