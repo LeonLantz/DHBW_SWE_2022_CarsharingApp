@@ -1,15 +1,18 @@
 package gui.customComponents.userInput;
 
+import de.dhbwka.swe.utils.app.CalendarComponentApp;
+import de.dhbwka.swe.utils.event.IGUIEventListener;
+import de.dhbwka.swe.utils.gui.AttributeComponent;
 import de.dhbwka.swe.utils.gui.CalendarComponent;
+import de.dhbwka.swe.utils.util.IPropertyManager;
+import de.dhbwka.swe.utils.util.PropertyManager;
 import util.CSHelp;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.time.LocalDate;
 
 //TODO: Datepicker
@@ -19,13 +22,15 @@ public class CustomDatePicker extends CustomInputField {
     private JLabel field_description;
     private JTextField textField;
     private CalendarComponent calendarComponent;
+    private IGUIEventListener observer;
+    private JDialog dialog;
 
-    public CustomDatePicker(String title, String placeholder) {
+    public CustomDatePicker(String title, String placeholder, IGUIEventListener observer) {
         this.title = title;
-        this.placeholder = placeholder;
+        this.observer = observer;
 
         this.setLayout(new BorderLayout(0,0));
-        this.setPreferredSize(new Dimension(200,50));
+        this.setPreferredSize(new Dimension(200,65));
         this.setBorder(new EmptyBorder(5,10,5,10));
         this.setBackground(Color.WHITE);
 
@@ -33,29 +38,29 @@ public class CustomDatePicker extends CustomInputField {
         field_description.setFont(CSHelp.lato.deriveFont(13f));
         field_description.setForeground(CSHelp.inputFieldText);
 
-        calendarComponent = CalendarComponent.builder( "cC" )
-                .date( LocalDate.now() )
-                .startYear( 2015 )
-                .endYear( 2025 )
-                //.propertymanager( this.getPropertyManager() )
-                .build();
+
+
+        this.calendarComponent = createCalendarComponent(this.title, null);
+
+        dialog = new JDialog();
+        dialog.setModal(true);
+        dialog.setSize(new Dimension(400,500));
+        dialog.setResizable(false);
+        dialog.add(calendarComponent);
 
         textField = new JTextField(placeholder);
         textField.setBorder(BorderFactory.createEmptyBorder(7,12,7,12));
         textField.setFont(CSHelp.lato.deriveFont(12f));
+        textField.setPreferredSize(new Dimension(200, 30));
         textField.setForeground(CSHelp.inputFieldPlaceholder);
         textField.setBackground(CSHelp.inputFieldBackground);
+
         textField.setEditable(false);
 
         textField.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JDialog datePicker = new JDialog();
-                datePicker.add(calendarComponent);
-                datePicker.setModal(true);
-                datePicker.setSize(new Dimension(400,500));
-                datePicker.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                datePicker.setVisible(true);
+                CustomDatePicker.this.dialog.setVisible(true);
             }
 
             @Override
@@ -71,8 +76,38 @@ public class CustomDatePicker extends CustomInputField {
             public void mouseExited(MouseEvent e) {}
         });
 
-        this.add(field_description, BorderLayout.NORTH);
-        this.add(textField, BorderLayout.SOUTH);
+        JPanel borderPanel = new JPanel(new BorderLayout(0,0));
+        borderPanel.setBorder(new LineBorder(CSHelp.inputFieldBorderColor));
+        borderPanel.add(field_description, BorderLayout.NORTH);
+        borderPanel.add(textField, BorderLayout.CENTER);
+
+        this.add(borderPanel, BorderLayout.SOUTH);
+    }
+
+    public CalendarComponent createCalendarComponent( String id, IPropertyManager propManager ) {
+
+        CalendarComponent cc = CalendarComponent.builder( id )
+//					.date( LocalDate.of( 2019, 1, 31 ) )
+                .date( LocalDate.now() )
+                .observer(this.observer)
+                .startYear( 2015 )
+                .endYear( 2025 )
+                .propertymanager( null )
+                .build();
+        return cc;
+    }
+
+    public void setDateValue(String value) {
+        this.textField.setText(value);
+        this.textField.setForeground(Color.black);
+    }
+
+    public JTextField getTextField() {
+        return textField;
+    }
+
+    public void closeDateDialog() {
+        this.dialog.dispose();
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
+import de.dhbwka.swe.utils.model.IPersistable;
 import model.Bild;
 import util.CSHelp;
 
@@ -54,11 +55,18 @@ public class CustomListField extends CustomInputField {
         this.setBorder(new EmptyBorder(10, 10, 0, 10));
         this.setBackground(Color.WHITE);
 
+        Dimension dimension = null;
+        if (this.title == "Kunde") {
+            dimension = new Dimension(182,130);
+        }else if (this.title == "Fahrzeug") {
+            dimension = new Dimension(182,170);
+        }
+
         slc = SimpleListComponent.builder("123456")
                 .title(title)
                 .observer(this.observer)
                 .font(CSHelp.lato.deriveFont(12f))
-                .componentSize(new Dimension(182, 170))
+                .componentSize(dimension)
                 .build();
         slc.setListElements(list);
 
@@ -136,8 +144,9 @@ public class CustomListField extends CustomInputField {
         this.add(mainPanel, BorderLayout.CENTER);
     }
 
-    public void setListElements(List<IDepictable> objectList) {
-        slc.setListElements(objectList, true);
+    public void setListElements(Object objectList) {
+        List<IDepictable> iDepictableList = (List<IDepictable>) objectList;
+        slc.setListElements(iDepictableList, true);
         slc.clearSelection();
     }
 

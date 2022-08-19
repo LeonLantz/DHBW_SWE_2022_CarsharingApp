@@ -6,10 +6,7 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
-import gui.customComponents.userInput.CustomComboBox;
-import gui.customComponents.userInput.CustomInputField;
-import gui.customComponents.userInput.CustomListField;
-import gui.customComponents.userInput.CustomTextField;
+import gui.customComponents.userInput.*;
 import model.Bild;
 import model.Buchungsstatus;
 import model.Motorisierung;
@@ -21,17 +18,19 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class GUIBuchungAnlegen extends ObservableComponent implements IValidate {
 
     public enum Commands implements EventCommand {
 
-        ADD_BUCHUNG( "GUIBuchungAnlegen.addBuchung", String[].class );
+        ADD_BUCHUNG( "GUIBuchungAnlegen.addBuchung", String[].class ),
+        UPDATE_FAHRZEUGE( "GUIBuchungAnlegen.updateFahrzeuge", LocalDate[].class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -63,7 +62,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
 
     private IGUIEventListener observer;
 
-    private JPanel topPanel, bottomPanel, leftPanel, rightPanel;
+    private JPanel topPanel, fahrzeugePanel, bottomPanel, leftPanel, rightPanel;
     private JLabel topLabelValue, topLabelDescription;
     private JButton save_buchung;
 
@@ -74,11 +73,11 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     private List<IDepictable> alleKunden, alleFahrzeuge;
 
     //constructor for creating new Object
-    public GUIBuchungAnlegen(IGUIEventListener observer, List alleKunden, List alleFahrzeuge) {
+    public GUIBuchungAnlegen(IGUIEventListener observer, List alleKunden) {
         this.addObserver(observer);
         this.observer = observer;
         this.alleKunden = alleKunden;
-        this.alleFahrzeuge = alleFahrzeuge;
+        this.alleFahrzeuge = new ArrayList<>();
         initUI(true);
     }
 
@@ -106,8 +105,8 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         topPanel.add(topLabelValue, BorderLayout.CENTER);
 
 
-        bottomPanel = new JPanel();
-        bottomPanel.setBackground(Color.lightGray);
+        bottomPanel = new JPanel(new BorderLayout(0,0));
+//        bottomPanel.setBackground(Color.lightGray);
         save_buchung = new JButton("Speichern!");
         save_buchung.addActionListener(new ActionListener() {
             @Override
@@ -121,7 +120,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
                 }
             }
         });
-        bottomPanel.add(save_buchung);
+        bottomPanel.add(save_buchung, BorderLayout.SOUTH);
 
         leftPanel = new JPanel();
         rightPanel = new JPanel();
@@ -133,24 +132,49 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         rightPanel.setBorder(new EmptyBorder(10,10,10,10));
 
         inputFieldMap = new LinkedHashMap<>();
-        inputFieldMap.put("Buchungsnummer", new CustomTextField("Buchungsnummer", "Buchungsnummer"));
 
+        //TODO: Buchungsnummer-Feld soll nicht editierbar sein und erst beim Speichern generiert werden
+        inputFieldMap.put("Buchungsnummer", new CustomTextField("Buchungsnummer", "wird automatisch generiert"));
         inputFieldMap.put("Kunde", new CustomListField("Kunde", this.observer, this.alleKunden));
-        inputFieldMap.put("Start", new CustomTextField("Start", "Start"));
         inputFieldMap.put("Status", new CustomComboBox("Status", "Buchungsstatus", Buchungsstatus.getArray(), observer));
+        inputFieldMap.put("Start", new CustomDatePicker("Start", "Start der Buchung", this.observer));
+        inputFieldMap.put("Ende", new CustomDatePicker("Ende", "Ende der Buchung", this.observer));
         inputFieldMap.put("Fahrzeug", new CustomListField("Fahrzeug", this.observer, this.alleFahrzeuge));
-        inputFieldMap.put("Ende", new CustomTextField("Ende", "Ende"));
+        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this.observer, this.iDepictable ));
         //inputFieldMap.put("Dokumente", new CustomListField("Dokumente", "placeholder", this.observer, this.iDepictable ));
 
-        int leftPanelCount = 0;
-        for (CustomInputField customInputField : inputFieldMap.values()) {
-            if (leftPanelCount < 3) {
-                leftPanel.add(customInputField);
-            } else {
-                rightPanel.add(customInputField);
+
+        leftPanel.add(inputFieldMap.get("Buchungsnummer"));
+        leftPanel.add(inputFieldMap.get("Kunde"));
+        leftPanel.add(inputFieldMap.get("Start"));
+        leftPanel.add(inputFieldMap.get("Ende"));
+        rightPanel.add(inputFieldMap.get("Status"));
+        rightPanel.add(inputFieldMap.get("Dokumente"));
+        rightPanel.add(inputFieldMap.get("Fahrzeug"));
+
+        JButton buttonLoadFahrzeuge = new JButton("Verfügbare Fahrzeuge laden");
+        buttonLoadFahrzeuge.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String startDate = getDateComponent("Start").getTextField().getText();
+                String endDate = getDateComponent("Ende").getTextField().getText();
+                if (CSHelp.isDate(startDate) && CSHelp.isDate(endDate)) {
+                    LocalDate start = LocalDate.parse(startDate);
+                    LocalDate end = LocalDate.parse(endDate);
+                    if (!start.isAfter(end)) {
+                        long days = ChronoUnit.DAYS.between(start, end) + 1;
+                        System.out.println(days);
+                        LocalDate[] dates = new LocalDate[]{ start, end };
+                        fireGUIEvent(new GUIEvent(this, Commands.UPDATE_FAHRZEUGE, dates));
+                    }else {
+                        System.out.println("Ende ist vor Start");
+                    }
+                } else {
+                    //TODO: Bitte zwei valide Daten auswählen
+                }
             }
-            leftPanelCount++;
-        }
+        });
+        leftPanel.add(buttonLoadFahrzeuge);
 
         this.add(topPanel, BorderLayout.NORTH);
         this.add(leftPanel, BorderLayout.WEST);
@@ -158,9 +182,9 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         this.add(bottomPanel, BorderLayout.SOUTH);
 
         if (isNewObject) {
-            createKunde();
+            createBuchung();
         } else {
-            editKunde();
+            editBuchung();
         }
     }
 
@@ -174,11 +198,22 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         return alleKundenArray;
     }
 
-    private void createKunde() {
-
+    public CustomDatePicker getDateComponent(String type) {
+        CustomDatePicker customDatePicker = null;
+        if (type == "Start") {
+            customDatePicker =  ((CustomDatePicker) inputFieldMap.get("Start"));
+        }else if (type == "Ende") {
+            customDatePicker =  ((CustomDatePicker) inputFieldMap.get("Ende"));
+        }
+        return customDatePicker;
     }
 
-    private void editKunde() {
+    private void createBuchung() {
+        randID = UUID.randomUUID().toString();
+        topLabelValue.setText(randID);
+    }
+
+    private void editBuchung() {
 
     }
 

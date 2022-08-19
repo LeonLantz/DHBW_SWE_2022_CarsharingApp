@@ -4,6 +4,7 @@ import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,8 @@ public class Buchung implements IDepictable, IPersistable {
         BUCHUNGSNUMMER( "Buchungsnummer", String.class, true, false, false ),
         KUNDE( "Kunde", Kunde.class, true, true, false ),
         FAHRZEUG( "Fahrzeug", Fahrzeug.class, true, true, false ),
-        START_DATE( "Start", LocalDateTime.class, true, false, false ),
-        END_DATE( "Ende", LocalDateTime.class, true, false, false ),
+        START_DATE( "Start", LocalDate.class, true, false, false ),
+        END_DATE( "Ende", LocalDate.class, true, false, false ),
         STATUS( "Status", Buchungsstatus.class, true, true, false ),
         LAST_EDIT( "zul.", LocalDateTime.class, true, false, false );
 
@@ -108,11 +109,11 @@ public class Buchung implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null);
     }
 
-    public Buchung(String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDateTime start_date, LocalDateTime end_date, Buchungsstatus status, LocalDateTime last_edit) {
+    public Buchung(String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDate start_date, LocalDate end_date, Buchungsstatus status, LocalDateTime last_edit) {
         this(null, buchungsnummer, kunde, fahrzeug, start_date, end_date, status, last_edit);
     }
 
-    public Buchung(String iD, String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDateTime start_date, LocalDateTime end_date, Buchungsstatus status, LocalDateTime last_edit ) {
+    public Buchung(String iD, String buchungsnummer, Kunde kunde, Fahrzeug fahrzeug, LocalDate start_date, LocalDate end_date, Buchungsstatus status, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();

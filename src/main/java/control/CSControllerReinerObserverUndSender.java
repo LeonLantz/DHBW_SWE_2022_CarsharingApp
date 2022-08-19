@@ -6,6 +6,8 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
+import de.dhbwka.swe.utils.gui.CalendarComponent;
+import de.dhbwka.swe.utils.gui.GUIConstants;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
@@ -30,6 +32,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -221,8 +224,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         if (ge.getCmd().equals(MainComponentMitNavBar.Commands.BUTTON_PRESSED)) {
             _currentObjectClass = (Class) ge.getData();
             if (_currentObjectClass == Buchung.class) {
-                _dialogWindowComponent = new GUIBuchungAnlegen(this, entityManager.findAll(Kunde.class), entityManager.findAll(Fahrzeug.class));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 500));
+                _dialogWindowComponent = new GUIBuchungAnlegen(this, entityManager.findAll(Kunde.class));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this);
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
@@ -242,7 +245,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
-                ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
@@ -251,7 +254,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             } else if (_currentObjectClass == Standort.class) {
 
             }
-
+        }
+        // Verfügbare Fahrzeuge für entsprechenden Zeitraum setzen
+        else if (ge.getCmd().equals(GUIBuchungAnlegen.Commands.UPDATE_FAHRZEUGE)) {
+            //TODO: verfügbare Fahrzeuge für Start und Enddatum aus existierenden Buchungen filtern
+            ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC().setListElements(entityManager.findAll(Fahrzeug.class));
         }
         // Eintrag einer SimpleListComponent wurde ausgewählt
         else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
@@ -359,6 +366,14 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         }
+
+        else if (ge.getCmd().equals(CalendarComponent.Commands.DATE_SELECTED)) {
+            if (_currentObjectClass == Buchung.class) {
+                String fieldType = ((CalendarComponent)ge.getSource()).getID();
+                ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).setDateValue(ge.getData().toString());
+                ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).closeDateDialog();
+            }
+        }
     }
 
     /**
@@ -372,17 +387,5 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 ((IUpdateEventListener) eventListener).processUpdateEvent(ue);
             }
         }
-    }
-
-    public List<EventListener> getAllListeners() {
-        return allListeners;
-    }
-
-    public CommonEntityManager getEntityManager() {
-        return entityManager;
-    }
-
-    public ElementFactory getElementFactory() {
-        return elementFactory;
     }
 }

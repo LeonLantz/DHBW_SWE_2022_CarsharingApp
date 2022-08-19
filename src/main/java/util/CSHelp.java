@@ -91,4 +91,9 @@ public class CSHelp {
         String regex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         return Pattern.matches(regex, input);
     }
+
+    public static boolean isDate(String input) {
+        String regex = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
+        return Pattern.matches(regex, input);
+    }
 }

@@ -130,7 +130,7 @@ public class ElementFactory {
 			if(  entityManager.find(Fahrzeug.class, fahrzeug) == null ) {
 				status = Buchungsstatus.INVALIDE.getBezeichner();
 			}
-			persistableElement = new Buchung(id, buchungsnummer, (Kunde) entityManager.find(Kunde.class, kunde), (Fahrzeug) entityManager.find(Fahrzeug.class, fahrzeug), LocalDateTime.parse(start_date), LocalDateTime.parse(end_date), Buchungsstatus.fromString(status), LocalDateTime.parse(last_edit));
+			persistableElement = new Buchung(id, buchungsnummer, (Kunde) entityManager.find(Kunde.class, kunde), (Fahrzeug) entityManager.find(Fahrzeug.class, fahrzeug), LocalDate.parse(start_date), LocalDate.parse(end_date), Buchungsstatus.fromString(status), LocalDateTime.parse(last_edit));
 		}
 //		else if( c == Person.class ) {
 //			String id = csvData[ Person.CSVPositions.ID.ordinal() ];
