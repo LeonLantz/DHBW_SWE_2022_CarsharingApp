@@ -312,6 +312,17 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 e.printStackTrace();
             }
         }
+        // Entity: Buchung hinzufügen
+        else if (ge.getCmd().equals(GUIBuchungAnlegen.Commands.ADD_BUCHUNG)) {
+            String[] buchungAttribute = (String[]) ge.getData();
+            try {
+                this.elementFactory.createElement(Buchung.class, buchungAttribute);
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         // Entity: Bild hinzufügen
         else if (ge.getCmd().equals(CustomListField.Commands.ADD_BILD)) {
             String[] bildData = (String[]) ge.getData();
@@ -370,7 +381,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         else if (ge.getCmd().equals(CalendarComponent.Commands.DATE_SELECTED)) {
             if (_currentObjectClass == Buchung.class) {
                 String fieldType = ((CalendarComponent)ge.getSource()).getID();
-                ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).setDateValue(ge.getData().toString());
+                ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).setValue(ge.getData().toString());
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).closeDateDialog();
             }
         }

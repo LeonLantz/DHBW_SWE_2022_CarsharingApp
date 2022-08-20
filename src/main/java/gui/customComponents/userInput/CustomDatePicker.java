@@ -24,6 +24,7 @@ public class CustomDatePicker extends CustomInputField {
     private CalendarComponent calendarComponent;
     private IGUIEventListener observer;
     private JDialog dialog;
+    private CalendarComponent cc;
 
     public CustomDatePicker(String title, String placeholder, IGUIEventListener observer) {
         this.title = title;
@@ -86,7 +87,7 @@ public class CustomDatePicker extends CustomInputField {
 
     public CalendarComponent createCalendarComponent( String id, IPropertyManager propManager ) {
 
-        CalendarComponent cc = CalendarComponent.builder( id )
+        cc = CalendarComponent.builder( id )
 //					.date( LocalDate.of( 2019, 1, 31 ) )
                 .date( LocalDate.now() )
                 .observer(this.observer)
@@ -98,12 +99,15 @@ public class CustomDatePicker extends CustomInputField {
     }
 
     public void setDateValue(String value) {
-        this.textField.setText(value);
-        this.textField.setForeground(Color.black);
+
     }
 
     public JTextField getTextField() {
         return textField;
+    }
+
+    public CalendarComponent getCalendarComponent() {
+        return calendarComponent;
     }
 
     public void closeDateDialog() {
@@ -112,6 +116,8 @@ public class CustomDatePicker extends CustomInputField {
 
     @Override
     public void setValue(String value) {
-
+        this.value = value;
+        this.textField.setText(value);
+        this.textField.setForeground(Color.black);
     }
 }

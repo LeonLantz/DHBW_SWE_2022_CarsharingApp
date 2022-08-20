@@ -7,9 +7,7 @@ import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
 import gui.customComponents.userInput.*;
-import model.Bild;
-import model.Buchungsstatus;
-import model.Motorisierung;
+import model.*;
 import util.CSHelp;
 import util.IValidate;
 
@@ -18,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -133,10 +132,13 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
 
         inputFieldMap = new LinkedHashMap<>();
 
-        //TODO: Buchungsnummer-Feld soll nicht editierbar sein und erst beim Speichern generiert werden
+        //TODO: Buchungsnummer-Feld soll erst beim Speichern generiert werden
         inputFieldMap.put("Buchungsnummer", new CustomTextField("Buchungsnummer", "wird automatisch generiert"));
+        //((CustomTextField)inputFieldMap.get("Buchungsnummer")).getTextfield().setEnabled(false);
         inputFieldMap.put("Kunde", new CustomListField("Kunde", this.observer, this.alleKunden));
         inputFieldMap.put("Status", new CustomComboBox("Status", "Buchungsstatus", Buchungsstatus.getArray(), observer));
+        ((CustomComboBox)inputFieldMap.get("Status")).getComboBox().setSelectedIndex(0);
+        ((CustomComboBox)inputFieldMap.get("Status")).getComboBox().setEnabled(false);
         inputFieldMap.put("Start", new CustomDatePicker("Start", "Start der Buchung", this.observer));
         inputFieldMap.put("Ende", new CustomDatePicker("Ende", "Ende der Buchung", this.observer));
         inputFieldMap.put("Fahrzeug", new CustomListField("Fahrzeug", this.observer, this.alleFahrzeuge));
@@ -156,8 +158,8 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         buttonLoadFahrzeuge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String startDate = getDateComponent("Start").getTextField().getText();
-                String endDate = getDateComponent("Ende").getTextField().getText();
+                String startDate = getDateComponent("Start").getValue();
+                String endDate = getDateComponent("Ende").getValue();
                 if (CSHelp.isDate(startDate) && CSHelp.isDate(endDate)) {
                     LocalDate start = LocalDate.parse(startDate);
                     LocalDate end = LocalDate.parse(endDate);
@@ -220,12 +222,16 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     private String[] getValues() {
         List<String> allValues = new ArrayList<>();
         allValues.add(randID);
-        for(CustomInputField customInputField : inputFieldMap.values()) {
-            if(customInputField.getClass() != CustomListField.class) {
-                allValues.add(customInputField.getValue());
-            }
-        }
+        allValues.add(inputFieldMap.get("Buchungsnummer").getValue());
+        Kunde kunde = (Kunde) ((CustomListField)inputFieldMap.get("Kunde")).getSlc().getSelectedElement();
+        Fahrzeug fahrzeug = (Fahrzeug) ((CustomListField)inputFieldMap.get("Fahrzeug")).getSlc().getSelectedElement();
+        allValues.add(kunde.getElementID());
+        allValues.add(fahrzeug.getElementID());
+        allValues.add(inputFieldMap.get("Start").getValue());
+        allValues.add(inputFieldMap.get("Ende").getValue());
+        allValues.add(inputFieldMap.get("Status").getValue());
         allValues.add(LocalDateTime.now().toString());
+
         return allValues.toArray(new String[allValues.size()]);
     }
 
@@ -239,6 +245,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
 
     @Override
     public boolean validateInput() {
-        return false;
+        //TODO: validate Input for Buchung
+        return true;
     }
 }

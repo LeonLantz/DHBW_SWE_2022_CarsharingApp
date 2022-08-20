@@ -63,6 +63,9 @@ public class CustomTextField extends CustomInputField {
         this.add(borderPanel, BorderLayout.SOUTH);
     }
 
+    public JTextField getTextfield() {
+        return textfield;
+    }
 
     @Override
     public void setValue(String value) {

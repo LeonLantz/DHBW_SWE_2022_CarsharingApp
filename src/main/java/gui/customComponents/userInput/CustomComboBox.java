@@ -64,8 +64,8 @@ public class CustomComboBox extends CustomInputField {
         this.add(comboBox, BorderLayout.CENTER);
     }
 
-    public String getSelectedItem() {
-        return comboBox.getSelectedItem().toString();
+    public JComboBox getComboBox() {
+        return comboBox;
     }
 
     @Override
