@@ -25,11 +25,12 @@ public class CustomDatePicker extends CustomInputField {
     private IGUIEventListener observer;
     private JDialog dialog;
     private CalendarComponent cc;
+    private boolean enabled;
 
     public CustomDatePicker(String title, String placeholder, IGUIEventListener observer) {
         this.title = title;
         this.observer = observer;
-
+        this.enabled = true;
         this.setLayout(new BorderLayout(0,0));
         this.setPreferredSize(new Dimension(200,65));
         this.setBorder(new EmptyBorder(5,10,5,10));
@@ -61,7 +62,7 @@ public class CustomDatePicker extends CustomInputField {
         textField.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                CustomDatePicker.this.dialog.setVisible(true);
+                if (enabled) CustomDatePicker.this.dialog.setVisible(true);
             }
 
             @Override
@@ -98,10 +99,6 @@ public class CustomDatePicker extends CustomInputField {
         return cc;
     }
 
-    public void setDateValue(String value) {
-
-    }
-
     public JTextField getTextField() {
         return textField;
     }
@@ -119,5 +116,10 @@ public class CustomDatePicker extends CustomInputField {
         this.value = value;
         this.textField.setText(value);
         this.textField.setForeground(Color.black);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

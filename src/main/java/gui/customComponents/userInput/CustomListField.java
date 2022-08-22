@@ -158,7 +158,10 @@ public class CustomListField extends CustomInputField {
     public void setValue(String value) {
     }
 
-
+    @Override
+    public void setEnabled(boolean enabled) {
+        slc.setEnabled(enabled);
+    }
 }
 
 

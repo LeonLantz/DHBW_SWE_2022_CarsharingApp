@@ -115,7 +115,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{35, 120, 100, 105, 105, 90, 140, 99, 33, 33})
+                .columnWidths(new int[]{35, 120, 100, 120, 90, 90, 140, 99, 33, 33})
                 .modelClass(Buchung.class)
                 .build();
 

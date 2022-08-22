@@ -5,6 +5,7 @@ import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
+import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import gui.customComponents.userInput.*;
 import model.*;
@@ -71,6 +72,12 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
 
     private List<IDepictable> alleKunden, alleFahrzeuge;
 
+    private Kunde selectedKunde;
+    private Fahrzeug selectedFahrzeug;
+    private JButton buttonLoadFahrzeuge;
+
+    private List currentValues;
+
     //constructor for creating new Object
     public GUIBuchungAnlegen(IGUIEventListener observer, List alleKunden) {
         this.addObserver(observer);
@@ -81,10 +88,12 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     }
 
     //constructor for editing an existing Object
-    public GUIBuchungAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
+    public GUIBuchungAnlegen(IGUIEventListener observer, IDepictable iDepictable, Kunde selectedKunde, Fahrzeug selectedFahrzeug) {
         this.addObserver(observer);
         this.iDepictable = iDepictable;
         this.observer = observer;
+        this.selectedKunde = selectedKunde;
+        this.selectedFahrzeug = selectedFahrzeug;
         initUI(false);
     }
 
@@ -110,11 +119,11 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         save_buchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] test = getValues();
+                String[] fahrzeugData = getValues();
                 if(validateInput()) {
                     int a = JOptionPane.showConfirmDialog(GUIBuchungAnlegen.this, "Wollen Sie die Buchung speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
-                        fireGUIEvent( new GUIEvent(this, Commands.ADD_BUCHUNG, test ));
+                        fireGUIEvent( new GUIEvent(this, Commands.ADD_BUCHUNG, fahrzeugData ));
                     }
                 }
             }
@@ -154,7 +163,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         rightPanel.add(inputFieldMap.get("Dokumente"));
         rightPanel.add(inputFieldMap.get("Fahrzeug"));
 
-        JButton buttonLoadFahrzeuge = new JButton("Verfügbare Fahrzeuge laden");
+        buttonLoadFahrzeuge = new JButton("Verfügbare Fahrzeuge laden");
         buttonLoadFahrzeuge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -216,23 +225,59 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     }
 
     private void editBuchung() {
+        Attribute[] attributes = iDepictable.getAttributeArray();
+        randID = attributes[0].getValue().toString();
+        topLabelValue.setText(randID);
+        inputFieldMap.get("Buchungsnummer").setValue(attributes[1].getValue().toString());
+        ((CustomTextField)inputFieldMap.get("Buchungsnummer")).getTextfield().setEnabled(false);
 
+        inputFieldMap.get("Start").setValue(attributes[4].getValue().toString());
+        inputFieldMap.get("Ende").setValue(attributes[5].getValue().toString());
+
+        ((CustomComboBox)inputFieldMap.get("Status")).getComboBox().setEnabled(true);
+        ((CustomComboBox)inputFieldMap.get("Status")).getComboBox().setSelectedIndex(((Buchungsstatus)attributes[6].getValue()).ordinal());
+
+
+        ((CustomDatePicker)inputFieldMap.get("Start")).setEnabled(false);
+        ((CustomDatePicker)inputFieldMap.get("Ende")).setEnabled(false);
+
+        buttonLoadFahrzeuge.setVisible(false);
+
+
+        List kundenList = new ArrayList();
+        kundenList.add(selectedKunde);
+        getKundenSLC().setListElements(kundenList);
+        getKundenSLC().getSlc().selectElement(0);
+        List fahrzeugList = new ArrayList();
+        fahrzeugList.add(selectedFahrzeug);
+        getFahrzeugSLC().setListElements(fahrzeugList);
+        getFahrzeugSLC().getSlc().selectElement(0);
+        getKundenSLC().setEnabled(false);
+        getFahrzeugSLC().setEnabled(false);
     }
 
     private String[] getValues() {
-        List<String> allValues = new ArrayList<>();
-        allValues.add(randID);
-        allValues.add(inputFieldMap.get("Buchungsnummer").getValue());
+        currentValues = new ArrayList<String>();
+        currentValues.add(randID);
+        currentValues.add(inputFieldMap.get("Buchungsnummer").getValue());
         Kunde kunde = (Kunde) ((CustomListField)inputFieldMap.get("Kunde")).getSlc().getSelectedElement();
         Fahrzeug fahrzeug = (Fahrzeug) ((CustomListField)inputFieldMap.get("Fahrzeug")).getSlc().getSelectedElement();
-        allValues.add(kunde.getElementID());
-        allValues.add(fahrzeug.getElementID());
-        allValues.add(inputFieldMap.get("Start").getValue());
-        allValues.add(inputFieldMap.get("Ende").getValue());
-        allValues.add(inputFieldMap.get("Status").getValue());
-        allValues.add(LocalDateTime.now().toString());
+        if (kunde == null) {
+            currentValues.add(null);
+        } else {
+            currentValues.add(kunde.getElementID());
+        }
+        if (fahrzeug == null) {
+            currentValues.add(null);
+        } else {
+            currentValues.add(fahrzeug.getElementID());
+        }
+        currentValues.add(inputFieldMap.get("Start").getValue());
+        currentValues.add(inputFieldMap.get("Ende").getValue());
+        currentValues.add(inputFieldMap.get("Status").getValue());
+        currentValues.add(LocalDateTime.now().toString());
 
-        return allValues.toArray(new String[allValues.size()]);
+        return (String[]) currentValues.toArray(new String[currentValues.size()]);
     }
 
     public CustomListField getKundenSLC() {
@@ -246,6 +291,18 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     @Override
     public boolean validateInput() {
         //TODO: validate Input for Buchung
+        if (currentValues.get(1).toString().isEmpty()) {
+            JOptionPane.showMessageDialog(null,  "Bitte geben Sie eine valide Buchungsnummer ein!", "Buchungsnummer fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (currentValues.get(2) == null) {
+            JOptionPane.showMessageDialog(null,  "Bitte wählen Sie einen Kunden aus!", "Kunde fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (currentValues.get(3) == null) {
+            JOptionPane.showMessageDialog(null,  "Bitte wählen Sie ein Fahrzeug aus!", "Fahrzeug fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         return true;
     }
 }
