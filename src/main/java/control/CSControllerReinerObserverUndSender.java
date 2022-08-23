@@ -7,7 +7,6 @@ import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
 import de.dhbwka.swe.utils.gui.CalendarComponent;
-import de.dhbwka.swe.utils.gui.GUIConstants;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
@@ -177,8 +176,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         this.writeCSVData(csvDirectory + "Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
-        System.out.println("");
-
     }
 
     public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
@@ -262,6 +259,26 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         // Verfügbare Fahrzeuge für entsprechenden Zeitraum setzen
         else if (ge.getCmd().equals(GUIBuchungAnlegen.Commands.UPDATE_FAHRZEUGE)) {
             //TODO: verfügbare Fahrzeuge für Start und Enddatum aus existierenden Buchungen filtern
+            LocalDate[] newDates = (LocalDate[]) ge.getData();
+
+            ArrayList<Fahrzeug> blockedFahrzeuge = new ArrayList<>();
+            List<IPersistable> allUnfilteredBuchungen = entityManager.findAll(Buchung.class);
+            allUnfilteredBuchungen.forEach(buchung -> {
+                System.out.println("test");
+                if (((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.STATUS).toString().equals("AKTIV")) {
+                    // Check if both ranges cross:
+                    // NOT (newEnde vor altStart || newStart nach altEnde)
+                    // Get Blocked Car name
+                    // Add to blocked car list
+                }
+            });
+
+
+            // Filter Car List by using only unblocked cars
+
+
+
+
             ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC().setListElements(entityManager.findAll(Fahrzeug.class));
         }
         // Eintrag einer SimpleListComponent wurde ausgewählt
