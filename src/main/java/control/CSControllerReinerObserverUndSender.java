@@ -240,10 +240,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         else if (ge.getCmd().equals(CustomTableComponent.Commands.EDIT_ROW)) {
             _currentObjectClass = ((IDepictable) ge.getData()).getClass();
             _currentObject = (IDepictable) ge.getData();
-            Kunde kunde = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.KUNDE);
-            Fahrzeug fahrzeug = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
-
+            
             if (_currentObjectClass == Buchung.class) {
+                Kunde kunde = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.KUNDE);
+                Fahrzeug fahrzeug = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
                 _dialogWindowComponent = new GUIBuchungAnlegen(this, _currentObject, kunde, fahrzeug);
                 //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));

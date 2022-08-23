@@ -290,7 +290,6 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
 
     @Override
     public boolean validateInput() {
-        //TODO: validate Input for Buchung
         if (currentValues.get(1).toString().isEmpty()) {
             JOptionPane.showMessageDialog(null,  "Bitte geben Sie eine valide Buchungsnummer ein!", "Buchungsnummer fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
