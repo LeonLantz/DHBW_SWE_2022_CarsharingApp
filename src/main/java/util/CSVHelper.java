@@ -81,6 +81,27 @@ public class CSVHelper {
     return CSVRecords;
   }
 
+  public static List<String[]> getPersistedDokumenteCSVFormatted(CommonEntityManager entityManager) {
+    List<String[]> CSVRecords = new ArrayList<>();
+    List<String> CSVAttNames = Stream.of(Dokument.CSVPositions.values()).map(Dokument.CSVPositions::name).collect(Collectors.toList());
+    List<IPersistable> allPersistedModelEntities = entityManager.findAll(Dokument.class);
+
+    for (Object entity : allPersistedModelEntities) {
+      String[] SingleEntityRecord = new String[CSVAttNames.size()];
+      Attribute[] entityAttsAndValues = ((Dokument) entity).getAttributeArray();
+      for (Attribute specificAtt : entityAttsAndValues) {
+        for (int i = 0; i < CSVAttNames.size(); i++) {
+          if (specificAtt.getName() == Dokument.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
+            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            break;
+          }
+        }
+      }
+      CSVRecords.add(SingleEntityRecord);
+    }
+    return CSVRecords;
+  }
+
   public static List<String[]> getPersistedStandorteCSVFormatted(CommonEntityManager entityManager) {
     List<String[]> CSVRecords = new ArrayList<>();
     List<String> CSVAttNames = Stream.of(Standort.CSVPositions.values()).map(Standort.CSVPositions::name).collect(Collectors.toList());
@@ -146,6 +167,15 @@ public class CSVHelper {
 
   public static String getBilderHeaderLineCSVFormatted(String separator) {
     Bild.CSVPositions[] attNames = Bild.CSVPositions.values();
+    StringBuilder out = new StringBuilder("#");
+    for (Object o : Arrays.stream(attNames).toArray()) {
+      out.append(o.toString()).append(separator);
+    }
+    return out.toString();
+  }
+
+  public static String getDokumenteHeaderLineCSVFormatted(String separator) {
+    Dokument.CSVPositions[] attNames = Dokument.CSVPositions.values();
     StringBuilder out = new StringBuilder("#");
     for (Object o : Arrays.stream(attNames).toArray()) {
       out.append(o.toString()).append(separator);

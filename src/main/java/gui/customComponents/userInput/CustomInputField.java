@@ -7,7 +7,8 @@ public abstract class CustomInputField extends ObservableComponent implements IC
 
     public enum Commands implements EventCommand {
 
-        ADD_BILD("GUIFahrzeugAnlegen.addBild", String[].class);
+        ADD_BILD("GUIFahrzeugAnlegen.addBild", String[].class),
+        ADD_DOKUMENT("GUIFahrzeugAnlegen.addDokument", String[].class);
 
         public final Class<?> payloadType;
         public final String cmdText;

@@ -19,6 +19,7 @@ import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
+import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import model.*;
 import util.CSHelp;
@@ -145,6 +146,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
         modelClasses.put("Buchungen.csv", Buchung.class);
         modelClasses.put("Bilder.csv", Bild.class);
+        modelClasses.put("Dokumente.csv", Dokument.class);
         modelClasses.put("Standorte.csv", Standort.class);
 
 
@@ -167,6 +169,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
         List<String[]> FahrzeugeCSVOut = CSVHelper.getPersistedFahrzeugeCSVFormatted(this.entityManager);
         List<String[]> BilderCSVOut = CSVHelper.getPersistedBilderCSVFormatted(this.entityManager);
+        List<String[]> DokumenteCSVOut = CSVHelper.getPersistedDokumenteCSVFormatted(this.entityManager);
         List<String[]> StandorteCSVOut = CSVHelper.getPersistedStandorteCSVFormatted(this.entityManager);
         List<String[]> BuchungenCSVOut = CSVHelper.getPersistedBuchungenCSVFormatted(this.entityManager);
 
@@ -174,6 +177,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         this.writeCSVData(csvDirectory + "Kunden.csv", KundenCSVOut, separator, CSVHelper.getKundenHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Fahrzeuge.csv", FahrzeugeCSVOut, separator, CSVHelper.getFahrzeugeHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Bilder.csv", BilderCSVOut, separator, CSVHelper.getBilderHeaderLineCSVFormatted(separator));
+        this.writeCSVData(csvDirectory + "Dokumente.csv", DokumenteCSVOut, separator, CSVHelper.getDokumenteHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
     }
@@ -196,6 +200,23 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         List<IDepictable> returnList = new ArrayList<>();
         for (Bild bild : lstBild) {
             returnList.add(bild);
+        }
+        return returnList;
+    }
+
+    private List<IDepictable> getDokumenteByKey(String primaryKey) {
+        List<IPersistable> alleDokumente = entityManager.findAll(Dokument.class);
+        List<Dokument> lstDokument = new ArrayList<>();
+        for (IPersistable iPersistable : alleDokumente) {
+            lstDokument.add((Dokument) iPersistable);
+        }
+        lstDokument = lstDokument.stream()
+                .filter(b -> b.getSecondaryKey().equals(primaryKey))
+                .collect(Collectors.toList());
+
+        List<IDepictable> returnList = new ArrayList<>();
+        for (Dokument dokument : lstDokument) {
+            returnList.add(dokument);
         }
         return returnList;
     }
@@ -237,12 +258,12 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         else if (ge.getCmd().equals(CustomTableComponent.Commands.EDIT_ROW)) {
             _currentObjectClass = ((IDepictable) ge.getData()).getClass();
             _currentObject = (IDepictable) ge.getData();
-            Kunde kunde = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.KUNDE);
-            Fahrzeug fahrzeug = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
 
             if (_currentObjectClass == Buchung.class) {
+                Kunde kunde = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.KUNDE);
+                Fahrzeug fahrzeug = ((Buchung)_currentObject).getAttributeValueOf(Buchung.Attributes.FAHRZEUG);
                 _dialogWindowComponent = new GUIBuchungAnlegen(this, _currentObject, kunde, fahrzeug);
-                //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                ((GUIBuchungAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
@@ -350,9 +371,27 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             try {
                 this.elementFactory.createElement(Bild.class, bildData );
                 if (_currentObjectClass == Buchung.class) {
-
+                    //((GUIBuchungAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(bildData[3]));
                 } else if (_currentObjectClass == Fahrzeug.class) {
                     ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(bildData[3]));
+                } else if (_currentObjectClass == Kunde.class) {
+                    //((GUIKundeAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
+                } else if (_currentObjectClass == Standort.class) {
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // Entity: Dokument hinzufügen
+        else if (ge.getCmd().equals(CustomListField.Commands.ADD_DOKUMENT)) {
+            String[] dokumentData = (String[]) ge.getData();
+            try {
+                this.elementFactory.createElement(Dokument.class, dokumentData );
+                if (_currentObjectClass == Buchung.class) {
+                    ((GUIBuchungAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(dokumentData[3]));
+                } else if (_currentObjectClass == Fahrzeug.class) {
+
                 } else if (_currentObjectClass == Kunde.class) {
                     //((GUIKundeAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
                 } else if (_currentObjectClass == Standort.class) {

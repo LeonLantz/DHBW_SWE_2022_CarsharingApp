@@ -18,8 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,14 +39,14 @@ public class CustomListField extends CustomInputField {
         initUIEntity(list);
     }
 
-    //Für Bild und Dokument (Kunde, Fahrzeug, Standort)
+    //Für Bild (Kunde, Fahrzeug, Standort) und Dokument (Buchung, Fahrzeug, Standort)
     public CustomListField(String title, IGUIEventListener observer, IDepictable iDepictable) {
         this.addObserver(observer);
         this.title = title;
         this.iDepictable = iDepictable;
         this.value = "";
         this.observer = observer;
-        initUIBild();
+        initUIFile();
     }
 
     private void initUIEntity(List<IDepictable> list) {
@@ -73,7 +72,7 @@ public class CustomListField extends CustomInputField {
         this.add(slc, BorderLayout.CENTER);
     }
 
-    private void initUIBild() {
+    private void initUIFile() {
         this.setLayout(new BorderLayout(0, 0));
         this.setBorder(new EmptyBorder(10, 10, 0, 10));
         this.setBackground(Color.WHITE);
@@ -86,7 +85,6 @@ public class CustomListField extends CustomInputField {
                 .build();
 
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        southPanel.setBackground(Color.white);
 
         JPanel mainPanel = new JPanel(new BorderLayout(0,0));
         mainPanel.add(slc, BorderLayout.CENTER);
@@ -99,6 +97,16 @@ public class CustomListField extends CustomInputField {
         button.setToolTipText("Neues Objekt hinzufügen");
         southPanel.add(button);
 
+        if (title == "Bilder") {
+            attachBildListener(button);
+        } else if (title == "Dokumente") {
+            attachDokumentListener(button);
+        }
+
+        this.add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private JButton attachBildListener(JButton button) {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,8 +148,72 @@ public class CustomListField extends CustomInputField {
                 }
             }
         });
+        return button;
+    }
 
-        this.add(mainPanel, BorderLayout.CENTER);
+    private JButton attachDokumentListener(JButton button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // create an object of JFileChooser class
+                JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+                // restrict the user to select files of all types
+                j.setAcceptAllFileFilterUsed(false);
+
+                // set a title for the dialog
+                j.setDialogTitle("Select a .pdf file");
+
+                // only allow files of .txt extension
+                FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .pdf files", "pdf");
+                j.addChoosableFileFilter(restrict);
+
+                // invoke the showsOpenDialog function to show the save dialog
+                int r = j.showOpenDialog(null);
+
+                // if the user selects a file
+                if (r == JFileChooser.APPROVE_OPTION) {
+                    // set the label to the path of the selected file
+                    String path = j.getSelectedFile().getAbsolutePath();
+                    try {
+                        File source = new File(path);
+                        String answer = JOptionPane.showInputDialog(null, "Bitte geben Sie den Dokumentnamen an", "Neues Dokument", JOptionPane.INFORMATION_MESSAGE);
+                        slc.clearSelection();
+
+                        String dokumentID = UUID.randomUUID().toString();
+                        String filePath = "src/main/resources/Dokuments/" + dokumentID + ".pdf";
+
+                        copy(source, new File(filePath));
+
+                        String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
+                        fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+
+                }
+            }
+        });
+        return button;
+    }
+
+    private static void copy(File src, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(src);
+            os = new FileOutputStream(dest);
+
+            byte[] buf = new byte[1024];
+
+            int bytesRead;
+            while ((bytesRead = is.read(buf)) > 0) {
+                os.write(buf, 0, bytesRead);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
     }
 
     public void setListElements(Object objectList) {
