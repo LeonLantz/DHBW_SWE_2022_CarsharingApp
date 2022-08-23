@@ -282,15 +282,15 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             //TODO: verfügbare Fahrzeuge für Start und Enddatum aus existierenden Buchungen filtern
             LocalDate[] newDates = (LocalDate[]) ge.getData();
 
-            ArrayList<Fahrzeug> blockedFahrzeuge = new ArrayList<>();
+            ArrayList<String> blockedFahrzeugeIDs = new ArrayList<>();
             List<IPersistable> allUnfilteredBuchungen = entityManager.findAll(Buchung.class);
             allUnfilteredBuchungen.forEach(buchung -> {
-                System.out.println("test");
-                if (((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.STATUS).toString().equals("AKTIV")) {
-                    // Check if both ranges cross:
-                    // NOT (newEnde vor altStart || newStart nach altEnde)
-                    // Get Blocked Car name
-                    // Add to blocked car list
+                if (((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.STATUS).toString().equalsIgnoreCase("AKTIV")) {
+                    LocalDate oldStart = ((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.START_DATE);
+                    LocalDate oldEnd = ((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.END_DATE);
+                    if (!(newDates[1].isBefore(oldStart) || newDates[0].isAfter(oldEnd))) {
+                        blockedFahrzeugeIDs.add(((Fahrzeug)((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.FAHRZEUG)).getElementID());
+                    }
                 }
             });
 
