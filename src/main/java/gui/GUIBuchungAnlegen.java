@@ -288,6 +288,11 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         return (CustomListField) inputFieldMap.get("Fahrzeug");
     }
 
+    public void updateDokumentList(List<IDepictable> dokumente) {
+        CustomListField customListField = (CustomListField) inputFieldMap.get("Dokumente");
+        customListField.setListElements(dokumente);
+    }
+
     @Override
     public boolean validateInput() {
         if (currentValues.get(1).toString().isEmpty()) {

@@ -102,6 +102,14 @@ public class ElementFactory {
 
 			persistableElement = new Bild(id, title, filePath, imageIcon, key);
 		}
+		else if ( c == Dokument.class ) {
+			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
+			String title = csvData[ Bild.CSVPositions.TITLE.ordinal() ];
+			String filePath = csvData[ Bild.CSVPositions.FILEPATH.ordinal() ];
+			String key = csvData[ Bild.CSVPositions.KEY.ordinal() ];
+
+			persistableElement = new Dokument(id, title, filePath, key);
+		}
 		else if ( c == Standort.class ) {
 			String id = csvData[ Standort.CSVPositions.ID.ordinal() ];
 			String strasse = csvData[ Standort.CSVPositions.STRASSE.ordinal() ];
