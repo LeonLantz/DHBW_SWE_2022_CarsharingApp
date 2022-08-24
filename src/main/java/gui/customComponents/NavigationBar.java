@@ -180,10 +180,15 @@ public class NavigationBar extends ObservableComponent {
         this.add(_sectionTwo, BorderLayout.CENTER);
 
         //Teilkomponente: Sektion 3
-        _sectionThree = new JPanel();
+        _sectionThree = new JPanel(new BorderLayout(20,20));
         _sectionThree.setPreferredSize(new Dimension(180, 280));
         _sectionThree.setBackground(Color.white);
         _sectionThree.setBorder(borderTop);
+        JLabel copyrightLabel = new JLabel();
+        copyrightLabel.setText("© Max Reichmann, Leon Lantz");
+        copyrightLabel.setBorder(new EmptyBorder(0,10,5,10));
+        copyrightLabel.setFont(CSHelp.lato.deriveFont(11f));
+        _sectionThree.add(copyrightLabel, BorderLayout.SOUTH);
         this.add(_sectionThree, BorderLayout.SOUTH);
 
         //Zeige zu Beginn standardmäßig Panel "Übersicht" als aktiv an
