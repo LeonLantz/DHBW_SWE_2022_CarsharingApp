@@ -7,7 +7,6 @@ import de.dhbwka.swe.utils.event.IUpdateEventListener;
 import de.dhbwka.swe.utils.event.IUpdateEventSender;
 import de.dhbwka.swe.utils.event.UpdateEvent;
 import de.dhbwka.swe.utils.gui.CalendarComponent;
-import de.dhbwka.swe.utils.gui.GUIConstants;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
@@ -181,8 +180,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         this.writeCSVData(csvDirectory + "Dokumente.csv", DokumenteCSVOut, separator, CSVHelper.getDokumenteHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Standorte.csv", StandorteCSVOut, separator, CSVHelper.getStandorteHeaderLineCSVFormatted(separator));
         this.writeCSVData(csvDirectory + "Buchungen.csv", BuchungenCSVOut, separator, CSVHelper.getBuchungenHeaderLineCSVFormatted(separator));
-        System.out.println("");
-
     }
 
     public void writeCSVData(String csvFilename, List<String[]> csvData, String separator, String headerLine) throws IOException {
@@ -282,8 +279,29 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         }
         // Verfügbare Fahrzeuge für entsprechenden Zeitraum setzen
         else if (ge.getCmd().equals(GUIBuchungAnlegen.Commands.UPDATE_FAHRZEUGE)) {
-            //TODO: verfügbare Fahrzeuge für Start und Enddatum aus existierenden Buchungen filtern
-            ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC().setListElements(entityManager.findAll(Fahrzeug.class));
+            ArrayList<String> blockedFahrzeugeIDs = new ArrayList<>();
+            LocalDate[] newDates = (LocalDate[]) ge.getData();
+
+            List<IPersistable> allUnfilteredBuchungen = entityManager.findAll(Buchung.class);
+            allUnfilteredBuchungen.forEach(buchung -> {
+                // Check if Buchung is Active
+                if (((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.STATUS).toString().equalsIgnoreCase("AKTIV")) {
+                    LocalDate oldStart = ((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.START_DATE);
+                    LocalDate oldEnd = ((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.END_DATE);
+                    // Check if old and new date ranges overlap
+                    if (!(newDates[1].isBefore(oldStart) || newDates[0].isAfter(oldEnd))) {
+                        blockedFahrzeugeIDs.add(((Fahrzeug)((Buchung) buchung).getAttributeValueOf(Buchung.Attributes.FAHRZEUG)).getElementID());
+                    }
+                }
+            });
+
+            // Filter Car List by using only unblocked cars
+            List<IPersistable> blockedFahrzeugList = entityManager.findAll(Fahrzeug.class);
+            blockedFahrzeugeIDs.forEach(blockedFahrzeugID -> {
+                blockedFahrzeugList.removeIf(fahrzeug -> (((Fahrzeug) fahrzeug).getElementID().equals(blockedFahrzeugID)));
+            });
+
+            ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC().setListElements(blockedFahrzeugList);
         }
         // Eintrag einer SimpleListComponent wurde ausgewählt
         else if (ge.getCmd().equals(SimpleListComponent.Commands.ELEMENT_SELECTED)) {
