@@ -150,8 +150,7 @@ public class Standort implements IDepictable, IPersistable {
     @Override
     public String toString() {
         return this.attArr[ Attributes.ORT.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.KAPAZITÄT.ordinal() ].getValue();
+                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue();
     }
 
     @Override

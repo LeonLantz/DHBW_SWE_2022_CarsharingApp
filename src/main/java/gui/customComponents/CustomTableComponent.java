@@ -102,6 +102,10 @@ public class CustomTableComponent extends ObservableComponent {
             for (String name : Buchung.getAttributeNames(true)) {
                 namesList.add(name);
             }
+        }else if (Dokument.class.equals(modelClass)) {
+            for (String name : Dokument.getAttributeNames(true)) {
+                namesList.add(name);
+            }
         }
 
         namesList.add("Edit");

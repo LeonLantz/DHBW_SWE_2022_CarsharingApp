@@ -55,6 +55,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         SET_FAHRZEUGE("Controller.setFahrzeuge", List.class),
         SET_KUNDEN("Controller.setKunden", List.class),
         SET_STANDORTE("Controller.setStandorte", List.class),
+        SET_DOKUMENTE("Controller.setDokumente", List.class),
         SET_STATISTICS("Controller.setStatistics", Integer[].class);
 
         public final Class<?> payloadType;
@@ -125,6 +126,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_DOKUMENTE, entityManager.findAll(Dokument.class)));
 
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } catch (IOException e) {
@@ -424,6 +426,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             String[] dokumentData = (String[]) ge.getData();
             try {
                 this.elementFactory.createElement(Dokument.class, dokumentData );
+                this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_DOKUMENTE, entityManager.findAll(Dokument.class)));
                 if (_currentObjectClass == Buchung.class) {
                     ((GUIBuchungAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(dokumentData[3]));
                 } else if (_currentObjectClass == Fahrzeug.class) {
@@ -443,6 +446,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
+            this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_DOKUMENTE, entityManager.findAll(Dokument.class)));
 
             for (IPersistable b : entityManager.findAll(Buchung.class)) {
                 Buchung buchung = (Buchung) b;

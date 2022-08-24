@@ -29,9 +29,7 @@ import java.util.stream.Collectors;
 
 public class MainComponentMitNavBar extends ObservableComponent implements IGUIEventListener, IUpdateEventListener {
     public enum Commands implements EventCommand {
-        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Class.class),
-        REMOVE_KUNDE("MainComponentMitNavBar.remove_kunde", String.class),
-        UPDATE_IMAGES("MainComponentMitNavBar.update_images", IDepictable.class);
+        BUTTON_PRESSED("MainComponentMitNavBar.button_pressed", Class.class);
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -191,15 +189,15 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _dokumenteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{100, 100, 100, 100, 100, 100, 100, 90, 33, 33})
-                .modelClass(Standort.class)
+                .columnWidths(new int[]{50, 200, 420, 124, 33, 33})
+                .modelClass(Dokument.class)
                 .build();
 
         _dokumentePanel = ContentPanel.builder(CONTENT_PANEL_DOKUMENTE)
                 .title(title)
                 .observer(this)
                 .table(_dokumenteTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenKundenAnlegen.png"), Standort.class))
+                .addButton(null)
                 .propManager(this._propManager)
                 .build();
 
@@ -410,11 +408,32 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         }
         // Button zum Löschen eines Tabelleneintrags (Entity) wird gedrückt
         else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ENTITY.cmdText)) {
-            int n = JOptionPane.showConfirmDialog(this, "Wollen Sie das Objekt wirklich löschen?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
-            if (n == 0) {
+            Class currentClass = ge.getData().getClass();
+            String message = "";
+            ImageIcon imageIcon = null;
+            if (currentClass == Buchung.class) {
+                message = "<html> Wollen Sie die Buchung<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                imageIcon = CSHelp.imageList.get("icon_buchung.png");
+            } else if (currentClass == Fahrzeug.class) {
+                message = "<html> Wollen Sie das Fahrzeug<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                imageIcon = CSHelp.imageList.get("icon_fahrzeug.png");
+            } else if (currentClass == Kunde.class) {
+                message = "<html> Wollen Sie den Kunden<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                imageIcon = CSHelp.imageList.get("icon_kunde.png");
+            } else if (currentClass == Standort.class) {
+                message = "<html> Wollen Sie den Standort<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                imageIcon = CSHelp.imageList.get("icon_standort.png");
+            } else if (currentClass == Dokument.class) {
+                message = "<html> Wollen Sie das Dokument<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                imageIcon = CSHelp.imageList.get("icon_dokument.png");
+            }
+            int answer = JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.YES_NO_OPTION, 1, imageIcon);
+            if (answer == 0) {
                 fireGUIEvent(ge);
             }
-        } else {
+        }
+        // Sonstiges Event wird an Controller weitergeleitet
+        else {
             fireGUIEvent(ge);
         }
     }
@@ -455,6 +474,14 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             IDepictable[] modelData = new IDepictable[lstStandort.size()];
             lstStandort.toArray(modelData);
             _standorteTable.setModelData(modelData);
+        } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_DOKUMENTE) {
+            List<Dokument> lstDokumente = (List<Dokument>) ue.getData();
+            if (lstDokumente.isEmpty()) {
+                lstDokumente.add(new Dokument());
+            }
+            IDepictable[] modelData = new IDepictable[lstDokumente.size()];
+            lstDokumente.toArray(modelData);
+            _dokumenteTable.setModelData(modelData);
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_STATISTICS) {
             Integer[] counts = (Integer[]) ue.getData();
             _tileKunden.updateCount(counts[0]);

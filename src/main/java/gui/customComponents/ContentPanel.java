@@ -118,7 +118,9 @@ public class ContentPanel extends ObservableComponent {
         //Fußzeile, Komponente rechts
         footer_east = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
         footer_east.setPreferredSize(new Dimension(338,50));
-        footer_east.add(button);
+        if (button != null) {
+            footer_east.add(button);
+        }
         footer.add(footer_east, BorderLayout.EAST);
 
         return this.footer;
