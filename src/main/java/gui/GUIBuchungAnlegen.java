@@ -287,6 +287,9 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
     public CustomListField getFahrzeugSLC() {
         return (CustomListField) inputFieldMap.get("Fahrzeug");
     }
+    public CustomListField getDokumentSLC() {
+        return (CustomListField) inputFieldMap.get("Dokumente");
+    }
 
     public void updateDokumentList(List<IDepictable> dokumente) {
         CustomListField customListField = (CustomListField) inputFieldMap.get("Dokumente");

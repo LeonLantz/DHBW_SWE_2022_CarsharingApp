@@ -32,6 +32,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
@@ -164,6 +166,16 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         }
     }
 
+    private String getAbsolutWorkingDirectory() {
+        String jarPath = "";
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        return jarPath.substring(0, jarPath.lastIndexOf(sp));
+    }
+
     public void writeAllCSVData(String csvDirectory) throws IOException {
         //TODO: add all persistable model classes
         List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
@@ -267,7 +279,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
-                //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
@@ -318,12 +330,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().getSlc();
                 }
                 Bild bild = (Bild) ge.getData();
-                ImageIcon imageIcon = bild.getImage();
+                String filePath = getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
+                ImageIcon imageIcon = new ImageIcon(filePath);
                 String[] options = new String[]{"Schließen", "Löschen"};
-                int answer = JOptionPane.showOptionDialog(null, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
-                if (answer == 0) {
-                    slc.clearSelection();
-                } else if (answer == 1) {
+                int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
+                if (answer == 1) {
                     this.entityManager.remove((IPersistable) ge.getData());
                     if (_currentObjectClass == Fahrzeug.class) {
                         ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
@@ -331,6 +342,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
                     }
                 }
+                slc.clearSelection();
+
             } else if (ge.getData().getClass() == Kunde.class) {
                 CustomListField clfKunden = ((GUIBuchungAnlegen) _dialogWindowComponent).getKundenSLC();
                 int a = JOptionPane.showConfirmDialog(null, "Wollen Sie der Buchung den Kunden: " + clfKunden.getSlc().getSelectedElement().toString() + " zuordnen?", "Sicher?", JOptionPane.YES_NO_OPTION);
@@ -342,6 +355,28 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             } else if (ge.getData().getClass() == Fahrzeug.class) {
                 CustomListField clfFahrzeuge = ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC();
                 System.out.println(clfFahrzeuge.getSlc().getSelectedElement());
+            } else if (ge.getData().getClass() == Dokument.class) {
+                Dokument dokument = (Dokument) ge.getData();
+                if (_currentObjectClass == Buchung.class) {
+                    slc = ((GUIBuchungAnlegen) _dialogWindowComponent).getDokumentSLC().getSlc();
+                    String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
+                    File file = new File(getAbsolutWorkingDirectory() + path);
+                    JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
+                    ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
+                    int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Dokument öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);
+                    if (answer == 0) {
+                        if (Desktop.isDesktopSupported()) {
+                            try {
+                                Desktop.getDesktop().open(file);
+                            } catch (IOException ex) {
+                                // no application registered for PDFs
+                            }
+                        }
+                    }
+                    slc.clearSelection();
+                } else if (_currentObjectClass == Fahrzeug.class) {
+
+                }
             }
         }
         // Entity: Fahrzeug hinzufügen

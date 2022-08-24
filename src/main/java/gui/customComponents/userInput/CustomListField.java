@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,9 @@ public class CustomListField extends CustomInputField {
 
     private SimpleListComponent slc;
     private IDepictable iDepictable;
+    private JButton button;
+
+    private static final String sp = File.separator;
 
     // Für Kunde, Fahrzeug und Standort
     public CustomListField(String title, IGUIEventListener observer, List<IDepictable> list) {
@@ -90,10 +94,11 @@ public class CustomListField extends CustomInputField {
         mainPanel.add(slc, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.EAST);
 
-        JButton button = new JButton("+");
+        button = new JButton("+");
         button.setPreferredSize(new Dimension(15, 15));
         button.setBorder(new EmptyBorder(0,0,0,0));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.requestFocusInWindow();
         button.setToolTipText("Neues Objekt hinzufügen");
         southPanel.add(button);
 
@@ -132,20 +137,21 @@ public class CustomListField extends CustomInputField {
                     String path = j.getSelectedFile().getAbsolutePath();
                     try {
                         BufferedImage image = ImageIO.read(new File(path));
-                        String answer = JOptionPane.showInputDialog(null, "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
-                        slc.clearSelection();
-
-                        String imageID = UUID.randomUUID().toString();
-                        String filePath = "src/main/resources/SystemImages/" + imageID + ".png";
-                        ImageIO.write(image, "png", new File(filePath));
-                        String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
-                        fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
-
+                        String answer = JOptionPane.showInputDialog(CustomListField.this.getParent(), "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
+                        if(answer == null || (answer != null && ("".equals(answer)))) {
+                            //TODO: System.out.println("Error");
+                        } else {
+                            String imageID = UUID.randomUUID().toString();
+                            String filePath = "/UserImages/" + imageID + ".png";
+                            ImageIO.write(image, "png", new File(getAbsolutWorkingDirectory() + filePath));
+                            String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
+                            fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
+                        }
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
-
                 }
+                slc.clearSelection();
             }
         });
         return button;
@@ -181,20 +187,29 @@ public class CustomListField extends CustomInputField {
                         slc.clearSelection();
 
                         String dokumentID = UUID.randomUUID().toString();
-                        String filePath = "src/main/resources/Dokuments/" + dokumentID + ".pdf";
+                        String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
-                        copy(source, new File(filePath));
+                        copy(source, new File(getAbsolutWorkingDirectory() + filePath));
 
                         String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
                         fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
-
                 }
             }
         });
         return button;
+    }
+
+    private String getAbsolutWorkingDirectory() {
+        String jarPath = "";
+        try {
+            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }
 
     private static void copy(File src, File dest) throws IOException {
@@ -224,6 +239,9 @@ public class CustomListField extends CustomInputField {
 
     public SimpleListComponent getSlc() {
         return slc;
+    }
+    public JButton getButton() {
+        return button;
     }
 
     @Override
