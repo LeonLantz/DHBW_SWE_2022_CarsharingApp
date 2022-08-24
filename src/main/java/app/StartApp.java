@@ -62,9 +62,9 @@ public class StartApp {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 if (JOptionPane.showConfirmDialog(frame,
-                  "Möchten Sie die Anwendung wirklich beenden?", "Carsharing Buchungssoftware",
-                  JOptionPane.YES_NO_OPTION,
-                  JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                        "Möchten Sie die Anwendung wirklich schließen\nund alle Änderungen speichern?", "Carsharing Buchungssoftware",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, CSHelp.imageList.get("icon_closeandsave.png")) == JOptionPane.YES_OPTION) {
                     System.out.println("Writing all persisted entities to CSVs...");
                     try {
                         controller.writeAllCSVData(finalCsvDirectory);

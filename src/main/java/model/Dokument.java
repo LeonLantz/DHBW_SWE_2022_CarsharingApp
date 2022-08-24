@@ -23,7 +23,7 @@ public class Dokument implements IDepictable, IPersistable {
         ID( "ID", String.class, false, false, false ),
         TITLE( "Title", String.class, true, false, false ),
         FILEPATH( "FilePath", String.class, true, false, false ),
-        KEY( "Key", String.class, true, false, false );
+        KEY( "Objekt-ID", String.class, true, false, false );
 
         private final String name;
         private final boolean visible;
