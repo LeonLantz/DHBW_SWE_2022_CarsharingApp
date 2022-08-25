@@ -4,14 +4,11 @@ import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.SimpleListComponent;
 import de.dhbwka.swe.utils.model.IDepictable;
-import de.dhbwka.swe.utils.model.IPersistable;
-import model.Bild;
 import util.CSHelp;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
@@ -87,12 +84,14 @@ public class CustomListField extends CustomInputField {
                 .font(CSHelp.lato.deriveFont(12f))
                 .componentSize(new Dimension(180, 130))
                 .build();
+        slc.setFont(CSHelp.lato);
 
-        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
+        JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        eastPanel.setBackground(Color.WHITE);
         JPanel mainPanel = new JPanel(new BorderLayout(0,0));
+        mainPanel.setBackground(Color.WHITE);
         mainPanel.add(slc, BorderLayout.CENTER);
-        mainPanel.add(southPanel, BorderLayout.EAST);
+        mainPanel.add(eastPanel, BorderLayout.EAST);
 
         button = new JButton("+");
         button.setPreferredSize(new Dimension(15, 15));
@@ -100,7 +99,7 @@ public class CustomListField extends CustomInputField {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.requestFocusInWindow();
         button.setToolTipText("Neues Objekt hinzufügen");
-        southPanel.add(button);
+        eastPanel.add(button);
 
         if (title == "Bilder") {
             attachBildListener(button);

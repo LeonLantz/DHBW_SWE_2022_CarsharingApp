@@ -16,6 +16,7 @@ import util.CSHelp;
 import util.IValidate;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -94,6 +95,7 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         this.setBackground(CSHelp.main);
 
         topPanel = new JPanel(new BorderLayout(0,0));
+        topPanel.setBackground(Color.WHITE);
         topLabelDescription = new JLabel("ID: ");
         topLabelDescription.setBorder(new EmptyBorder(20,20,0,5));
         topLabelDescription.setFont(CSHelp.lato.deriveFont(11f));
@@ -104,9 +106,13 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         topPanel.add(topLabelValue, BorderLayout.CENTER);
 
 
-        bottomPanel = new JPanel();
-        bottomPanel.setBackground(Color.lightGray);
-        save_kunde = new JButton("Speichern!");
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setBackground(Color.white);
+        Border borderTop = BorderFactory.createMatteBorder(1,0,0,0, CSHelp.navBar);
+        bottomPanel.setBorder(borderTop);
+        ImageIcon imageIconKunde = CSHelp.imageList.get("button_KundeSpeichern.png");
+        save_kunde = new JButton(imageIconKunde);
+        save_kunde.setBorder(new EmptyBorder(0,0,0,0));
         save_kunde.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,6 +158,8 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
             leftPanelCount++;
         }
 
+        leftPanel.setBackground(Color.WHITE);
+        rightPanel.setBackground(Color.WHITE);
         this.add(topPanel, BorderLayout.NORTH);
         this.add(leftPanel, BorderLayout.WEST);
         this.add(rightPanel, BorderLayout.EAST);

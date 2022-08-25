@@ -13,6 +13,7 @@ import util.CSHelp;
 import util.IValidate;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -103,6 +104,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         this.setBackground(CSHelp.main);
 
         topPanel = new JPanel(new BorderLayout(0,0));
+        topPanel.setBackground(Color.white);
         topLabelDescription = new JLabel("ID: ");
         topLabelDescription.setBorder(new EmptyBorder(20,20,0,5));
         topLabelDescription.setFont(CSHelp.lato.deriveFont(11f));
@@ -113,9 +115,13 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         topPanel.add(topLabelValue, BorderLayout.CENTER);
 
 
-        bottomPanel = new JPanel(new BorderLayout(0,0));
-//        bottomPanel.setBackground(Color.lightGray);
-        save_buchung = new JButton("Speichern!");
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setBackground(Color.white);
+        Border borderTop = BorderFactory.createMatteBorder(1,0,0,0, CSHelp.navBar);
+        bottomPanel.setBorder(borderTop);
+        ImageIcon imageIconBuchung = CSHelp.imageList.get("button_BuchungSpeichern.png");
+        save_buchung = new JButton(imageIconBuchung);
+        save_buchung.setBorder(new EmptyBorder(0,0,0,0));
         save_buchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,7 +134,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
                 }
             }
         });
-        bottomPanel.add(save_buchung, BorderLayout.SOUTH);
+        bottomPanel.add(save_buchung, BorderLayout.CENTER);
 
         leftPanel = new JPanel();
         rightPanel = new JPanel();
@@ -186,6 +192,9 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
             }
         });
         leftPanel.add(buttonLoadFahrzeuge);
+
+        leftPanel.setBackground(Color.WHITE);
+        rightPanel.setBackground(Color.WHITE);
 
         this.add(topPanel, BorderLayout.NORTH);
         this.add(leftPanel, BorderLayout.WEST);

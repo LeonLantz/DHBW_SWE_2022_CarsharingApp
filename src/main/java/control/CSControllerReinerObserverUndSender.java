@@ -260,7 +260,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this);
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this);
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
@@ -282,7 +282,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
                 ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
                 //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
