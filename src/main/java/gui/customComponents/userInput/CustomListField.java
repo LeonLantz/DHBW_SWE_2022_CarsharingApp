@@ -194,6 +194,7 @@ public class CustomListField extends CustomInputField {
                         String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
                         fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
                     } catch (IOException ioException) {
+                        System.out.println("Error in saving document. Cannot copy to specified directory: "+getAbsolutWorkingDirectory());
                         ioException.printStackTrace();
                     }
                 }
@@ -208,6 +209,10 @@ public class CustomListField extends CustomInputField {
             jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
+        }
+        // Incase a maven jar is run
+        if (jarPath.endsWith(".jar")) {
+            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
         }
         return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }

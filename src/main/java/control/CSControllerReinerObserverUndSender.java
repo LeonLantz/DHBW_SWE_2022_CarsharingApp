@@ -175,6 +175,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
+        // Incase a maven jar is run
+        if (jarPath.endsWith(".jar")) {
+            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
+        }
         return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }
 
