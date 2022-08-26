@@ -174,7 +174,7 @@ public class CustomListField extends CustomInputField {
                 j.addChoosableFileFilter(restrict);
 
                 // invoke the showsOpenDialog function to show the save dialog
-                int r = j.showOpenDialog(null);
+                int r = j.showOpenDialog(CustomListField.this);
 
                 // if the user selects a file
                 if (r == JFileChooser.APPROVE_OPTION) {
@@ -182,16 +182,19 @@ public class CustomListField extends CustomInputField {
                     String path = j.getSelectedFile().getAbsolutePath();
                     try {
                         File source = new File(path);
-                        String answer = JOptionPane.showInputDialog(null, "Bitte geben Sie den Dokumentnamen an", "Neues Dokument", JOptionPane.INFORMATION_MESSAGE);
-                        slc.clearSelection();
+                        ImageIcon icon = CSHelp.imageList.get("icon_typing.png");
+                        String answer = (String) JOptionPane.showInputDialog(j, "Bitte geben Sie den Dokumentennamen an", "Neues Dokument", JOptionPane.INFORMATION_MESSAGE, icon, null, null);
+                        if (answer != null) {
+                            slc.clearSelection();
 
-                        String dokumentID = UUID.randomUUID().toString();
-                        String filePath = "/Dokumente/" + dokumentID + ".pdf";
+                            String dokumentID = UUID.randomUUID().toString();
+                            String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
-                        copy(source, new File(getAbsolutWorkingDirectory() + filePath));
+                            copy(source, new File(getAbsolutWorkingDirectory() + filePath));
 
-                        String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
-                        fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
+                            String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
+                            fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
+                        }
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
