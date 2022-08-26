@@ -50,7 +50,7 @@ public class CustomComboBox extends CustomInputField {
         comboBox.setSelectedIndex(-1);
         comboBox.setFont(CSHelp.lato.deriveFont(12f));
         comboBox.setPreferredSize(new Dimension(200, 40));
-        comboBox.setForeground(CSHelp.inputFieldText);
+        comboBox.setForeground(Color.black);
         comboBox.setBorder(new EmptyBorder(7,0,0,0));
 
         comboBox.addActionListener(new ActionListener() {

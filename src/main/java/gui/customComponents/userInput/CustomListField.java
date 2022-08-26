@@ -23,28 +23,27 @@ import java.util.UUID;
 public class CustomListField extends CustomInputField {
 
     private IGUIEventListener observer;
+    private SimpleListComponent _slc;
+    private IDepictable _iDepictable;
+    private JButton _button;
 
-    private SimpleListComponent slc;
-    private IDepictable iDepictable;
-    private JButton button;
+    private static final String SP = File.separator;
 
-    private static final String sp = File.separator;
-
-    // Für Kunde, Fahrzeug und Standort
+    //For Kunde, Fahrzeug und Standort
     public CustomListField(String title, IGUIEventListener observer, List<IDepictable> list) {
         this.addObserver(observer);
         this.title = title;
-        this.iDepictable = iDepictable;
+        this._iDepictable = _iDepictable;
         this.value = "";
         this.observer = observer;
         initUIEntity(list);
     }
 
-    //Für Bild (Kunde, Fahrzeug, Standort) und Dokument (Buchung, Fahrzeug, Standort)
-    public CustomListField(String title, IGUIEventListener observer, IDepictable iDepictable) {
+    //For Bild (Kunde, Fahrzeug, Standort) and Dokument (Buchung, Fahrzeug, Standort)
+    public CustomListField(String title, IGUIEventListener observer, IDepictable _iDepictable) {
         this.addObserver(observer);
         this.title = title;
-        this.iDepictable = iDepictable;
+        this._iDepictable = _iDepictable;
         this.value = "";
         this.observer = observer;
         initUIFile();
@@ -57,20 +56,20 @@ public class CustomListField extends CustomInputField {
 
         Dimension dimension = null;
         if (this.title == "Kunde") {
-            dimension = new Dimension(182,130);
-        }else if (this.title == "Fahrzeug") {
-            dimension = new Dimension(182,170);
+            dimension = new Dimension(182, 130);
+        } else if (this.title == "Fahrzeug") {
+            dimension = new Dimension(182, 170);
         }
 
-        slc = SimpleListComponent.builder("123456")
+        _slc = SimpleListComponent.builder("123456")
                 .title(title)
                 .observer(this.observer)
                 .font(CSHelp.lato.deriveFont(12f))
                 .componentSize(dimension)
                 .build();
-        slc.setListElements(list);
+        _slc.setListElements(list);
 
-        this.add(slc, BorderLayout.CENTER);
+        this.add(_slc, BorderLayout.CENTER);
     }
 
     private void initUIFile() {
@@ -78,35 +77,43 @@ public class CustomListField extends CustomInputField {
         this.setBorder(new EmptyBorder(10, 10, 0, 10));
         this.setBackground(Color.WHITE);
 
-        slc = SimpleListComponent.builder("12345")
+        ImageIcon imageIconButtonInfo = CSHelp.imageList.get("button_info.png");
+
+        _slc = SimpleListComponent.builder("12345")
                 .title(title)
                 .observer(this.observer)
                 .font(CSHelp.lato.deriveFont(12f))
                 .componentSize(new Dimension(180, 130))
                 .build();
-        slc.setFont(CSHelp.lato);
+        _slc.setFont(CSHelp.lato);
 
         JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         eastPanel.setBackground(Color.WHITE);
-        JPanel mainPanel = new JPanel(new BorderLayout(0,0));
+        JPanel mainPanel = new JPanel(new BorderLayout(0, 0));
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.add(slc, BorderLayout.CENTER);
+        mainPanel.add(_slc, BorderLayout.CENTER);
         mainPanel.add(eastPanel, BorderLayout.EAST);
 
-        button = new JButton("+");
-        button.setPreferredSize(new Dimension(15, 15));
-        button.setBorder(new EmptyBorder(0,0,0,0));
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.requestFocusInWindow();
-        button.setToolTipText("Neues Objekt hinzufügen");
-        eastPanel.add(button);
-
+        _button = new JButton("+");
+        _button.setPreferredSize(new Dimension(15, 15));
+        _button.setBorder(new EmptyBorder(0, 0, 0, 0));
+        _button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        _button.requestFocusInWindow();
+        _button.setToolTipText("Neues Objekt hinzufügen");
+        eastPanel.add(_button);
         if (title == "Bilder") {
-            attachBildListener(button);
+            if (this._iDepictable == null) {
+                _button.addActionListener(e -> JOptionPane.showMessageDialog(this.getParent(), "Bilder können erst nach dem Erstellen des Objektes hinzugefügt werden!", "Information", JOptionPane.INFORMATION_MESSAGE, imageIconButtonInfo));
+            } else {
+                attachBildListener(_button);
+            }
         } else if (title == "Dokumente") {
-            attachDokumentListener(button);
+            if (_iDepictable == null) {
+                _button.addActionListener(e -> JOptionPane.showMessageDialog(this.getParent(), "Dokumente können erst nach dem Erstellen des Objektes hinzugefügt werden!", "Information", JOptionPane.INFORMATION_MESSAGE, imageIconButtonInfo));
+            } else {
+                attachDokumentListener(_button);
+            }
         }
-
         this.add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -137,20 +144,20 @@ public class CustomListField extends CustomInputField {
                     try {
                         BufferedImage image = ImageIO.read(new File(path));
                         String answer = JOptionPane.showInputDialog(CustomListField.this.getParent(), "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
-                        if(answer == null || (answer != null && ("".equals(answer)))) {
+                        if (answer == null || (answer != null && ("".equals(answer)))) {
                             //TODO: System.out.println("Error");
                         } else {
                             String imageID = UUID.randomUUID().toString();
                             String filePath = "/UserImages/" + imageID + ".png";
                             ImageIO.write(image, "png", new File(getAbsolutWorkingDirectory() + filePath));
-                            String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
+                            String[] imageValues = new String[]{imageID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
                         }
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
                 }
-                slc.clearSelection();
+                _slc.clearSelection();
             }
         });
         return button;
@@ -185,14 +192,14 @@ public class CustomListField extends CustomInputField {
                         ImageIcon icon = CSHelp.imageList.get("icon_typing.png");
                         String answer = (String) JOptionPane.showInputDialog(j, "Bitte geben Sie den Dokumentennamen an", "Neues Dokument", JOptionPane.INFORMATION_MESSAGE, icon, null, null);
                         if (answer != null) {
-                            slc.clearSelection();
+                            _slc.clearSelection();
 
                             String dokumentID = UUID.randomUUID().toString();
                             String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
                             copy(source, new File(getAbsolutWorkingDirectory() + filePath));
 
-                            String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
+                            String[] dokumentValues = new String[]{dokumentID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
                         }
                     } catch (IOException ioException) {
@@ -211,7 +218,7 @@ public class CustomListField extends CustomInputField {
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
-        return jarPath.substring(0, jarPath.lastIndexOf(sp));
+        return jarPath.substring(0, jarPath.lastIndexOf(SP));
     }
 
     private static void copy(File src, File dest) throws IOException {
@@ -235,15 +242,16 @@ public class CustomListField extends CustomInputField {
 
     public void setListElements(Object objectList) {
         List<IDepictable> iDepictableList = (List<IDepictable>) objectList;
-        slc.setListElements(iDepictableList, true);
-        slc.clearSelection();
+        _slc.setListElements(iDepictableList, true);
+        _slc.clearSelection();
     }
 
-    public SimpleListComponent getSlc() {
-        return slc;
+    public SimpleListComponent get_slc() {
+        return _slc;
     }
-    public JButton getButton() {
-        return button;
+
+    public JButton get_button() {
+        return _button;
     }
 
     @Override
@@ -252,7 +260,7 @@ public class CustomListField extends CustomInputField {
 
     @Override
     public void setEnabled(boolean enabled) {
-        slc.setEnabled(enabled);
+        _slc.setEnabled(enabled);
     }
 }
 

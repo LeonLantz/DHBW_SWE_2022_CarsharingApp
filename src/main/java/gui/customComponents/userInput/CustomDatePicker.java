@@ -1,11 +1,8 @@
 package gui.customComponents.userInput;
 
-import de.dhbwka.swe.utils.app.CalendarComponentApp;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
-import de.dhbwka.swe.utils.gui.AttributeComponent;
 import de.dhbwka.swe.utils.gui.CalendarComponent;
 import de.dhbwka.swe.utils.util.IPropertyManager;
-import de.dhbwka.swe.utils.util.PropertyManager;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -15,54 +12,50 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 
-//TODO: Datepicker
-
 public class CustomDatePicker extends CustomInputField {
 
-    private JLabel field_description;
-    private JTextField textField;
-    private CalendarComponent calendarComponent;
-    private IGUIEventListener observer;
-    private JDialog dialog;
-    private CalendarComponent cc;
-    private boolean enabled;
+    private JLabel _field_description;
+    private JTextField _textField;
+    private CalendarComponent _calendarComponent;
+    private IGUIEventListener _observer;
+    private JDialog _dialog;
+    private JPanel _borderPanel;
+    private boolean _enabled;
 
     public CustomDatePicker(String title, String placeholder, IGUIEventListener observer) {
         this.title = title;
-        this.observer = observer;
-        this.enabled = true;
+        this.placeholder = placeholder;
+        this._observer = observer;
+        this._enabled = true;
+        initUI();
+    }
+
+    private void initUI() {
         this.setLayout(new BorderLayout(0,0));
         this.setPreferredSize(new Dimension(200,65));
         this.setBorder(new EmptyBorder(5,10,5,10));
         this.setBackground(Color.WHITE);
 
-        field_description = new JLabel(title);
-        field_description.setFont(CSHelp.lato.deriveFont(13f));
-        field_description.setForeground(CSHelp.inputFieldText);
-
-
-
-        this.calendarComponent = createCalendarComponent(this.title, null);
-
-        dialog = new JDialog();
-        dialog.setModal(true);
-        dialog.setSize(new Dimension(400,500));
-        dialog.setResizable(false);
-        dialog.add(calendarComponent);
-
-        textField = new JTextField(placeholder);
-        textField.setBorder(BorderFactory.createEmptyBorder(7,12,7,12));
-        textField.setFont(CSHelp.lato.deriveFont(12f));
-        textField.setPreferredSize(new Dimension(200, 30));
-        textField.setForeground(CSHelp.inputFieldPlaceholder);
-        textField.setBackground(CSHelp.inputFieldBackground);
-
-        textField.setEditable(false);
-
-        textField.addMouseListener(new MouseListener() {
+        _field_description = new JLabel(title);
+        _field_description.setFont(CSHelp.lato.deriveFont(13f));
+        _field_description.setForeground(CSHelp.inputFieldText);
+        _calendarComponent = createCalendarComponent(this.title, null);
+        _dialog = new JDialog();
+        _dialog.setModal(true);
+        _dialog.setSize(new Dimension(400,500));
+        _dialog.setResizable(false);
+        _dialog.add(_calendarComponent);
+        _textField = new JTextField(placeholder);
+        _textField.setBorder(BorderFactory.createEmptyBorder(7,12,7,12));
+        _textField.setFont(CSHelp.lato.deriveFont(12f));
+        _textField.setPreferredSize(new Dimension(200, 30));
+        _textField.setForeground(CSHelp.inputFieldPlaceholder);
+        _textField.setBackground(CSHelp.inputFieldBackground);
+        _textField.setEditable(false);
+        _textField.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (enabled) CustomDatePicker.this.dialog.setVisible(true);
+                if (_enabled) CustomDatePicker.this._dialog.setVisible(true);
             }
 
             @Override
@@ -77,21 +70,19 @@ public class CustomDatePicker extends CustomInputField {
             @Override
             public void mouseExited(MouseEvent e) {}
         });
+        _borderPanel = new JPanel(new BorderLayout(0,0));
+        _borderPanel.setBorder(new LineBorder(CSHelp.inputFieldBorderColor));
+        _borderPanel.add(_field_description, BorderLayout.NORTH);
+        _borderPanel.add(_textField, BorderLayout.CENTER);
 
-        JPanel borderPanel = new JPanel(new BorderLayout(0,0));
-        borderPanel.setBorder(new LineBorder(CSHelp.inputFieldBorderColor));
-        borderPanel.add(field_description, BorderLayout.NORTH);
-        borderPanel.add(textField, BorderLayout.CENTER);
-
-        this.add(borderPanel, BorderLayout.SOUTH);
+        this.add(_borderPanel, BorderLayout.SOUTH);
     }
 
     public CalendarComponent createCalendarComponent( String id, IPropertyManager propManager ) {
-
-        cc = CalendarComponent.builder( id )
+        CalendarComponent cc = CalendarComponent.builder( id )
 //					.date( LocalDate.of( 2019, 1, 31 ) )
                 .date( LocalDate.now() )
-                .observer(this.observer)
+                .observer(this._observer)
                 .startYear( 2015 )
                 .endYear( 2025 )
                 .propertymanager( null )
@@ -99,27 +90,20 @@ public class CustomDatePicker extends CustomInputField {
         return cc;
     }
 
-    public JTextField getTextField() {
-        return textField;
-    }
-
-    public CalendarComponent getCalendarComponent() {
-        return calendarComponent;
-    }
 
     public void closeDateDialog() {
-        this.dialog.dispose();
+        this._dialog.dispose();
     }
 
     @Override
     public void setValue(String value) {
         this.value = value;
-        this.textField.setText(value);
-        this.textField.setForeground(Color.black);
+        this._textField.setText(value);
+        this._textField.setForeground(Color.black);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this._enabled = enabled;
     }
 }
