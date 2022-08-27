@@ -8,8 +8,8 @@ public enum Buchungsstatus {
     AKTIV("Aktiv"),
     ABGESCHLOSSEN("Abgeschlossen"),
     FRISTGERECHT_STORNIERT("Fristgerecht storniert"),
-    INVALIDE("Invalide"),
-    NICHT_FRISTGERECHT_STORNIERT("Nicht fristgerecht storniert");
+    NICHT_FRISTGERECHT_STORNIERT("Nicht fristgerecht storniert"),
+    INVALIDE("Invalide");
 
     private String bezeichner;
 

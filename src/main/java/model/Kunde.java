@@ -57,7 +57,7 @@ public class Kunde implements IDepictable, IPersistable {
         PHONE("Telefon", String.class, true, false, false),
         IBAN("Kontonummer", String.class, false, false, false),
         DATEOFBIRTH( "Geburtsdatum", LocalDate.class, true, false, false ),
-        LAST_EDITED( "Zeitstempel", LocalDateTime.class, true, false, false );
+        LAST_EDITED( "bearb.", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;

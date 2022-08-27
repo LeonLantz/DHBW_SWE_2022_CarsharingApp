@@ -219,13 +219,13 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header.add(headerCenter, BorderLayout.CENTER);
 
         //HeaderCenterKacheln
-        _tileKunden = new HeaderTile("Kunden", CSHelp.imageList.get("icon_kunde.png"), 0);
         _tileBuchungen = new HeaderTile("Buchungen", CSHelp.imageList.get("icon_buchung.png"), 0);
-        _tileFahrzeuge = new HeaderTile("Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"), 0);
+        _tileFahrzeuge = new HeaderTile(" Fahrzeuge", CSHelp.imageList.get("icon_fahrzeug.png"), 0);
+        _tileKunden = new HeaderTile("Kunden", CSHelp.imageList.get("icon_kunde.png"), 0);
         _tileStandorte = new HeaderTile("Standorte", CSHelp.imageList.get("icon_standort.png"), 0);
-        headerCenter.add(_tileKunden);
         headerCenter.add(_tileBuchungen);
         headerCenter.add(_tileFahrzeuge);
+        headerCenter.add(_tileKunden);
         headerCenter.add(_tileStandorte);
 
         //HeaderEast
