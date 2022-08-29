@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,5 +97,21 @@ public class CSHelp {
     public static boolean isDate(String input) {
         String regex = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
         return Pattern.matches(regex, input);
+    }
+
+
+    private static final String sp = File.separator;
+    public static String getAbsolutWorkingDirectory() {
+        String jarPath = "";
+        try {
+            jarPath = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        // Incase a maven jar is run
+        if (jarPath.endsWith(".jar")) {
+            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
+        }
+        return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }
 }
