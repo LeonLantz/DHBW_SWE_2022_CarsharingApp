@@ -13,6 +13,7 @@ import de.dhbwka.swe.utils.util.IPropertyManager;
 import de.dhbwka.swe.utils.util.PropertyManager;
 import gui.customComponents.ContentPanel;
 import gui.customComponents.CustomTableComponent;
+import gui.customComponents.Dashboard;
 import gui.customComponents.NavigationBar;
 import model.*;
 import util.CSHelp;
@@ -237,73 +238,74 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header.add(headerEast, BorderLayout.EAST);
 
         _übersichtPanel.add(header, BorderLayout.NORTH);
+        _übersichtPanel.add(new Dashboard(this), BorderLayout.CENTER);
 
-        //Inhalt
-        JPanel content = new JPanel(new BorderLayout(0, 0));
-        content.setPreferredSize(new Dimension(770, 590));
+//        //Inhalt
+//        JPanel content = new JPanel(new BorderLayout(0, 0));
+//        content.setPreferredSize(new Dimension(770, 590));
 
-        //ContentTop
-        JPanel contentTop = new JPanel(new BorderLayout(0, 0));
-        contentTop.setPreferredSize(new Dimension(720, 282));
-        contentTop.setBackground(CSHelp.main);
-        content.add(contentTop, BorderLayout.NORTH);
+//        //ContentTop
+//        JPanel contentTop = new JPanel(new BorderLayout(0, 0));
+//        contentTop.setPreferredSize(new Dimension(720, 282));
+//        contentTop.setBackground(CSHelp.main);
+//        content.add(contentTop, BorderLayout.NORTH);
+//
+//        //ContentBottom
+//        JPanel contentBottom = new JPanel(new BorderLayout(0, 0));
+//        contentBottom.setPreferredSize(new Dimension(720, 308));
+//        contentBottom.setBackground(Color.black);
+//        content.add(contentBottom, BorderLayout.SOUTH);
+//
+//        //ContentBottomEast
+//        JPanel contentBottomEast = new JPanel(new BorderLayout(0, 0));
+//        contentBottomEast.setPreferredSize(new Dimension(300, 308));
+//        contentBottomEast.setBackground(CSHelp.main);
+//
+//        //ContentBottomEastLabel
+//        JLabel contentBottomEastLabel = new JLabel();
+//        contentBottomEastLabel.setIcon(CSHelp.imageList.get("image_porscheBuchen.png"));
+//        contentBottomEastLabel.setBorder(new EmptyBorder(25, 0, 0, 0));
+//        contentBottomEast.add(contentBottomEastLabel, BorderLayout.CENTER);
+//
+//        //ContentBottomEastButton
+//        JButton contentBottomEastButton = new JButton("Buchen");
+//        contentBottomEastButton.setBorder(new EmptyBorder(0, 15, 5, 0));
+//        contentBottomEastButton.setFont(CSHelp.lato_bold.deriveFont(12f));
+//        contentBottomEastButton.setForeground(CSHelp.navBarTextActive);
+//        contentBottomEastButton.setHorizontalAlignment(SwingConstants.LEFT);
+//        contentBottomEastButton.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                //TODO: Neue Buchung für Fahrzeug "Porsche Taycan" anlegen
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+//            }
+//        });
+//        contentBottomEast.add(contentBottomEastButton, BorderLayout.SOUTH);
+//        contentBottom.add(contentBottomEast, BorderLayout.EAST);
+//
+//        //ContentBottomCenter
+//        JPanel contentBottomCenter = new JPanel(new BorderLayout(0, 0));
+//        contentBottomCenter.setBackground(CSHelp.main);
+//        contentBottom.add(contentBottomCenter, BorderLayout.CENTER);
+//
 
-        //ContentBottom
-        JPanel contentBottom = new JPanel(new BorderLayout(0, 0));
-        contentBottom.setPreferredSize(new Dimension(720, 308));
-        contentBottom.setBackground(Color.black);
-        content.add(contentBottom, BorderLayout.SOUTH);
-
-        //ContentBottomEast
-        JPanel contentBottomEast = new JPanel(new BorderLayout(0, 0));
-        contentBottomEast.setPreferredSize(new Dimension(300, 308));
-        contentBottomEast.setBackground(CSHelp.main);
-
-        //ContentBottomEastLabel
-        JLabel contentBottomEastLabel = new JLabel();
-        contentBottomEastLabel.setIcon(CSHelp.imageList.get("image_porscheBuchen.png"));
-        contentBottomEastLabel.setBorder(new EmptyBorder(25, 0, 0, 0));
-        contentBottomEast.add(contentBottomEastLabel, BorderLayout.CENTER);
-
-        //ContentBottomEastButton
-        JButton contentBottomEastButton = new JButton("Buchen");
-        contentBottomEastButton.setBorder(new EmptyBorder(0, 15, 5, 0));
-        contentBottomEastButton.setFont(CSHelp.lato_bold.deriveFont(12f));
-        contentBottomEastButton.setForeground(CSHelp.navBarTextActive);
-        contentBottomEastButton.setHorizontalAlignment(SwingConstants.LEFT);
-        contentBottomEastButton.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //TODO: Neue Buchung für Fahrzeug "Porsche Taycan" anlegen
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                MainComponentMitNavBar.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-        contentBottomEast.add(contentBottomEastButton, BorderLayout.SOUTH);
-        contentBottom.add(contentBottomEast, BorderLayout.EAST);
-
-        //ContentBottomCenter
-        JPanel contentBottomCenter = new JPanel(new BorderLayout(0, 0));
-        contentBottomCenter.setBackground(CSHelp.main);
-        contentBottom.add(contentBottomCenter, BorderLayout.CENTER);
-
-        _übersichtPanel.add(content, BorderLayout.CENTER);
         return _übersichtPanel;
     }
 

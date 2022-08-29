@@ -89,7 +89,7 @@ public class NavigationBar extends ObservableComponent {
         _sectionOne.add(navbarPanelProfilname);
 
         //Teilkomponente: Sektion 2
-        _sectionTwo = new JPanel(new FlowLayout(0,0,5));
+        _sectionTwo = new JPanel(new FlowLayout(0,0,0));
         _sectionTwo.setPreferredSize(new Dimension(180, 280));
         _sectionTwo.setBackground(Color.white);
 
@@ -181,7 +181,7 @@ public class NavigationBar extends ObservableComponent {
 
         //Teilkomponente: Sektion 3
         _sectionThree = new JPanel(new BorderLayout(20,20));
-        _sectionThree.setPreferredSize(new Dimension(180, 280));
+        _sectionThree.setPreferredSize(new Dimension(180, 315));
         _sectionThree.setBackground(Color.white);
         _sectionThree.setBorder(borderTop);
         JLabel copyrightLabel = new JLabel();

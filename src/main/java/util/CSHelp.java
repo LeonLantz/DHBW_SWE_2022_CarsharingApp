@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class CSHelp {
     public static Font lato, lato_bold;
-    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBorderColor, inputFieldBackground, navBarItemActive, navBarTextActive, tileCountColor;
+    public static Color main, tableHeaderText, tableCellText, tableHeaderBackground, tableDividerColor, tableCellBackground, navBar, inputFieldBorder, inputFieldPlaceholder, inputFieldText, inputFieldBorderColor, inputFieldBackground, navBarItemActive, navBarTextActive, tileCountColor, dashboardTextColor;
     public static ImageIcon button_add_kunde, button_add_fahrzeug, button_edit_row, button_delete_row, table_cell_image;
 
     public static File[] imageFiles;
@@ -53,6 +53,7 @@ public class CSHelp {
         navBarTextActive = new Color(0x2196F3);
         tileCountColor = new Color(0x9E9E9E);
         inputFieldBorderColor = new Color(0xCFD0D7);
+        dashboardTextColor = new Color(0x666666);
     }
 
     public static void registerImages() {
