@@ -56,7 +56,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         NUMMERNSCHILD( "Nummernschild", String.class, true, false, false ),
         TÜV_BIS( "TÜV bis", LocalDate.class, false, false, false ),
         FARBE( "Farbe", String.class, true, false, false ),
-        LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
+        LAST_EDIT( "Zeitstempel", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;

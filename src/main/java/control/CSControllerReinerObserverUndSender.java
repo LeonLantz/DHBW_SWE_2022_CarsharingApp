@@ -19,6 +19,7 @@ import gui.GUIKundeAnlegen;
 import gui.MainComponentMitNavBar;
 import gui.customComponents.CustomTableComponent;
 import gui.GUIFahrzeugAnlegen;
+import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import model.*;
 import util.CSHelp;
@@ -263,7 +264,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this);
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this);
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
@@ -285,7 +286,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             } else if (_currentObjectClass == Fahrzeug.class) {
                 _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
                 ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 700));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
                 //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
@@ -330,9 +331,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
             if (ge.getData().getClass() == Bild.class) {
                 if (_currentObjectClass == Kunde.class) {
-                    slc = ((GUIKundeAnlegen) _dialogWindowComponent).getBildList().get_slc();
+                    slc = ((GUIKundeAnlegen) _dialogWindowComponent).getBildList().getSlc();
                 } else if (_currentObjectClass == Fahrzeug.class) {
-                    slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().get_slc();
+                    slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().getSlc();
                 }
                 Bild bild = (Bild) ge.getData();
                 String filePath = getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
@@ -351,17 +352,19 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
             } else if (ge.getData().getClass() == Kunde.class) {
                 CustomListField clfKunden = ((GUIBuchungAnlegen) _dialogWindowComponent).getKundenSLC();
-//                int a = JOptionPane.showConfirmDialog(null, "Wollen Sie der Buchung den Kunden: " + clfKunden.get_slc().getSelectedElement().toString() + " zuordnen?", "Sicher?", JOptionPane.YES_NO_OPTION);
-//                if (a == 0) {
-//                    //TODO: Neuen Kunden zuordnen
-//                }
+                int a = JOptionPane.showConfirmDialog(null, "Wollen Sie der Buchung den Kunden: " + clfKunden.getSlc().getSelectedElement().toString() + " zuordnen?", "Sicher?", JOptionPane.YES_NO_OPTION);
+                if (a == 0) {
+                    //TODO: Neuen Kunden zuordnen
+                } else {
+                    clfKunden.getSlc().clearSelection();
+                }
             } else if (ge.getData().getClass() == Fahrzeug.class) {
                 CustomListField clfFahrzeuge = ((GUIBuchungAnlegen) _dialogWindowComponent).getFahrzeugSLC();
-                System.out.println(clfFahrzeuge.get_slc().getSelectedElement());
+                System.out.println(clfFahrzeuge.getSlc().getSelectedElement());
             } else if (ge.getData().getClass() == Dokument.class) {
                 Dokument dokument = (Dokument) ge.getData();
                 if (_currentObjectClass == Buchung.class) {
-                    slc = ((GUIBuchungAnlegen) _dialogWindowComponent).getDokumentSLC().get_slc();
+                    slc = ((GUIBuchungAnlegen) _dialogWindowComponent).getDokumentSLC().getSlc();
                     String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
                     File file = new File(getAbsolutWorkingDirectory() + path);
                     JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
@@ -484,7 +487,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 String fieldType = ((CalendarComponent)ge.getSource()).getID();
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).setValue(ge.getData().toString());
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).closeDateDialog();
-                ((GUIBuchungAnlegen)_dialogWindowComponent).getFahrzeugSLC().get_slc().removeAllListElements();
+                ((GUIBuchungAnlegen)_dialogWindowComponent).getFahrzeugSLC().getSlc().removeAllListElements();
             }
         }
     }

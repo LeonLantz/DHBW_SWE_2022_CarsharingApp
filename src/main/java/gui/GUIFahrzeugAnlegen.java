@@ -17,9 +17,7 @@ import util.CSHelp;
 import util.IValidate;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -103,13 +101,9 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         topPanel.add(topLabelValue, BorderLayout.CENTER);
 
 
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        bottomPanel.setBackground(Color.white);
-        Border borderTop = BorderFactory.createMatteBorder(1,0,0,0, CSHelp.navBar);
-        bottomPanel.setBorder(borderTop);
-        ImageIcon imageIconFahrzeug = CSHelp.imageList.get("button_FahrzeugSpeichern.png");
-        save_fahrzeug = new JButton(imageIconFahrzeug);
-        save_fahrzeug.setBorder(new EmptyBorder(0,0,0,0));
+        bottomPanel = new JPanel();
+        bottomPanel.setBackground(Color.lightGray);
+        save_fahrzeug = new JButton("Speichern!");
         save_fahrzeug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

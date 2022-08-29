@@ -42,7 +42,7 @@ public class Buchung implements IDepictable, IPersistable {
         START_DATE( "Start", LocalDate.class, true, false, false ),
         END_DATE( "Ende", LocalDate.class, true, false, false ),
         STATUS( "Status", Buchungsstatus.class, true, true, false ),
-        LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
+        LAST_EDIT( "zul.", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;

@@ -44,7 +44,7 @@ public class Standort implements IDepictable, IPersistable {
         LAND( "Land", String.class, false, false, false ),
         KOORDINATEN( "Koordinaten", String.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
-        LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
+        LAST_EDIT( "Zeitstempel", LocalDateTime.class, true, false, false );
 
         private final String name;
         private final boolean visible;
