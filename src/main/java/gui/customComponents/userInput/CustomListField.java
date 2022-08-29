@@ -143,7 +143,7 @@ public class CustomListField extends CustomInputField {
                         } else {
                             String imageID = UUID.randomUUID().toString();
                             String filePath = "/UserImages/" + imageID + ".png";
-                            ImageIO.write(image, "png", new File(getAbsolutWorkingDirectory() + filePath));
+                            ImageIO.write(image, "png", new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
                             String[] imageValues = new String[]{imageID, answer, filePath, iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
                         }
@@ -189,32 +189,18 @@ public class CustomListField extends CustomInputField {
                         String dokumentID = UUID.randomUUID().toString();
                         String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
-                        copy(source, new File(getAbsolutWorkingDirectory() + filePath));
+                        copy(source, new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
 
                         String[] dokumentValues = new String[]{dokumentID, answer, filePath, iDepictable.getElementID()};
                         fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
                     } catch (IOException ioException) {
-                        System.out.println("Error in saving document. Cannot copy to specified directory: "+getAbsolutWorkingDirectory());
+                        System.out.println("Error in saving document. Cannot copy to specified directory: "+CSHelp.getAbsolutWorkingDirectory());
                         ioException.printStackTrace();
                     }
                 }
             }
         });
         return button;
-    }
-
-    private String getAbsolutWorkingDirectory() {
-        String jarPath = "";
-        try {
-            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        // Incase a maven jar is run
-        if (jarPath.endsWith(".jar")) {
-            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
-        }
-        return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }
 
     private static void copy(File src, File dest) throws IOException {
