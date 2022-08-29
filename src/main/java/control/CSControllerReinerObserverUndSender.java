@@ -167,16 +167,6 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         }
     }
 
-    private String getAbsolutWorkingDirectory() {
-        String jarPath = "";
-        try {
-            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        return jarPath.substring(0, jarPath.lastIndexOf(sp));
-    }
-
     public void writeAllCSVData(String csvDirectory) throws IOException {
         //TODO: add all persistable model classes
         List<String[]> KundenCSVOut = CSVHelper.getPersistedKundenCSVFormatted(this.entityManager);
@@ -331,7 +321,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().get_slc();
                 }
                 Bild bild = (Bild) ge.getData();
-                String filePath = getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
+                String filePath = CSHelp.getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
                 ImageIcon imageIcon = new ImageIcon(filePath);
                 String[] options = new String[]{"Schließen", "Löschen"};
                 int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
@@ -359,7 +349,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 if (_currentObjectClass == Buchung.class) {
                     slc = ((GUIBuchungAnlegen) _dialogWindowComponent).getDokumentSLC().get_slc();
                     String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
-                    File file = new File(getAbsolutWorkingDirectory() + path);
+                    File file = new File(CSHelp.getAbsolutWorkingDirectory() + path);
                     JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
                     ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
                     int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Dokument öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);

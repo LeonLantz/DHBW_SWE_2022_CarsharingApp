@@ -149,7 +149,7 @@ public class CustomListField extends CustomInputField {
                         } else {
                             String imageID = UUID.randomUUID().toString();
                             String filePath = "/UserImages/" + imageID + ".png";
-                            ImageIO.write(image, "png", new File(getAbsolutWorkingDirectory() + filePath));
+                            ImageIO.write(image, "png", new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
                             String[] imageValues = new String[]{imageID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
                         }
@@ -197,7 +197,7 @@ public class CustomListField extends CustomInputField {
                             String dokumentID = UUID.randomUUID().toString();
                             String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
-                            copy(source, new File(getAbsolutWorkingDirectory() + filePath));
+                            copy(source, new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
 
                             String[] dokumentValues = new String[]{dokumentID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));
@@ -209,16 +209,6 @@ public class CustomListField extends CustomInputField {
             }
         });
         return button;
-    }
-
-    private String getAbsolutWorkingDirectory() {
-        String jarPath = "";
-        try {
-            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
-        return jarPath.substring(0, jarPath.lastIndexOf(SP));
     }
 
     private static void copy(File src, File dest) throws IOException {
