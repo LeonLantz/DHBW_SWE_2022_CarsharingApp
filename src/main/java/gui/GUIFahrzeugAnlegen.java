@@ -332,21 +332,32 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
             JOptionPane.showMessageDialog(null, "Bitte ordnen Sie dem Fahrzeug einen Standort zu!\nJedes Fahrzeug benötigt einen freien Stellplatz.", "Standort fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+
+        // Semicolon Check
+        try {
+            for (int i = 0; i < _currentValues.size(); i++) {
+                if (!this.checkIfSemicolonForCurrentvalue(_currentValues, i)) return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Error in field validation. Semicolon Check failed.");
+        }
+
+
+        return true;
+    }
+
+    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
+        if (values.get(valueIndex).toString().contains(";")) {
+            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).toList().get(valueIndex).toString();
+            JOptionPane.showMessageDialog(null, "Feld '"+ AttributeName + "' enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         return true;
     }
     
     //Get the TüvBis date component
     public CustomDatePicker getDateComponent() {
         return ((CustomDatePicker) _inputFieldMap.get("TüvBis"));
-    }
-
-    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
-        if (values.get(valueIndex).toString().contains(";")) {
-            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).toList().get(valueIndex).toString();
-            JOptionPane.showMessageDialog(null, "Feld "+ AttributeName + " enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        return true;
     }
 
     public CustomListField getBildList() {
