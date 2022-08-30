@@ -11,6 +11,8 @@ import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import gui.customComponents.userInput.CustomTextField;
 import model.Bild;
+import model.Buchung;
+import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Motorisierung;
 import util.CSHelp;
@@ -233,7 +235,20 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
             state = false;
         }
 
+        for (int i = 0; i < _currentValues.size(); i++) {
+            if (!this.checkIfSemicolonForCurrentvalue(_currentValues, i)) return false;
+        }
+
         return state;
+    }
+
+    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
+        if (values.get(valueIndex).toString().contains(";")) {
+            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).toList().get(valueIndex).toString();
+            JOptionPane.showMessageDialog(null, "Feld "+ AttributeName + " enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     public CustomListField getBildList() {

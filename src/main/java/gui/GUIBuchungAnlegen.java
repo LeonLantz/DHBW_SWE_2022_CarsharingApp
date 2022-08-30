@@ -336,6 +336,20 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie ein Fahrzeug aus! \n(Startdatum/Enddatum auswählen-->Fahrzeuge laden)", "Fahrzeug fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Checks a single input field if it contains a semicolon and throws a JOptionPane error message in this case
+     * This has to be checked in order to work with CSV files properly
+     */
+    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
+        if (values.get(valueIndex).toString().contains(";")) {
+            String AttributeName = Arrays.stream(Buchung.getAllAttributeNames()).toList().get(valueIndex).toString();
+            JOptionPane.showMessageDialog(null, "Feld "+ AttributeName + " enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         return true;
     }
 }
