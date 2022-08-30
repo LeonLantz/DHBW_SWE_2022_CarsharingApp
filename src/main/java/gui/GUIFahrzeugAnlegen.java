@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate {
 
@@ -348,7 +349,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
         if (values.get(valueIndex).toString().contains(";")) {
-            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).toList().get(valueIndex).toString();
+            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).collect(Collectors.toList()).get(valueIndex);
             JOptionPane.showMessageDialog(null, "Feld '"+ AttributeName + "' enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
