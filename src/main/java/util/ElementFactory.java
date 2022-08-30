@@ -75,6 +75,18 @@ public class ElementFactory {
 			 * hier kämen dann die N:M-Beziehungen hin, s.u. bei Person und Gruppe
 			 */
 		}
+		else if ( c == Standort.class ) {
+			String id = csvData[ Standort.CSVPositions.ID.ordinal() ];
+			String strasse = csvData[ Standort.CSVPositions.STRASSE.ordinal() ];
+			String plz = csvData[ Standort.CSVPositions.PLZ.ordinal() ];
+			String ort = csvData[ Standort.CSVPositions.ORT.ordinal() ];
+			String land = csvData[ Standort.CSVPositions.LAND.ordinal() ];
+			String koordinaten = csvData[ Standort.CSVPositions.KOORDINATEN.ordinal() ];
+			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
+			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
+
+			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
+		}
 		else if( c == Fahrzeug.class) {
 			String id = csvData[ Fahrzeug.CSVPositions.ID.ordinal() ];
 			String bezeichnung = csvData[ Fahrzeug.CSVPositions.BEZEICHNUNG.ordinal() ];
@@ -89,9 +101,10 @@ public class ElementFactory {
 			String nummernschild = csvData[ Fahrzeug.CSVPositions.NUMMERNSCHILD.ordinal() ];
 			String tüv_bis = csvData[ Fahrzeug.CSVPositions.TÜV_BIS.ordinal() ];
 			String farbe = csvData[ Fahrzeug.CSVPositions.FARBE.ordinal() ];
+			String standortKey = csvData[ Fahrzeug.CSVPositions.STANDORT.ordinal() ];
 			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, LocalDateTime.parse(last_edit));
+			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, (Standort) entityManager.find(Standort.class, standortKey), LocalDateTime.parse(last_edit));
 		}
 		else if ( c == Bild.class ) {
 			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
@@ -110,18 +123,7 @@ public class ElementFactory {
 
 			persistableElement = new Dokument(id, title, filePath, key);
 		}
-		else if ( c == Standort.class ) {
-			String id = csvData[ Standort.CSVPositions.ID.ordinal() ];
-			String strasse = csvData[ Standort.CSVPositions.STRASSE.ordinal() ];
-			String plz = csvData[ Standort.CSVPositions.PLZ.ordinal() ];
-			String ort = csvData[ Standort.CSVPositions.ORT.ordinal() ];
-			String land = csvData[ Standort.CSVPositions.LAND.ordinal() ];
-			String koordinaten = csvData[ Standort.CSVPositions.KOORDINATEN.ordinal() ];
-			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
-			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
-		}
 		else if ( c == Buchung.class ) {
 			String id = csvData[ Buchung.CSVPositions.ID.ordinal() ];
 			String buchungsnummer = csvData[ Buchung.CSVPositions.BUCHUNGSNUMMER.ordinal() ];

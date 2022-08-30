@@ -145,12 +145,12 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
     private void loadCSVData(String csvDirectory) throws IOException {
         Map<String, Class> modelClasses = new LinkedHashMap<>();
+        modelClasses.put("Standorte.csv", Standort.class);
         modelClasses.put("Kunden.csv", Kunde.class);
         modelClasses.put("Fahrzeuge.csv", Fahrzeug.class);
         modelClasses.put("Buchungen.csv", Buchung.class);
         modelClasses.put("Bilder.csv", Bild.class);
         modelClasses.put("Dokumente.csv", Dokument.class);
-        modelClasses.put("Standorte.csv", Standort.class);
 
 
         for (String fileName : modelClasses.keySet()) {
@@ -248,8 +248,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 _dialogWindowComponent = new GUIBuchungAnlegen(this, entityManager.findAll(Kunde.class));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
-                _dialogWindowComponent = new GUIFahrzeugAnlegen(this);
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, entityManager.findAll(Standort.class));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(750, 570));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this);
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 400));
@@ -269,9 +269,10 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 ((GUIBuchungAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
-                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject);
+                Standort standort = ((Fahrzeug)_currentObject).getAttributeValueOf(Fahrzeug.Attributes.STANDORT);
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject, entityManager.findAll(Standort.class), standort);
                 ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
-                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 720));
+                CSHelp.createJDialog(_dialogWindowComponent, new Dimension(750, 570));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this, _currentObject);
                 //((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
@@ -364,7 +365,15 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     }
                     slc.clearSelection();
                 } else if (_currentObjectClass == Fahrzeug.class) {
-
+                    System.out.println("Fahrzeug");
+                }
+            } else if (ge.getData().getClass() == Standort.class) {
+                Standort standort = (Standort) ge.getData();
+                JLabel label = new JLabel("<html> Wollen Sie dem Fahrzeug wirklich den Standort <b>" + standort.toString() +  "</b> zuordnen?<br><br>Verfügbare Stellplätze: " + standort.getAttributeValueOf(Standort.Attributes.KAPAZITÄT) + "</html>");
+                ImageIcon icon = CSHelp.imageList.get("icon_standort.png");
+                int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Standort zuordnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);
+                if (answer == 1) {
+                    ((GUIFahrzeugAnlegen)_dialogWindowComponent).getStandortList().get_slc().clearSelection();
                 }
             }
         }
@@ -417,7 +426,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 if (_currentObjectClass == Buchung.class) {
                     ((GUIBuchungAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(dokumentData[3]));
                 } else if (_currentObjectClass == Fahrzeug.class) {
-
+                    ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateDokumentList(this.getDokumenteByKey(dokumentData[3]));
                 } else if (_currentObjectClass == Kunde.class) {
                     //((GUIKundeAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(currentObject.getElementID()));
                 } else if (_currentObjectClass == Standort.class) {
@@ -471,6 +480,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).setValue(ge.getData().toString());
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getDateComponent(fieldType).closeDateDialog();
                 ((GUIBuchungAnlegen)_dialogWindowComponent).getFahrzeugSLC().get_slc().removeAllListElements();
+            } else if (_currentObjectClass == Fahrzeug.class) {
+                ((GUIFahrzeugAnlegen)_dialogWindowComponent).getDateComponent().setValue(ge.getData().toString());
+                ((GUIFahrzeugAnlegen)_dialogWindowComponent).getDateComponent().closeDateDialog();
             }
         }
     }

@@ -28,6 +28,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         NUMMERNSCHILD,
         TÜV_BIS,
         FARBE,
+        STANDORT,
         LAST_EDIT
     }
 
@@ -56,6 +57,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         NUMMERNSCHILD( "Nummernschild", String.class, true, false, false ),
         TÜV_BIS( "TÜV bis", LocalDate.class, false, false, false ),
         FARBE( "Farbe", String.class, true, false, false ),
+        STANDORT("Standort", Standort.class, false, false, false),
         LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
 
         private final String name;
@@ -127,14 +129,14 @@ public class Fahrzeug implements IDepictable, IPersistable {
      * Default-Konstruktor
      */
     public Fahrzeug() {
-        this( null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        this( null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Fahrzeug(String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String color, LocalDateTime last_edit) {
-        this(null, bezeichnung, marke, motor, türen, sitze, kofferraumvolumen, gewicht, kategorie, führerscheinklasse, nummernschild, tüv_bis, color, last_edit);
+    public Fahrzeug(String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String color, Standort standort, LocalDateTime last_edit) {
+        this(null, bezeichnung, marke, motor, türen, sitze, kofferraumvolumen, gewicht, kategorie, führerscheinklasse, nummernschild, tüv_bis, color, standort, last_edit);
     }
 
-    public Fahrzeug(String iD, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String farbe, LocalDateTime last_edit ) {
+    public Fahrzeug(String iD, String bezeichnung, String marke, String motor, Integer türen, Integer sitze, Integer kofferraumvolumen, String gewicht, Fahrzeugkategorie kategorie, String führerscheinklasse, String nummernschild, LocalDate tüv_bis, String farbe, Standort standort, LocalDateTime last_edit ) {
         super();
 
         boolean modifiable = true;
@@ -153,6 +155,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         this.attArr[ Attributes.NUMMERNSCHILD.ordinal() ] = Fahrzeug.Attributes.NUMMERNSCHILD.createAttribute(this, nummernschild, "" );
         this.attArr[ Attributes.TÜV_BIS.ordinal() ] = Fahrzeug.Attributes.TÜV_BIS.createAttribute(this, tüv_bis, "" );
         this.attArr[ Attributes.FARBE.ordinal() ] = Fahrzeug.Attributes.FARBE.createAttribute(this, farbe, "" );
+        this.attArr[ Attributes.STANDORT.ordinal() ] = Attributes.STANDORT.createAttribute(this, standort, "" );
         this.attArr[ Attributes.LAST_EDIT.ordinal() ] = Fahrzeug.Attributes.LAST_EDIT.createAttribute(this, last_edit, "" );
     }
 

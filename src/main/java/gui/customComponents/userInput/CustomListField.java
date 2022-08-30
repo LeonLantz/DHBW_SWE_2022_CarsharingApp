@@ -59,6 +59,8 @@ public class CustomListField extends CustomInputField {
             dimension = new Dimension(182, 130);
         } else if (this.title == "Fahrzeug") {
             dimension = new Dimension(182, 170);
+        } else if (this.title == "Standort") {
+            dimension = new Dimension(180, 130);
         }
 
         _slc = SimpleListComponent.builder("123456")
