@@ -42,6 +42,7 @@ public class Standort implements IDepictable, IPersistable {
         ORT( "Ort", String.class, true, false, false ),
         STRASSE( "Straße", String.class, true, false, false ),
         LAND( "Land", String.class, false, false, false ),
+        //TODO: Koordianten zu Button ändern / Google Maps standort verlinken
         KOORDINATEN( "Koordinaten", String.class, true, false, false ),
         KAPAZITÄT( "Kapazität", String.class, true, false, false ),
         LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
@@ -150,7 +151,8 @@ public class Standort implements IDepictable, IPersistable {
     @Override
     public String toString() {
         return this.attArr[ Attributes.ORT.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue();
+                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue() + ", "
+                + this.attArr[ Attributes.KAPAZITÄT.ordinal() ].getValue();
     }
 
     @Override

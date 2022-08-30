@@ -6,7 +6,7 @@ import java.util.List;
 public enum Fahrzeugkategorie {
     KLEINFAHRZEUG("Kleinfahrzeug"),
     MITTELKLASSE("Mittelklasse"),
-    MITTELKLASSE_PLUS("Mittelklasse+"),
+    MITTELKLASSE_PLUS("Mittelklasse_Plus"),
     LUXUSKLASSE("Luxusklasse"),
     TRANSPORTFAHRZEUG("Transportfahrzeug");
 

@@ -50,7 +50,11 @@ public class CSVHelper {
       for (Attribute specificAtt : entityAttsAndValues) {
         for (int i = 0; i < CSVAttNames.size(); i++) {
           if (specificAtt.getName() == Fahrzeug.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
-            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            if (specificAtt.getName() == Fahrzeug.Attributes.STANDORT.getName()) {
+              SingleEntityRecord[i] = ((Standort)specificAtt.getValue()).getElementID();
+            } else {
+              SingleEntityRecord[i] = specificAtt.getValue().toString();
+            }
             break;
           }
         }
