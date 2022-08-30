@@ -100,6 +100,10 @@ public class CSHelp {
         return Pattern.matches(regex, input);
     }
 
+    public static boolean isAlphanumeric(String input) {
+        String regex = "^[a-zA-Z0-9]*$";
+        return Pattern.matches(regex, input);
+    }
 
     private static final String sp = File.separator;
     public static String getAbsolutWorkingDirectory() {
