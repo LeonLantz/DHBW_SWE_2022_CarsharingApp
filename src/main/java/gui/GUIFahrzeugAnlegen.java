@@ -335,24 +335,10 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         }
 
         // Semicolon Check
-        try {
-            for (int i = 0; i < _currentValues.size(); i++) {
-                if (!this.checkIfSemicolonForCurrentvalue(_currentValues, i)) return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Error in field validation. Semicolon Check failed.");
-        }
+        // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
+        // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
+        if (!CSHelp.isValueListCsvCompliant(_currentValues, Fahrzeug.getAllAttributeNames())) return false;
 
-
-        return true;
-    }
-
-    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
-        if (values.get(valueIndex).toString().contains(";")) {
-            String AttributeName = Arrays.stream(Fahrzeug.getAllAttributeNames()).collect(Collectors.toList()).get(valueIndex);
-            JOptionPane.showMessageDialog(null, "Feld '"+ AttributeName + "' enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
         return true;
     }
     

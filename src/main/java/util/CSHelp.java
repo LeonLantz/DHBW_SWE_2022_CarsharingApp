@@ -9,10 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.Buffer;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CSHelp {
     public static Font lato, lato_bold;
@@ -105,6 +106,10 @@ public class CSHelp {
         return Pattern.matches(regex, input);
     }
 
+    public static boolean containsSemicolon(String value) {
+        return value.contains(";");
+    }
+
     private static final String sp = File.separator;
     public static String getAbsolutWorkingDirectory() {
         String jarPath = "";
@@ -118,5 +123,22 @@ public class CSHelp {
             return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
         }
         return jarPath.substring(0, jarPath.lastIndexOf(sp));
+    }
+
+    public static boolean isValueListCsvCompliant(List valueList, String[] attributeNames) {
+        try {
+            for (int i = 0; i < valueList.size(); i++) {
+                if (CSHelp.containsSemicolon(valueList.get(i).toString())) {
+                    String AttributeName = Arrays.stream(attributeNames).collect(Collectors.toList()).get(i);
+                    JOptionPane.showMessageDialog(null, "Feld '"+ AttributeName + "' enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                };
+            }
+        } catch (Exception e) {
+            System.out.println("Error in field validation. Semicolon Check failed.");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

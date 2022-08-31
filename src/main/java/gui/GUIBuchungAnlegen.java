@@ -339,13 +339,10 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         }
 
         // Probably delete following loop (it is not possible to have invalid characters in Buchung fields...)
-        try {
-            for (int i = 0; i < _currentValues.size(); i++) {
-                if (!this.checkIfSemicolonForCurrentvalue(_currentValues, i)) return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Error in field validation. Semicolon Check failed.");
-        }
+        // Semicolon Check
+        // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
+        // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
+        if (!CSHelp.isValueListCsvCompliant(_currentValues, Buchung.getAllAttributeNames())) return false;
 
         return true;
     }
