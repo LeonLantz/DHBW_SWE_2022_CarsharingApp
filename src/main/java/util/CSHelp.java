@@ -136,10 +136,10 @@ public class CSHelp {
         return jarPath.substring(0, jarPath.lastIndexOf(sp));
     }
 
-    public static boolean isValueListCsvCompliant(List valueList, String[] attributeNames) {
+    public static boolean areFormFieldValuesCsvCompliant(List formFieldValues, String[] attributeNames) {
         try {
-            for (int i = 0; i < valueList.size(); i++) {
-                String currentCheckedValue = valueList.get(i).toString();
+            for (int i = 0; i < formFieldValues.size(); i++) {
+                String currentCheckedValue = formFieldValues.get(i).toString();
                 if (CSHelp.containsSemicolon(currentCheckedValue)) {
                     String AttributeName = Arrays.stream(attributeNames).collect(Collectors.toList()).get(i);
                     JOptionPane.showMessageDialog(null, "Feld '"+ AttributeName + "' enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
@@ -156,6 +156,28 @@ public class CSHelp {
                     return false;
                 };
             }
+        } catch (Exception e) {
+            System.out.println("Error in field validation.");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isAttachmentNameValueCsvCompliant(String attachmentValue, String originalName) {
+        try {
+            if (CSHelp.containsSemicolon(attachmentValue)) {
+                JOptionPane.showMessageDialog(null, "'"+ attachmentValue + "' enthält Semicolon!", "Name für "+originalName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+                return false;
+            };
+            if (CSHelp.isEmpty(attachmentValue)) {
+                JOptionPane.showMessageDialog(null, "Geben Sie einen Namen für '"+originalName+"' ein!", "Name für "+originalName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+                return false;
+            };
+            if (CSHelp.startsWithSpace(attachmentValue)) {
+                JOptionPane.showMessageDialog(null, "Name '"+attachmentValue+"' beginnt mit einem Leerzeichen!", "Name für "+originalName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
+                return false;
+            };
         } catch (Exception e) {
             System.out.println("Error in field validation.");
             e.printStackTrace();

@@ -342,7 +342,7 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         // Semicolon Check
         // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
         // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
-        if (!CSHelp.isValueListCsvCompliant(_currentValues, Buchung.getAllAttributeNames())) return false;
+        if (!CSHelp.areFormFieldValuesCsvCompliant(_currentValues, Buchung.getAllAttributeNames())) return false;
 
         return true;
     }

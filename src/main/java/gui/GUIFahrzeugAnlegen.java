@@ -10,8 +10,6 @@ import gui.customComponents.userInput.CustomComboBox;
 import gui.customComponents.userInput.CustomInputField;
 import gui.customComponents.userInput.CustomListField;
 import gui.customComponents.userInput.CustomTextField;
-import model.Bild;
-import model.Buchung;
 import model.Fahrzeug;
 import model.Fahrzeugkategorie;
 import model.Motorisierung;
@@ -31,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate {
 
@@ -337,7 +334,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         // Semicolon Check
         // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
         // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
-        if (!CSHelp.isValueListCsvCompliant(_currentValues, Fahrzeug.getAllAttributeNames())) return false;
+        if (!CSHelp.areFormFieldValuesCsvCompliant(_currentValues, Fahrzeug.getAllAttributeNames())) return false;
 
         return true;
     }
