@@ -147,9 +147,7 @@ public class CustomListField extends CustomInputField {
                         BufferedImage image = ImageIO.read(new File(path));
                         //TODO: add value validation for bild name
                         String answer = JOptionPane.showInputDialog(CustomListField.this.getParent(), "Bitte geben Sie den Bildnamen an", "Neues Bild", JOptionPane.INFORMATION_MESSAGE);
-                        if (answer == null || (answer != null && ("".equals(answer)))) {
-                            //TODO: System.out.println("Error");
-                        } else {
+                        if (answer != null && CSHelp.isAttachmentNameValueCsvCompliant(answer, j.getSelectedFile().getName())) {
                             String imageID = UUID.randomUUID().toString();
                             String filePath = "/UserImages/" + imageID + ".png";
                             ImageIO.write(image, "png", new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
@@ -194,9 +192,7 @@ public class CustomListField extends CustomInputField {
                         File source = new File(path);
                         ImageIcon icon = CSHelp.imageList.get("icon_typing.png");
                         String answer = (String) JOptionPane.showInputDialog(j, "Bitte geben Sie den Dokumentennamen an", "Neues Dokument", JOptionPane.INFORMATION_MESSAGE, icon, null, null);
-                        // TODO: add value validation for document name
-                        //  use j.getSelectedFile().getName();
-                        if (answer != null) {
+                        if (answer != null && CSHelp.isAttachmentNameValueCsvCompliant(answer, j.getSelectedFile().getName())) {
                             _slc.clearSelection();
 
                             String dokumentID = UUID.randomUUID().toString();
