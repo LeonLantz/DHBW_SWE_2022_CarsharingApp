@@ -101,6 +101,8 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
     WorkingCSVReader _workingCSVReader;
 
+    private String csvDirectory;
+
     private static final String sp = File.separator;
 
     public CSControllerReinerObserverUndSender() {
@@ -119,6 +121,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
      * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
      */
     public void init(String csvDirectory, String propFile) throws Exception {
+        this.csvDirectory = csvDirectory;
         try {
             this.loadCSVData(csvDirectory);
             this.updateStandortAllocation();
@@ -262,6 +265,9 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         }
     }
 
+    public String getCsvDirectory() {
+        return csvDirectory;
+    }
 
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
     @Override

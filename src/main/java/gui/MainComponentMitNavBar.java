@@ -53,7 +53,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     private CardLayout _cardLayout;
     private JPanel _contentPanel;
-
+    private String csvDirectory;
     private IPropertyManager _propManager = null;
 
     private final IAppLogger _logger = AppLogger.getInstance();
@@ -82,8 +82,9 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
 
     private HeaderTile _tileKunden, _tileBuchungen, _tileFahrzeuge, _tileStandorte;
 
-    public MainComponentMitNavBar(PropertyManager propertyManager) throws Exception {
+    public MainComponentMitNavBar(PropertyManager propertyManager, String csvDirectory) throws Exception {
         this._propManager = propertyManager;
+        this.csvDirectory = csvDirectory;
         CSHelp.init();
         this.initUI();
     }
@@ -178,7 +179,8 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _standortePanel = ContentPanel.builder(CONTENT_PANEL_STANDORTE)
                 .title(title)
                 .table(_standorteTable)
-                .addButton(new NewObjectButton(CSHelp.imageList.get("button_neuenStandortAnlegen.png"), Standort.class))
+                //new NewObjectButton(CSHelp.imageList.get("button_neuenStandortAnlegen.png"), Standort.class)
+                .addButton(null)
                 .observer(this)
                 .propManager(this._propManager)
                 .build();
@@ -238,7 +240,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         header.add(headerEast, BorderLayout.EAST);
 
         _übersichtPanel.add(header, BorderLayout.NORTH);
-        _übersichtPanel.add(new Dashboard(this), BorderLayout.CENTER);
+        _übersichtPanel.add(new Dashboard(this, csvDirectory), BorderLayout.CENTER);
 
 //        //Inhalt
 //        JPanel content = new JPanel(new BorderLayout(0, 0));
@@ -396,17 +398,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         // Nutzer wählt einen Button in der NavigationBar aus
         else if (ge.getCmdText().equals(NavigationBar.Commands.TAB_CHANGED.cmdText)) {
             _navigationBar.setActive((String) ge.getData());
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    MainComponentMitNavBar.this._cardLayout.show(MainComponentMitNavBar.this._contentPanel, (String) ge.getData());
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            MainComponentMitNavBar.this._cardLayout.show(MainComponentMitNavBar.this._contentPanel, (String) ge.getData());
         }
         // Button zum Löschen eines Tabelleneintrags (Entity) wird gedrückt
         else if (ge.getCmdText().equals(CustomTableComponent.Commands.DELETE_ENTITY.cmdText)) {

@@ -39,7 +39,7 @@ public class StartApp {
         if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
         if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
 
-        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager());
+        MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager(), csvDirectory);
 
         CSControllerReinerObserverUndSender controller = new CSControllerReinerObserverUndSender();
         controller.addObserver( mainComp );
