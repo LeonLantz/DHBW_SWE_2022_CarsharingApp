@@ -6,6 +6,13 @@ import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
 import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
+import gui.customComponents.userInput.CustomComboBox;
+import gui.customComponents.userInput.CustomInputField;
+import gui.customComponents.userInput.CustomListField;
+import gui.customComponents.userInput.CustomTextField;
+import model.Fahrzeug;
+import model.Fahrzeugkategorie;
+import model.Motorisierung;
 import gui.customComponents.userInput.*;
 import model.*;
 import util.CSHelp;
@@ -323,9 +330,15 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
             JOptionPane.showMessageDialog(null, "Bitte ordnen Sie dem Fahrzeug einen Standort zu!\nJedes Fahrzeug benötigt einen freien Stellplatz.", "Standort fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+
+        // Semicolon Check
+        // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
+        // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
+        if (!CSHelp.areFormFieldValuesCsvCompliant(_currentValues, Fahrzeug.getAllAttributeNames())) return false;
+
         return true;
     }
-
+    
     //Get the TüvBis date component
     public CustomDatePicker getDateComponent() {
         return ((CustomDatePicker) _inputFieldMap.get("TüvBis"));

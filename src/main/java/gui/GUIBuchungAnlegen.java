@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GUIBuchungAnlegen extends ObservableComponent implements IValidate {
 
@@ -334,6 +335,26 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         }
         if (_currentValues.get(3) == null) {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie ein Fahrzeug aus! \n(Startdatum/Enddatum auswählen-->Fahrzeuge laden)", "Fahrzeug fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Probably delete following loop (it is not possible to have invalid characters in Buchung fields...)
+        // Semicolon Check
+        // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
+        // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
+        if (!CSHelp.areFormFieldValuesCsvCompliant(_currentValues, Buchung.getAllAttributeNames())) return false;
+
+        return true;
+    }
+
+    /**
+     * Checks a single input field if it contains a semicolon and throws a JOptionPane error message in this case
+     * This has to be checked in order to work with CSV files properly
+     */
+    public boolean checkIfSemicolonForCurrentvalue(List values, int valueIndex) {
+        if (values.get(valueIndex).toString().contains(";")) {
+            String AttributeName = Arrays.stream(Buchung.getAllAttributeNames()).collect(Collectors.toList()).get(valueIndex);
+            JOptionPane.showMessageDialog(null, "Feld "+ AttributeName + " enthält Semicolon!", AttributeName+" fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
