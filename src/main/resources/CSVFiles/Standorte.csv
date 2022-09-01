@@ -1,5 +1,6 @@
 #ID;STRASSE;PLZ;ORT;LAND;KOORDINATEN;KAPAZITÄT;LAST_EDIT;
-s1;Bismarckstraße;67251;Freinsheim;Deutschland;49.50464622275529, 8.209196382831706;4;2022-07-26T09:39:48.590687;
-s2;Erzebergerstraße;12345;Karlsruhe;Deutschland;44.23123131, 0.2123124124124231341;2;2022-07-26T09:39:48.590687;
+s1;Bismarckstraße;67251;Freinsheim;Deutschland;https://goo.gl/maps/EFp4ayWie9aGerh68;4;2022-07-26T09:39:48.590687;
+s2;Erzebergerstraße;12345;Karlsruhe;Deutschland;https://goo.gl/maps/EFp4ayWie9aGerh68;2;2022-07-26T09:39:48.590687;
+s3;ABCStraße;98482;Palo Alto;USA;https://goo.gl/maps/EFp4ayWie9aGerh68;0;2022-07-26T09:39:48.590687;
 
 

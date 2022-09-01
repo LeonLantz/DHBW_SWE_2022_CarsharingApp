@@ -118,15 +118,15 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
      * Das muss separat gemacht werden, da beim Verknüpfen der Observer (Controller+MainGUI)
      * das Laden der Daten bereits durchgeführt wurde und somit der UpdateEvent "ins Leere" ging
      */
-    public void init(String csvDirectory, String propFile) {
+    public void init(String csvDirectory, String propFile) throws Exception {
         try {
             this.loadCSVData(csvDirectory);
+            this.updateStandortAllocation();
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_BUCHUNGEN, entityManager.findAll(Buchung.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_DOKUMENTE, entityManager.findAll(Dokument.class)));
-
             this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -224,6 +224,44 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         return returnList;
     }
 
+    private List<IDepictable> getStandorteWithSP(IDepictable object) {
+        List<IDepictable> returnList = new ArrayList<>();
+        List<IPersistable> alleStandorte = entityManager.findAll(Standort.class);
+        List<Standort> lstStandort = new ArrayList<>();
+        for (IPersistable iPersistable : alleStandorte) {
+            lstStandort.add((Standort) iPersistable);
+        }
+        lstStandort = lstStandort.stream()
+                .filter(b -> (int) b.getAttributeValueOf(Standort.Attributes.ALLOCATED) < (int) b.getAttributeValueOf(Standort.Attributes.KAPAZITÄT))
+                .collect(Collectors.toList());
+
+        for (Standort standort : lstStandort) {
+            returnList.add(standort);
+        }
+
+        if (object != null) {
+            if (!returnList.contains(object)) {
+                returnList.add(object);
+            }
+        }
+
+        return returnList;
+    }
+
+    private void updateStandortAllocation() throws Exception {
+        //Clear all allocations
+        for (Object standort : entityManager.findAll(Standort.class).toArray()) {
+            Standort s = (Standort) standort;
+            s.setAttributeValueOf(Standort.Attributes.ALLOCATED, 0);
+        }
+        //Calculate allocations
+        for (Object fahrzeug : entityManager.findAll(Fahrzeug.class).toArray()) {
+            Fahrzeug f = (Fahrzeug) fahrzeug;
+            Standort standort = f.getAttributeValueOf(Fahrzeug.Attributes.STANDORT);
+            standort.setAttributeValueOf(Standort.Attributes.ALLOCATED, (int) standort.getAttributeValueOf(Standort.Attributes.ALLOCATED) + 1);
+        }
+    }
+
 
     // fuer alle GUI-Elemente, die aktualisiert werden sollen:
     @Override
@@ -248,7 +286,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 _dialogWindowComponent = new GUIBuchungAnlegen(this, entityManager.findAll(Kunde.class));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
-                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, entityManager.findAll(Standort.class));
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, this.getStandorteWithSP(null));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(750, 570));
             } else if (_currentObjectClass == Kunde.class) {
                 _dialogWindowComponent = new GUIKundeAnlegen(this);
@@ -270,7 +308,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(500, 550));
             } else if (_currentObjectClass == Fahrzeug.class) {
                 Standort standort = ((Fahrzeug)_currentObject).getAttributeValueOf(Fahrzeug.Attributes.STANDORT);
-                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject, entityManager.findAll(Standort.class), standort);
+                _dialogWindowComponent = new GUIFahrzeugAnlegen(this, _currentObject, this.getStandorteWithSP(standort), standort);
                 ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
                 CSHelp.createJDialog(_dialogWindowComponent, new Dimension(750, 570));
             } else if (_currentObjectClass == Kunde.class) {
@@ -369,7 +407,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 }
             } else if (ge.getData().getClass() == Standort.class) {
                 Standort standort = (Standort) ge.getData();
-                JLabel label = new JLabel("<html> Wollen Sie dem Fahrzeug wirklich den Standort <b>" + standort.toString() +  "</b> zuordnen?<br><br>Verfügbare Stellplätze: " + standort.getAttributeValueOf(Standort.Attributes.KAPAZITÄT) + "</html>");
+                JLabel label = new JLabel("<html> Wollen Sie dem Fahrzeug wirklich den Standort <b>" + standort.toString() +  "</b> zuordnen?<br><br>Verfügbare Stellplätze: " + ((int) standort.getAttributeValueOf(Standort.Attributes.KAPAZITÄT)  - (int) standort.getAttributeValueOf(Standort.Attributes.ALLOCATED)) + "</html>");
                 ImageIcon icon = CSHelp.imageList.get("icon_standort.png");
                 int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Standort zuordnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);
                 if (answer == 1) {
@@ -382,6 +420,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
             String[] fahrzeugAttribute = (String[]) ge.getData();
             try {
                 this.elementFactory.createElement(Fahrzeug.class, fahrzeugAttribute);
+                this.updateStandortAllocation();
                 this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
                 this.fireUpdateEvent(new UpdateEvent(this, Commands.SET_STATISTICS, getCounts()));
             } catch (Exception e) {
@@ -439,6 +478,11 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
         // Entity löschen
         else if (ge.getCmd().equals(CustomTableComponent.Commands.DELETE_ENTITY)) {
             entityManager.remove((IPersistable) ge.getData());
+            try {
+                this.updateStandortAllocation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_KUNDEN, entityManager.findAll(Kunde.class)));
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_FAHRZEUGE, entityManager.findAll(Fahrzeug.class)));
             fireUpdateEvent(new UpdateEvent(this, Commands.SET_STANDORTE, entityManager.findAll(Standort.class)));
