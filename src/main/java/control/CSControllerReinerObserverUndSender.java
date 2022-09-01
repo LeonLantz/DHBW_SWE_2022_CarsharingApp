@@ -387,24 +387,30 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 Dokument dokument = (Dokument) ge.getData();
                 if (_currentObjectClass == Buchung.class) {
                     slc = ((GUIBuchungAnlegen) _dialogWindowComponent).getDokumentSLC().get_slc();
-                    String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
-                    File file = new File(CSHelp.getAbsolutWorkingDirectory() + path);
-                    JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
-                    ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
-                    int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Dokument öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);
-                    if (answer == 0) {
-                        if (Desktop.isDesktopSupported()) {
-                            try {
-                                Desktop.getDesktop().open(file);
-                            } catch (IOException ex) {
-                                // no application registered for PDFs
-                            }
+                } else if (_currentObjectClass == Fahrzeug.class) {
+                    slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getDokumentSLC().get_slc();
+                }
+                String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
+                File file = new File(CSHelp.getAbsolutWorkingDirectory() + path);
+                JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
+                ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
+                int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Dokument öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);
+                if (answer == 0) {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().open(file);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            // no application registered for PDFs
                         }
                     }
-                    slc.clearSelection();
-                } else if (_currentObjectClass == Fahrzeug.class) {
-                    System.out.println("Fahrzeug");
                 }
+                try {
+                    slc.clearSelection();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             } else if (ge.getData().getClass() == Standort.class) {
                 Standort standort = (Standort) ge.getData();
                 JLabel label = new JLabel("<html> Wollen Sie dem Fahrzeug wirklich den Standort <b>" + standort.toString() +  "</b> zuordnen?<br><br>Verfügbare Stellplätze: " + ((int) standort.getAttributeValueOf(Standort.Attributes.KAPAZITÄT)  - (int) standort.getAttributeValueOf(Standort.Attributes.ALLOCATED)) + "</html>");

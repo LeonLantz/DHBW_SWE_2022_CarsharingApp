@@ -275,6 +275,10 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         return (String[]) _currentValues.toArray(new String[_currentValues.size()]);
     }
 
+
+    public CustomListField getDokumentSLC() {
+        return (CustomListField) _inputFieldMap.get("Dokumente");
+    }
     @Override
     public boolean validateInput() {
         System.out.println(_currentValues.get(3));
