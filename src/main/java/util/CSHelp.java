@@ -116,8 +116,7 @@ public class CSHelp {
     }
 
     public static boolean startsWithSpace(String input) {
-        String regex = "^\s.*$";
-        return Pattern.matches(regex, input);
+        return input.startsWith(" ");
     }
     // End String value validation rules ---
 
