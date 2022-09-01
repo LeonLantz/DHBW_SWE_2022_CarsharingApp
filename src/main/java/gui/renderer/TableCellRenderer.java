@@ -49,10 +49,6 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             table.getColumn("Delete").setCellEditor(new JButtonEditor());
         }
 
-        if (value.toString().contains("https")) {
-            table.getColumn("Google Maps").setCellEditor(new URLEditor());
-        }
-
         if( value == null ) {
             JLabel labelNull = new JLabel("");
             labelNull.setFont(CSHelp.lato.deriveFont(12f));
