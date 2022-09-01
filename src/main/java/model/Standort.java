@@ -4,6 +4,7 @@ import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
 import de.dhbwka.swe.utils.model.IPersistable;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class Standort implements IDepictable, IPersistable {
         PLZ,
         ORT,
         LAND,
-        KOORDINATEN,
+        MAPS,
         KAPAZITÄT,
         LAST_EDIT
 
@@ -43,8 +44,9 @@ public class Standort implements IDepictable, IPersistable {
         STRASSE( "Straße", String.class, true, false, false ),
         LAND( "Land", String.class, false, false, false ),
         //TODO: Koordianten zu Button ändern / Google Maps standort verlinken
-        KOORDINATEN( "Koordinaten", String.class, true, false, false ),
-        KAPAZITÄT( "Kapazität", String.class, true, false, false ),
+        MAPS( "Google Maps", URL.class, true, false, false ),
+        KAPAZITÄT( "Kapazität", Integer.class, true, true, false ),
+        ALLOCATED( "Belegt", Integer.class, true, true, false ),
         LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
 
         private final String name;
@@ -109,14 +111,14 @@ public class Standort implements IDepictable, IPersistable {
      * Default-Konstruktor
      */
     public Standort() {
-        this( null, null, null, null, null, null, null, null);
+        this( null, null, null, null, null, null, null, null, null);
     }
 
-    public Standort(String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit) {
-        this(null, strasse, plz, ort, land, koordinaten, kapazität, last_edit);
+    public Standort(String strasse, String plz, String ort, String land, URL maps, Integer kapazität, Integer allocated, LocalDateTime last_edit) {
+        this(null, strasse, plz, ort, land, maps, kapazität, allocated, last_edit);
     }
 
-    public Standort(String iD, String strasse, String plz, String ort, String land, String koordinaten, String kapazität, LocalDateTime last_edit ) {
+    public Standort(String iD, String strasse, String plz, String ort, String land, URL maps, Integer kapazität, Integer allocated, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();
@@ -125,8 +127,9 @@ public class Standort implements IDepictable, IPersistable {
         this.attArr[ Attributes.PLZ.ordinal() ] = Attributes.PLZ.createAttribute( this, plz, null );
         this.attArr[ Attributes.ORT.ordinal() ] = Attributes.ORT.createAttribute( this, ort, null );
         this.attArr[ Attributes.LAND.ordinal() ] = Attributes.LAND.createAttribute( this, land, null );
-        this.attArr[ Attributes.KOORDINATEN.ordinal() ] = Attributes.KOORDINATEN.createAttribute( this, koordinaten, null );
-        this.attArr[ Attributes.KAPAZITÄT.ordinal() ] = Attributes.KAPAZITÄT.createAttribute( this, kapazität, null );
+        this.attArr[ Attributes.MAPS.ordinal() ] = Attributes.MAPS.createAttribute( this, maps, null );
+        this.attArr[ Attributes.KAPAZITÄT.ordinal() ] = Attributes.KAPAZITÄT.createAttribute( this, kapazität, 0 );
+        this.attArr[ Attributes.ALLOCATED.ordinal() ] = Attributes.ALLOCATED.createAttribute( this, allocated, 0 );
         this.attArr[ Attributes.LAST_EDIT.ordinal() ] = Attributes.LAST_EDIT.createAttribute(this, last_edit, "" );
     }
 
@@ -137,7 +140,7 @@ public class Standort implements IDepictable, IPersistable {
     public <T> void setAttributeValueOf(Standort.Attributes attribute, T value ) throws Exception {
         if( ! attribute.modifiable )
             throw new IllegalArgumentException( "attribute '" + attribute.name() + "' is not modifiable!" );
-        if( value.getClass() == this.attArr[ attribute.ordinal() ].getClass() )
+        if( value.getClass() == this.attArr[ attribute.ordinal() ].getClazz() )
             this.attArr[ attribute.ordinal() ].setValue( value );
         else
             throw new IllegalArgumentException( "wrong class type for attribute '" + attribute.name() + "'!" );
@@ -151,8 +154,7 @@ public class Standort implements IDepictable, IPersistable {
     @Override
     public String toString() {
         return this.attArr[ Attributes.ORT.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue() + ", "
-                + this.attArr[ Attributes.KAPAZITÄT.ordinal() ].getValue();
+                + this.attArr[ Attributes.STRASSE.ordinal() ].getValue();
     }
 
     @Override

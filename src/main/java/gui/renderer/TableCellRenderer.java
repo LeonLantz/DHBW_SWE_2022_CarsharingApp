@@ -12,6 +12,8 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,7 +34,7 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-
+        //Performance und so ...
         if( row == 0 && column == 0) {
             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             table.getTableHeader().setDefaultRenderer(tableHeaderRenderer);
@@ -47,6 +49,10 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             table.getColumn("Delete").setCellEditor(new JButtonEditor());
         }
 
+        if (value.toString().contains("https")) {
+            table.getColumn("Google Maps").setCellEditor(new URLEditor());
+        }
+
         if( value == null ) {
             JLabel labelNull = new JLabel("");
             labelNull.setFont(CSHelp.lato.deriveFont(12f));
@@ -54,6 +60,8 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             labelNull.setBorder( border );
             return labelNull;
         }
+
+
 
         Component guiComp = new JLabel( value.toString() );
         guiComp.setBackground(CSHelp.tableCellBackground);
@@ -65,19 +73,19 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             guiComp.setFont(CSHelp.lato.deriveFont(12f));
             guiComp.setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
-        }else if ( clazz ==  Integer.class ) {
+        } else if ( clazz ==  Integer.class ) {
             ((JLabel)guiComp).setOpaque(true);
             guiComp.setFont(CSHelp.lato.deriveFont(12f));
             guiComp.setForeground(CSHelp.tableCellText);
             ((JLabel)guiComp).setBorder( border );
         } else if( clazz ==  URL.class ) {
             guiComp = new JButton(value.toString());
-            guiComp.setFont(CSHelp.lato.deriveFont(12f));
+            guiComp.setFont(CSHelp.lato.deriveFont(10f));
             guiComp.setForeground(CSHelp.tableCellText);
             ((JButton)guiComp).setBorder( border );
             guiComp.setForeground(Color.BLUE.darker());
             guiComp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        }else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class) {
+        } else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class) {
             guiComp = (JButton)value;
             ((JButton)guiComp).setBorder( border );
         }else if(clazz == LocalDateTime.class) {
@@ -125,8 +133,11 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             guiComp.setForeground(Color.BLUE.darker());
             ((JLabel)guiComp).setBorder( border );
         }
+
+
+
+
         return guiComp;
     }
-
 
 }

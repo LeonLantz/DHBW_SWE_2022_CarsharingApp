@@ -8,7 +8,6 @@ import java.util.EventObject;
 
 class JButtonEditor extends AbstractCellEditor implements TableCellEditor {
     JButton button;
-    String txt;
 
     public JButtonEditor() {
         super();

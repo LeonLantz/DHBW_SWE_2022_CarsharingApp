@@ -6,7 +6,8 @@ import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
 import javax.swing.*;
-import java.net.URI;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -81,11 +82,11 @@ public class ElementFactory {
 			String plz = csvData[ Standort.CSVPositions.PLZ.ordinal() ];
 			String ort = csvData[ Standort.CSVPositions.ORT.ordinal() ];
 			String land = csvData[ Standort.CSVPositions.LAND.ordinal() ];
-			String koordinaten = csvData[ Standort.CSVPositions.KOORDINATEN.ordinal() ];
+			String maps = csvData[ Standort.CSVPositions.MAPS.ordinal() ];
 			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
 			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Standort(id, strasse, plz, ort, land, koordinaten, kapazität, LocalDateTime.parse(last_edit));
+			persistableElement = new Standort(id, strasse, plz, ort, land, new URL(maps), Integer.valueOf(kapazität), 0, LocalDateTime.parse(last_edit));
 		}
 		else if( c == Fahrzeug.class) {
 			String id = csvData[ Fahrzeug.CSVPositions.ID.ordinal() ];
@@ -105,6 +106,9 @@ public class ElementFactory {
 			String last_edit = csvData[ Fahrzeug.CSVPositions.LAST_EDIT.ordinal() ];
 
 			persistableElement = new Fahrzeug(id, bezeichnung, marke, motor, Integer.decode(türen), Integer.decode(sitze), Integer.decode(kofferraumvolumen), gewicht, Fahrzeugkategorie.fromString(fahrzeugkategorie), führerscheinklasse, nummernschild, LocalDate.parse(tüv_bis), farbe, (Standort) entityManager.find(Standort.class, standortKey), LocalDateTime.parse(last_edit));
+//			Standort standort = ((Standort)entityManager.find(standortKey));
+//			int allocated = (Integer)standort.getAttributeValueOf(Standort.Attributes.ALLOCATED) + 1;
+//			standort.setAttributeValueOf(Standort.Attributes.ALLOCATED, allocated);
 		}
 		else if ( c == Bild.class ) {
 			String id = csvData[ Bild.CSVPositions.ID.ordinal() ];
