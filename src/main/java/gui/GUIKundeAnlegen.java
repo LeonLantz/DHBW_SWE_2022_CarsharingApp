@@ -4,14 +4,10 @@ import de.dhbwka.swe.utils.event.EventCommand;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.model.Attribute;
 import de.dhbwka.swe.utils.model.IDepictable;
-import gui.customComponents.userInput.CustomComboBox;
-import gui.customComponents.userInput.CustomInputField;
-import gui.customComponents.userInput.CustomListField;
-import gui.customComponents.userInput.CustomTextField;
-import model.Bild;
-import model.Fahrzeugkategorie;
-import model.Motorisierung;
+import gui.customComponents.userInput.*;
+import model.*;
 import util.CSHelp;
 import util.IValidate;
 
@@ -21,11 +17,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
 
@@ -58,34 +54,31 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         }
     }
 
-    //Map of all CustomInputFields
-    private Map<String, CustomInputField> inputFieldMap;
+    //Data
+    private IGUIEventListener _observer;
+    private Map<String, CustomInputField> _inputFieldMap;
+    private String _randID;
+    private IDepictable _currentObject;
+    private List _currentValues;
 
-    private IGUIEventListener observer;
-    private String randID;
-
-    private JPanel topPanel, bottomPanel, leftPanel, rightPanel;
-    private JLabel topLabelValue, topLabelDescription;
-    private JButton save_kunde;
-
-    private IDepictable iDepictable;
-    //private List bildList, documentList;
-
-    private CustomInputField inputVorname, inputNachname, inputEmail, inputPhone, inputIBAN, inputDOB;
+    //User Interface
+    private JPanel _topPanel, _bottomPanel, _leftPanel, _rightPanel;
+    private JLabel _topLabelValue, _topLabelDescription;
+    private JButton _save_kunde;
 
 
-    //constructor for creating new Object
-    public GUIKundeAnlegen(IGUIEventListener observer) {
-        this.addObserver(observer);
-        this.observer = observer;
+    //constructor for creating new <Kunde>
+    public GUIKundeAnlegen(IGUIEventListener _observer) {
+        this.addObserver(_observer);
+        this._observer = _observer;
         initUI(true);
     }
 
-    //constructor for editing an existing Object
-    public GUIKundeAnlegen(IGUIEventListener observer, IDepictable iDepictable) {
-        this.addObserver(observer);
-        this.iDepictable = iDepictable;
-        this.observer = observer;
+    //constructor for editing an existing <Kunde>
+    public GUIKundeAnlegen(IGUIEventListener _observer, IDepictable _currentObject) {
+        this.addObserver(_observer);
+        this._currentObject = _currentObject;
+        this._observer = _observer;
         initUI(false);
     }
 
@@ -94,110 +87,158 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
         this.setPreferredSize(new Dimension(500,700));
         this.setBackground(CSHelp.main);
 
-        topPanel = new JPanel(new BorderLayout(0,0));
-        topPanel.setBackground(Color.WHITE);
-        topLabelDescription = new JLabel("ID: ");
-        topLabelDescription.setBorder(new EmptyBorder(20,20,0,5));
-        topLabelDescription.setFont(CSHelp.lato.deriveFont(11f));
-        topLabelValue = new JLabel();
-        topLabelValue.setBorder(new EmptyBorder(20,0,0,20));
-        topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
-        topPanel.add(topLabelDescription, BorderLayout.WEST);
-        topPanel.add(topLabelValue, BorderLayout.CENTER);
-
-
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        bottomPanel.setBackground(Color.white);
         Border borderTop = BorderFactory.createMatteBorder(1,0,0,0, CSHelp.navBar);
-        bottomPanel.setBorder(borderTop);
         ImageIcon imageIconKunde = CSHelp.imageList.get("button_KundeSpeichern.png");
-        save_kunde = new JButton(imageIconKunde);
-        save_kunde.setBorder(new EmptyBorder(0,0,0,0));
-        save_kunde.addActionListener(new ActionListener() {
+
+        _topPanel = new JPanel(new BorderLayout(0,0));
+        _topPanel.setBackground(Color.WHITE);
+        _topLabelDescription = new JLabel("ID: ");
+        _topLabelDescription.setBorder(new EmptyBorder(10,20,0,5));
+        _topLabelDescription.setFont(CSHelp.lato.deriveFont(12f));
+        _topLabelValue = new JLabel();
+        _topLabelValue.setBorder(new EmptyBorder(12,0,0,20));
+        _topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
+        _topPanel.add(_topLabelDescription, BorderLayout.WEST);
+        _topPanel.add(_topLabelValue, BorderLayout.CENTER);
+
+        _bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        _bottomPanel.setBackground(Color.white);
+        _bottomPanel.setBorder(borderTop);
+
+        _save_kunde = new JButton(imageIconKunde);
+        _save_kunde.setBorder(new EmptyBorder(0,0,0,0));
+        _save_kunde.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] test = getValues();
+                String[] kundenData = getValues();
                 if(validateInput()) {
-                    int a = JOptionPane.showConfirmDialog(GUIKundeAnlegen.this, "Wollen sie den Kunden speichern?", "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd. MMMM YYYY");
+                    String message = String.format("<html><body> Wollen Sie folgenden Kunden speichern? <br><ul><li>%s, %s</li><li>%s</li><li>%s</li><li>%s</li><li>Geburtsdatum: %s</li></ul></body></html>", kundenData[2], kundenData[1], kundenData[3], kundenData[4], kundenData[5], formatter.format(LocalDate.parse(kundenData[6])));
+                    int a = JOptionPane.showConfirmDialog(GUIKundeAnlegen.this, message, "Bestätigung", JOptionPane.YES_NO_OPTION, 1, CSHelp.imageList.get("icon_person.png"));
                     if (a == 0) {
-                        fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, test ));
+                        fireGUIEvent( new GUIEvent(this, Commands.ADD_KUNDE, kundenData));
                     }
                 }
             }
         });
-        bottomPanel.add(save_kunde);
+        _bottomPanel.add(_save_kunde);
 
-        leftPanel = new JPanel();
-        rightPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        leftPanel.setPreferredSize(new Dimension(250, 600));
-        rightPanel.setPreferredSize(new Dimension(250, 600));
-        leftPanel.setBorder(new EmptyBorder(10,10,10,10));
-        rightPanel.setBorder(new EmptyBorder(10,10,10,10));
+        _leftPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        _rightPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        _leftPanel.setPreferredSize(new Dimension(250, 600));
+        _rightPanel.setPreferredSize(new Dimension(250, 600));
+        _leftPanel.setBorder(new EmptyBorder(10,10,10,10));
+        _rightPanel.setBorder(new EmptyBorder(10,10,10,10));
 
+        _inputFieldMap = new LinkedHashMap<>();
+        _inputFieldMap.put("Vorname", new CustomTextField("Vorname", "Vorname des Kunden"));
+        _inputFieldMap.put("Nachname", new CustomTextField("Nachname", "Nachname des Kunden"));
+        _inputFieldMap.put("Email", new CustomTextField("Email", "z.B. max@mustermann.de"));
+        _inputFieldMap.put("Phone", new CustomTextField("Telefon", "z.B. 017495622312"));
+        _inputFieldMap.put("IBAN", new CustomTextField("IBAN", "z.B. DE0212030 [...]"));
+        _inputFieldMap.put("DOB", new CustomDatePicker("Geburtsdatum", "Geburtsdatum des Kunden", _observer));
+        _inputFieldMap.put("Bilder", new CustomListField("Bilder", this._observer, this._currentObject));
+        _inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this._observer, this._currentObject));
 
-        inputFieldMap = new LinkedHashMap<>();
-        inputFieldMap.put("Vorname", new CustomTextField("Bezeichnung", "Fahrzeugbezeichnung"));
-        inputFieldMap.put("Nachname", new CustomTextField("Marke", "bsp.: Audi, Mercedes, ..."));
-        inputFieldMap.put("Email", new CustomComboBox("Motorisierung", "Diesel, Benzin, Elektro ..", Motorisierung.getArray(), observer));
-        inputFieldMap.put("Phone", new CustomTextField("Türen", "Anzahl der Türen"));
-        inputFieldMap.put("IBAN", new CustomTextField("Sitze", "Anzahl der Sitze"));
-        inputFieldMap.put("DOB", new CustomTextField("Kofferraumvolumen (l)", "Volumen in Liter"));;
-        //TODO: Fahrzeugbilder und Dokumente
-        inputFieldMap.put("Bilder", new CustomListField("Bilder", this.observer, this.iDepictable ));
-        inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this.observer, this.iDepictable ));
+        _leftPanel.add(_inputFieldMap.get("Vorname"));
+        _leftPanel.add(_inputFieldMap.get("Nachname"));
+        _leftPanel.add(_inputFieldMap.get("Email"));
+        _leftPanel.add(_inputFieldMap.get("Phone"));
+        _leftPanel.add(_inputFieldMap.get("IBAN"));
+        _rightPanel.add(_inputFieldMap.get("DOB"));
+        _rightPanel.add(_inputFieldMap.get("Bilder"));
+        _rightPanel.add(_inputFieldMap.get("Dokumente"));
+        _leftPanel.setBackground(Color.WHITE);
+        _rightPanel.setBackground(Color.WHITE);
 
-        int leftPanelCount = 0;
-        for (CustomInputField customInputField : inputFieldMap.values()) {
-            if (leftPanelCount < 5) {
-                leftPanel.add(customInputField);
-            } else {
-                rightPanel.add(customInputField);
-            }
-            leftPanelCount++;
-        }
+        this.add(_topPanel, BorderLayout.NORTH);
+        this.add(_leftPanel, BorderLayout.WEST);
+        this.add(_rightPanel, BorderLayout.EAST);
+        this.add(_bottomPanel, BorderLayout.SOUTH);
 
-        leftPanel.setBackground(Color.WHITE);
-        rightPanel.setBackground(Color.WHITE);
-        this.add(topPanel, BorderLayout.NORTH);
-        this.add(leftPanel, BorderLayout.WEST);
-        this.add(rightPanel, BorderLayout.EAST);
-        this.add(bottomPanel, BorderLayout.SOUTH);
-
-        if (isNewObject) {
-            createKunde();
-        } else {
-            editKunde();
-        }
+        if (isNewObject) createKunde();
+        else editKunde();
     }
 
     private void createKunde() {
-
+        _randID = UUID.randomUUID().toString();
+        _topLabelValue.setText(_randID);
     }
 
     private void editKunde() {
+        Attribute[] attributes = _currentObject.getAttributeArray();
+        _randID = attributes[0].getValue().toString();
+        _topLabelValue.setText(_randID);
+        _inputFieldMap.get("Vorname").setValue(attributes[1].getValue().toString());
+        _inputFieldMap.get("Nachname").setValue(attributes[2].getValue().toString());
+        _inputFieldMap.get("Email").setValue(attributes[3].getValue().toString());
+        _inputFieldMap.get("Phone").setValue(attributes[4].getValue().toString());
+        _inputFieldMap.get("IBAN").setValue(attributes[5].getValue().toString());
+        _inputFieldMap.get("DOB").setValue(attributes[6].getValue().toString());
+//        _inputFieldMap.get("Sitze").setValue(attributes[5].getValue().toString());
+//        _inputFieldMap.get("Kofferraumvolumen").setValue(attributes[6].getValue().toString());
+//        _inputFieldMap.get("Gewicht").setValue(attributes[7].getValue().toString());
+//        int fahrzeugkategorieIndex = Fahrzeugkategorie.fromString(attributes[8].getValue().toString()).ordinal();
+//        _inputFieldMap.get("Fahrzeugkategorie").setValue(String.valueOf(fahrzeugkategorieIndex));
+//        _inputFieldMap.get("Führerscheinklasse").setValue(attributes[9].getValue().toString());
+//        _inputFieldMap.get("Nummernschild").setValue(attributes[10].getValue().toString());
+//        _inputFieldMap.get("TüvBis").setValue(attributes[11].getValue().toString());
+//        _inputFieldMap.get("Farbe").setValue(attributes[12].getValue().toString());
+//        ((CustomListField)_inputFieldMap.get("Standort")).get_slc().selectElement((Standort) attributes[13].getValue());
 
+        _save_kunde.requestFocus();
     }
 
     private String[] getValues() {
-        List<String> allValues = new ArrayList<>();
-        allValues.add(randID);
-        for(CustomInputField customInputField : inputFieldMap.values()) {
-            if(customInputField.getClass() != CustomListField.class) {
-                allValues.add(customInputField.getValue());
-            }
-        }
-        allValues.add(LocalDateTime.now().toString());
-        return allValues.toArray(new String[allValues.size()]);
+        _currentValues = new ArrayList<String>();
+        _currentValues.add(_randID);
+        _currentValues.add(_inputFieldMap.get("Vorname").getValue());
+        _currentValues.add(_inputFieldMap.get("Nachname").getValue());
+        _currentValues.add(_inputFieldMap.get("Email").getValue());
+        _currentValues.add(_inputFieldMap.get("Phone").getValue());
+        _currentValues.add(_inputFieldMap.get("IBAN").getValue());
+        _currentValues.add(_inputFieldMap.get("DOB").getValue());
+        _currentValues.add(LocalDateTime.now().toString());
+        return (String[]) _currentValues.toArray(new String[_currentValues.size()]);
     }
 
-    public CustomListField getBildList() {
-        return (CustomListField) inputFieldMap.get("Bilder");
+    public void updateBildList(List<IDepictable> bilder) {
+        CustomListField customListField = (CustomListField) _inputFieldMap.get("Bilder");
+        customListField.setListElements(bilder);
+    }
+
+    public void updateDokumentList(List<IDepictable> dokumente) {
+        CustomListField customListField = (CustomListField) _inputFieldMap.get("Dokumente");
+        customListField.setListElements(dokumente);
     }
 
     @Override
     public boolean validateInput() {
-        return false;
+        if (!CSHelp.isEmail((String) _currentValues.get(3))) {
+            JOptionPane.showMessageDialog(null, "Bitte geben Sie eine valide Email ein!", "Email fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!CSHelp.isIBAN((String) _currentValues.get(5))) {
+            JOptionPane.showMessageDialog(null, "Bitte geben Sie eine valide, deutsche IBAN an! \nFormat: DE + 20 Ziffern", "IBAN fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (_currentValues.get(6) == null) {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie das Geburtsdatum des Kunden aus!", "Geburtsdatum fehlerhaft", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        // Semicolon Check
+        // !!!!!!!!! DO NOT USE INTELLIJ OPTIMIZER AND TRY TO 'SIMPLIFY' THIS METHOD !!!!!!!!!!!
+        // IT WILL BREAK IN CASE THERE IS MORE CODE AFTER IT
+        if (!CSHelp.areFormFieldValuesCsvCompliant(_currentValues, Kunde.getAllAttributeNames())) return false;
+
+        return true;
+    }
+
+    public CustomListField getBildList() {
+        return (CustomListField) _inputFieldMap.get("Bilder");
+    }
+
+    public CustomDatePicker getDateComponent() {
+        return ((CustomDatePicker) _inputFieldMap.get("DOB"));
     }
 }

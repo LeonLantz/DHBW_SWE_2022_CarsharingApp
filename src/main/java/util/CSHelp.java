@@ -101,6 +101,11 @@ public class CSHelp {
         String regex = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
         return Pattern.matches(regex, input);
     }
+    public static boolean isIBAN(String input) {
+        String regex = "^DE\\d{20}$";
+        return Pattern.matches(regex, input);
+    }
+
 
     public static boolean isAlphanumeric(String input) {
         String regex = "^[a-zA-Z0-9]*$";

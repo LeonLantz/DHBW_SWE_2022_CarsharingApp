@@ -83,7 +83,7 @@ public class CustomDatePicker extends CustomInputField {
 //					.date( LocalDate.of( 2019, 1, 31 ) )
                 .date( LocalDate.now() )
                 .observer(this._observer)
-                .startYear( 2015 )
+                .startYear( 1950 )
                 .endYear( 2025 )
                 .propertymanager( null )
                 .build();

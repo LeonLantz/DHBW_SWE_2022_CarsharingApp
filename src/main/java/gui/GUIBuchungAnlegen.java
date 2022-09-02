@@ -313,6 +313,11 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         customListField.setListElements(dokumente);
     }
 
+    public void updateBildList(List<IDepictable> bilder) {
+        CustomListField customListField = (CustomListField) _inputFieldMap.get("Bilder");
+        customListField.setListElements(bilder);
+    }
+
     //Getter
     public CustomListField getKundenSLC() {
         return (CustomListField) _inputFieldMap.get("Kunde");

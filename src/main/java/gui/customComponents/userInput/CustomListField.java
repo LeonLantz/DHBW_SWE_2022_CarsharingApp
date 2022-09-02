@@ -130,7 +130,7 @@ public class CustomListField extends CustomInputField {
                 j.setAcceptAllFileFilterUsed(false);
 
                 // set a title for the dialog
-                j.setDialogTitle("Select a .txt file");
+                j.setDialogTitle("Select a .png file");
 
                 // only allow files of .txt extension
                 FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .png files", "png");
