@@ -34,8 +34,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
     public enum Commands implements EventCommand {
 
-        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class ),
-        ADD_BILD("GUIFahrzeugAnlegen.addBild", String[].class);
+        ADD_FAHRZEUG( "GUIFahrzeugAnlegen.addFahrzeug", String[].class );
 
         public final Class<?> payloadType;
         public final String cmdText;
@@ -62,24 +61,22 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         }
     }
 
-    //Map of all CustomInputFields
-    private Map<String, CustomInputField> _inputFieldMap;
-
+    //Data
     private IGUIEventListener _observer;
+    private Map<String, CustomInputField> _inputFieldMap;
     private String _randID;
+    private IDepictable _currentObject;
     private List _currentValues;
-
     private List<IDepictable> _allStandorte;
-
-    private JPanel topPanel, bottomPanel, leftPanel, centerPanel, rightPanel;
-    private JLabel topLabelValue, topLabelDescription;
-    private JButton save_fahrzeug;
-
     private Standort _selectedStandort;
 
-    private IDepictable iDepictable;
+    //User Interface
+    private JPanel _topPanel, _bottomPanel, _leftPanel, _centerPanel, _rightPanel;
+    private JLabel _topLabelValue, _topLabelDescription;
+    private JButton _save_fahrzeug;
 
-    //constructor for creating new Object
+
+    //constructor for creating new <Fahrzeug>
     public GUIFahrzeugAnlegen(IGUIEventListener _observer, List allStandorte) {
         this.addObserver(_observer);
         this._observer = _observer;
@@ -87,11 +84,11 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         initUI(true);
     }
 
-    //constructor for editing an existing Object
-    public GUIFahrzeugAnlegen(IGUIEventListener _observer, IDepictable iDepictable, List allStandorte, Standort selectedStandort) {
+    //constructor for editing an existing <Fahrzeug>
+    public GUIFahrzeugAnlegen(IGUIEventListener _observer, IDepictable _currentObject, List allStandorte, Standort selectedStandort) {
         this.addObserver(_observer);
-        this.iDepictable = iDepictable;
         this._observer = _observer;
+        this._currentObject = _currentObject;
         this._allStandorte = allStandorte;
         this._selectedStandort = selectedStandort;
         initUI(false);
@@ -105,26 +102,24 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         Border borderTop = BorderFactory.createMatteBorder(1,0,0,0, CSHelp.navBar);
         ImageIcon imageIconFahrzeug = CSHelp.imageList.get("button_FahrzeugSpeichern.png");
 
-        topPanel = new JPanel(new BorderLayout(0,0));
-        topPanel.setBackground(Color.white);
-        topLabelDescription = new JLabel("ID: ");
-        topLabelDescription.setBorder(new EmptyBorder(10,20,0,5));
-        topLabelDescription.setFont(CSHelp.lato.deriveFont(12f));
-        topLabelValue = new JLabel();
-        topLabelValue.setBorder(new EmptyBorder(12,0,0,20));
-        topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
-        topPanel.add(topLabelDescription, BorderLayout.WEST);
-        topPanel.add(topLabelValue, BorderLayout.CENTER);
+        _topPanel = new JPanel(new BorderLayout(0,0));
+        _topPanel.setBackground(Color.white);
+        _topLabelDescription = new JLabel("ID: ");
+        _topLabelDescription.setBorder(new EmptyBorder(10,20,0,5));
+        _topLabelDescription.setFont(CSHelp.lato.deriveFont(12f));
+        _topLabelValue = new JLabel();
+        _topLabelValue.setBorder(new EmptyBorder(12,0,0,20));
+        _topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
+        _topPanel.add(_topLabelDescription, BorderLayout.WEST);
+        _topPanel.add(_topLabelValue, BorderLayout.CENTER);
 
+        _bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        _bottomPanel.setBackground(Color.white);
+        _bottomPanel.setBorder(borderTop);
 
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        bottomPanel.setBackground(Color.white);
-
-        bottomPanel.setBorder(borderTop);
-
-        save_fahrzeug = new JButton(imageIconFahrzeug);
-        save_fahrzeug.setBorder(new EmptyBorder(0,0,0,0));
-        save_fahrzeug.addActionListener(new ActionListener() {
+        _save_fahrzeug = new JButton(imageIconFahrzeug);
+        _save_fahrzeug.setBorder(new EmptyBorder(0,0,0,0));
+        _save_fahrzeug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] fahrzeugData = getValues();
@@ -143,21 +138,20 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
                 }
             }
         });
-        bottomPanel.add(save_fahrzeug);
+        _bottomPanel.add(_save_fahrzeug);
 
-        leftPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        centerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        rightPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        leftPanel.setBackground(Color.WHITE);
-        centerPanel.setBackground(Color.WHITE);
-        rightPanel.setBackground(Color.WHITE);
-        leftPanel.setPreferredSize(new Dimension(250, 400));
-        centerPanel.setPreferredSize(new Dimension(250, 400));
-        rightPanel.setPreferredSize(new Dimension(250, 400));
-        leftPanel.setBorder(new EmptyBorder(10,10,10,10));
-        centerPanel.setBorder(new EmptyBorder(10,10,10,10));
-        rightPanel.setBorder(new EmptyBorder(10,10,10,10));
-
+        _leftPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        _centerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        _rightPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        _leftPanel.setBackground(Color.WHITE);
+        _centerPanel.setBackground(Color.WHITE);
+        _rightPanel.setBackground(Color.WHITE);
+        _leftPanel.setPreferredSize(new Dimension(250, 400));
+        _centerPanel.setPreferredSize(new Dimension(250, 400));
+        _rightPanel.setPreferredSize(new Dimension(250, 400));
+        _leftPanel.setBorder(new EmptyBorder(10,10,10,10));
+        _centerPanel.setBorder(new EmptyBorder(10,10,10,10));
+        _rightPanel.setBorder(new EmptyBorder(10,10,10,10));
 
         _inputFieldMap = new LinkedHashMap<>();
         _inputFieldMap.put("Bezeichnung", new CustomTextField("Bezeichnung", "Fahrzeugbezeichnung"));
@@ -170,55 +164,49 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         _inputFieldMap.put("Fahrzeugkategorie", new CustomComboBox("Fahrzeugkategorie", "bsp.: Mittelklasse, ...", Fahrzeugkategorie.getArray(), _observer));
         _inputFieldMap.put("Führerscheinklasse", new CustomTextField("Führerscheinklasse", "bsp.: A, B, ..."));
         _inputFieldMap.put("Nummernschild",  new CustomTextField("Nummernschild", "bsp.: DÜW LL 140"));
-        _inputFieldMap.put("Bilder", new CustomListField("Bilder", this._observer, this.iDepictable ));
-        _inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this._observer, this.iDepictable ));
+        _inputFieldMap.put("Bilder", new CustomListField("Bilder", this._observer, this._currentObject));
+        _inputFieldMap.put("Dokumente", new CustomListField("Dokumente", this._observer, this._currentObject));
         _inputFieldMap.put("Standort", new CustomListField("Standort", this._observer, this._allStandorte));
         _inputFieldMap.put("TüvBis", new CustomDatePicker("Tüv bis", "Tüv bis", this._observer));
         _inputFieldMap.put("Farbe", new CustomTextField("Farbe", "Farbe des Fahrzeuges"));
 
+        _leftPanel.add(_inputFieldMap.get("Bezeichnung"));
+        _leftPanel.add(_inputFieldMap.get("Marke"));
+        _leftPanel.add(_inputFieldMap.get("Motorisierung"));
+        _leftPanel.add(_inputFieldMap.get("Türen"));
+        _leftPanel.add(_inputFieldMap.get("Standort"));
 
-        leftPanel.add(_inputFieldMap.get("Bezeichnung"));
-        leftPanel.add(_inputFieldMap.get("Marke"));
-        leftPanel.add(_inputFieldMap.get("Motorisierung"));
-        leftPanel.add(_inputFieldMap.get("Türen"));
-        leftPanel.add(_inputFieldMap.get("Standort"));
+        _centerPanel.add(_inputFieldMap.get("Sitze"));
+        _centerPanel.add(_inputFieldMap.get("Kofferraumvolumen"));
+        _centerPanel.add(_inputFieldMap.get("Gewicht"));
+        _centerPanel.add(_inputFieldMap.get("Fahrzeugkategorie"));
+        _centerPanel.add(_inputFieldMap.get("Führerscheinklasse"));
+        _centerPanel.add(_inputFieldMap.get("Nummernschild"));
 
-        centerPanel.add(_inputFieldMap.get("Sitze"));
-        centerPanel.add(_inputFieldMap.get("Kofferraumvolumen"));
-        centerPanel.add(_inputFieldMap.get("Gewicht"));
-        centerPanel.add(_inputFieldMap.get("Fahrzeugkategorie"));
-        centerPanel.add(_inputFieldMap.get("Führerscheinklasse"));
-        centerPanel.add(_inputFieldMap.get("Nummernschild"));
+        _rightPanel.add(_inputFieldMap.get("TüvBis"));
+        _rightPanel.add(_inputFieldMap.get("Farbe"));
+        _rightPanel.add(_inputFieldMap.get("Bilder"));
+        _rightPanel.add(_inputFieldMap.get("Dokumente"));
 
-        rightPanel.add(_inputFieldMap.get("TüvBis"));
-        rightPanel.add(_inputFieldMap.get("Farbe"));
-        rightPanel.add(_inputFieldMap.get("Bilder"));
-        rightPanel.add(_inputFieldMap.get("Dokumente"));
+        this.add(_topPanel, BorderLayout.NORTH);
+        this.add(_centerPanel, BorderLayout.CENTER);
+        this.add(_leftPanel, BorderLayout.WEST);
+        this.add(_rightPanel, BorderLayout.EAST);
+        this.add(_bottomPanel, BorderLayout.SOUTH);
 
-        this.add(topPanel, BorderLayout.NORTH);
-        this.add(centerPanel, BorderLayout.CENTER);
-        this.add(leftPanel, BorderLayout.WEST);
-        this.add(rightPanel, BorderLayout.EAST);
-        this.add(bottomPanel, BorderLayout.SOUTH);
-
-
-        if (isNewObject) {
-            createFahrzeug();
-        } else {
-            editFahrzeug();
-        }
+        if (isNewObject) createFahrzeug();
+        else editFahrzeug();
     }
 
     private void createFahrzeug() {
         _randID = UUID.randomUUID().toString();
-        topLabelValue.setText(_randID);
+        _topLabelValue.setText(_randID);
     }
 
     private void editFahrzeug() {
-        Attribute[] attributes = iDepictable.getAttributeArray();
-        //;/ok.png;A3 Sportback 30 TFSI;Audi;V8;5;5;300;1,469;Mittelklasse;B;DÜW L 140;2022-07-30;blau;2022-07-26T11:39:48.590687;
+        Attribute[] attributes = _currentObject.getAttributeArray();
         _randID = attributes[0].getValue().toString();
-        topLabelValue.setText(_randID);
+        _topLabelValue.setText(_randID);
         _inputFieldMap.get("Bezeichnung").setValue(attributes[1].getValue().toString());
         _inputFieldMap.get("Marke").setValue(attributes[2].getValue().toString());
         int motorisierungIndex = Motorisierung.fromString(attributes[3].getValue().toString()).ordinal();
@@ -234,8 +222,7 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         _inputFieldMap.get("TüvBis").setValue(attributes[11].getValue().toString());
         _inputFieldMap.get("Farbe").setValue(attributes[12].getValue().toString());
         ((CustomListField)_inputFieldMap.get("Standort")).get_slc().selectElement((Standort) attributes[13].getValue());
-
-        save_fahrzeug.requestFocus();
+        _save_fahrzeug.requestFocus();
     }
 
     public void updateBildList(List<IDepictable> bilder) {
@@ -243,7 +230,6 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         customListField.setListElements(bilder);
     }
 
-    //Load list of documents assigned to the booking
     public void updateDokumentList(List<IDepictable> dokumente) {
         CustomListField customListField = (CustomListField) _inputFieldMap.get("Dokumente");
         customListField.setListElements(dokumente);
@@ -275,17 +261,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
         return (String[]) _currentValues.toArray(new String[_currentValues.size()]);
     }
 
-
-    public CustomListField getDokumentSLC() {
-        return (CustomListField) _inputFieldMap.get("Dokumente");
-    }
     @Override
     public boolean validateInput() {
-        System.out.println(_currentValues.get(3));
-        if (_currentValues.get(1) == null) {
-            //JOptionPane.showMessageDialog(null, "Bitte wählen Sie einen Kunden aus!", "Kunde fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
         if (_currentValues.get(2) == null) {
             //JOptionPane.showMessageDialog(null, "Bitte wählen Sie ein Fahrzeug aus! \n(Startdatum/Enddatum auswählen-->Fahrzeuge laden)", "Fahrzeug fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
@@ -314,20 +291,8 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Fahrzeugkategorie aus!", "Fahrzeugkategorie fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (0 == 1) {
-            //JOptionPane.showMessageDialog(null, "Bitte geben Sie einen ganzzahlig, numerischen Wert für das Feld Gewicht ein!", "Gewicht fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (0 == 1) {
-            //JOptionPane.showMessageDialog(null, "Bitte geben Sie einen ganzzahlig, numerischen Wert für das Feld Gewicht ein!", "Gewicht fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
         if (_currentValues.get(11) == null) {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie das Ablaufdatum des Tüv aus!", "TüvBis fehlerhaft", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (0 == 1) {
-            //JOptionPane.showMessageDialog(null, "Bitte wählen Sie das Ablaufdatum des Tüv aus!", "TüvBis fehlerhaft", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (_currentValues.get(13) == null) {
@@ -342,18 +307,20 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
         return true;
     }
-    
-    //Get the TüvBis date component
+
     public CustomDatePicker getDateComponent() {
         return ((CustomDatePicker) _inputFieldMap.get("TüvBis"));
+    }
+
+    public CustomListField getDokumentSLC() {
+        return (CustomListField) _inputFieldMap.get("Dokumente");
     }
 
     public CustomListField getBildList() {
         return (CustomListField) _inputFieldMap.get("Bilder");
     }
+
     public CustomListField getStandortList() {
         return (CustomListField) _inputFieldMap.get("Standort");
     }
-
-
 }

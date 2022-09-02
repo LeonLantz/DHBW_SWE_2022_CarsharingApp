@@ -25,7 +25,7 @@ public class Bild implements IDepictable, IPersistable {
 
         ID( "ID", String.class, false, false, false ),
         TITLE( "Title", String.class, true, false, false ),
-        FILEPATH( "FilePath", String.class, true, false, false ),
+        FILEPATH( "Dateipfad", String.class, true, false, false ),
         IMAGE( "Image", ImageIcon.class, true, false, false ),
         KEY( "Key", String.class, true, false, false );
 
