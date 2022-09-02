@@ -365,21 +365,31 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                 } else if (_currentObjectClass == Fahrzeug.class) {
                     slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().get_slc();
                 }
-                Bild bild = (Bild) ge.getData();
-                String filePath = CSHelp.getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
-                ImageIcon imageIcon = new ImageIcon(filePath);
-                String[] options = new String[]{"Schließen", "Löschen"};
-                int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
-                if (answer == 1) {
-                    this.entityManager.remove((IPersistable) ge.getData());
-                    if (_currentObjectClass == Fahrzeug.class) {
-                        ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
-                    } else if (_currentObjectClass == Kunde.class) {
 
+                //TODO: add popup message for opening picture
+                Bild bild = (Bild) ge.getData();
+                JLabel label = new JLabel("<html> Wollen Sie das Bild <b>" + bild.toString() +  "</b> wirklich öffnen?</html>");
+//                ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
+                int bildOpenAnswer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Bild öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, null, null, null);
+                if (bildOpenAnswer == 0) {
+                    String filePath = CSHelp.getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
+                    ImageIcon imageIcon = new ImageIcon(filePath);
+                    String[] options = new String[]{"Schließen", "Löschen"};
+                    int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
+                    if (answer == 1) {
+                        this.entityManager.remove((IPersistable) ge.getData());
+                        if (_currentObjectClass == Fahrzeug.class) {
+                            ((GUIFahrzeugAnlegen) _dialogWindowComponent).updateBildList(this.getBilderByKey(_currentObject.getElementID()));
+                        } else if (_currentObjectClass == Kunde.class) {
+
+                        }
                     }
                 }
-                slc.clearSelection();
-
+                try {
+                    slc.clearSelection();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else if (ge.getData().getClass() == Kunde.class) {
                 CustomListField clfKunden = ((GUIBuchungAnlegen) _dialogWindowComponent).getKundenSLC();
 //                int a = JOptionPane.showConfirmDialog(null, "Wollen Sie der Buchung den Kunden: " + clfKunden.get_slc().getSelectedElement().toString() + " zuordnen?", "Sicher?", JOptionPane.YES_NO_OPTION);
