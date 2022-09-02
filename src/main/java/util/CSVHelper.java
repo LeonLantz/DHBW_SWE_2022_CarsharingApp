@@ -135,9 +135,17 @@ public class CSVHelper {
       for (int i = 0; i < attValue.length; i++) {
         Attribute a = ((Buchung) PersistableElement).getAttributes().get(i);
         if (a.getClazz() == Kunde.class) {
-          attValue[i] = ((Kunde)a.getValue()).getElementID();
+          if (a.getValue() == null) {
+            attValue[i] = null;
+          }else {
+            attValue[i] = ((Kunde)a.getValue()).getElementID();
+          }
         }else if (a.getClazz() == Fahrzeug.class) {
-          attValue[i] = ((Fahrzeug)a.getValue()).getElementID();
+          if (a.getValue() == null) {
+            attValue[i] = null;
+          }else {
+            attValue[i] = ((Fahrzeug)a.getValue()).getElementID();
+          }
         }else if (a.getClazz() == Buchungsstatus.class) {
           attValue[i] = ((Buchungsstatus)a.getValue()).getBezeichner();
         }else {
