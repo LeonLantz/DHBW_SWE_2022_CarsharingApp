@@ -44,7 +44,7 @@ public class Standort implements IDepictable, IPersistable {
         STRASSE( "Straße", String.class, true, false, false ),
         LAND( "Land", String.class, false, false, false ),
         //TODO: Koordianten zu Button ändern / Google Maps standort verlinken
-        MAPS( "Google Maps", URL.class, true, false, false ),
+        MAPS( "Google Maps", JButton.class, true, true, true ),
         KAPAZITÄT( "Kapazität", Integer.class, true, true, false ),
         ALLOCATED( "Belegt", Integer.class, true, true, false ),
         LAST_EDIT( "bearb.", LocalDateTime.class, true, false, false );
@@ -114,11 +114,11 @@ public class Standort implements IDepictable, IPersistable {
         this( null, null, null, null, null, null, null, null, null);
     }
 
-    public Standort(String strasse, String plz, String ort, String land, URL maps, Integer kapazität, Integer allocated, LocalDateTime last_edit) {
+    public Standort(String strasse, String plz, String ort, String land, JButton maps, Integer kapazität, Integer allocated, LocalDateTime last_edit) {
         this(null, strasse, plz, ort, land, maps, kapazität, allocated, last_edit);
     }
 
-    public Standort(String iD, String strasse, String plz, String ort, String land, URL maps, Integer kapazität, Integer allocated, LocalDateTime last_edit ) {
+    public Standort(String iD, String strasse, String plz, String ort, String land, JButton maps, Integer kapazität, Integer allocated, LocalDateTime last_edit ) {
         super();
 
         String randID = UUID.randomUUID().toString();
