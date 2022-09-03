@@ -10,45 +10,21 @@ import util.CSHelp;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 
 public class ContentPanel extends ObservableComponent {
 
-    public enum Commands implements EventCommand {
-
-        ADD_ELEMENT( "contentPanel.add_element", String.class );
-
-        public final Class<?> payloadType;
-        public final String cmdText;
-
-        Commands(String cmdText, Class<?> payloadType) {
-            this.cmdText = cmdText;
-            this.payloadType = payloadType;
-        }
-
-        @Override
-        public String getCmdText() {
-            return this.cmdText;
-        }
-
-        @Override
-        public Class<?> getPayloadType() {
-            return this.payloadType;
-        }
-    }
-
     private JPanel header, content, footer;
     private JPanel header_west, header_west_searchBar, header_east, footer_east;
     private JLabel header_west_label;
-    private JTextField header_west_searchBar_textfield;
+    private JButton header_west_searchBar_button;
     private CustomTableComponent ctc = null;
 
     //Config
     private String title;
     private MainComponentMitNavBar.NewObjectButton button;
-
-    public ContentPanel() {
-    }
 
     public ContentPanel(String id) {
         super(id);
@@ -83,11 +59,13 @@ public class ContentPanel extends ObservableComponent {
         header_west_searchBar.setBorder(new EmptyBorder(20, 20, 20, 20));
         header_west_searchBar.setBackground(CSHelp.main);
 
-        header_west_searchBar_textfield = new JTextField();
-        header_west_searchBar_textfield.setFont(CSHelp.lato.deriveFont(12f));
-        header_west_searchBar_textfield.setBounds(10,10,10,10);
-        header_west_searchBar_textfield.setPreferredSize(new Dimension(200, 30));
-        header_west_searchBar.add(header_west_searchBar_textfield, BorderLayout.WEST);
+        header_west_searchBar_button = new JButton();
+        header_west_searchBar_button.setIcon(CSHelp.imageList.get("image_searchbar.png"));
+        header_west_searchBar_button.setBorder(BorderFactory.createEmptyBorder());
+        header_west_searchBar_button.setBackground(CSHelp.main);
+        header_west_searchBar_button.setToolTipText("Die Suchfunktion wird zurzeit gewartet ...");
+
+        header_west_searchBar.add(header_west_searchBar_button, BorderLayout.WEST);
         header_west.add(header_west_searchBar, BorderLayout.NORTH);
 
         // Kopfzeile, Komponente rechts
