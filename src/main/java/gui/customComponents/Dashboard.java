@@ -3,10 +3,12 @@ package gui.customComponents;
 import de.dhbwka.swe.utils.event.GUIEvent;
 import de.dhbwka.swe.utils.event.IGUIEventListener;
 import de.dhbwka.swe.utils.gui.ObservableComponent;
+import de.dhbwka.swe.utils.gui.SimpleTableComponent;
+import de.dhbwka.swe.utils.model.Attribute;
+import de.dhbwka.swe.utils.model.IDepictable;
 import gui.MainComponentMitNavBar;
-import model.Buchung;
-import model.Fahrzeug;
-import model.Kunde;
+import gui.renderer.TableCellRendererDashboard;
+import model.*;
 import util.CSHelp;
 
 import javax.swing.*;
@@ -16,14 +18,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.List;
 
 public class Dashboard extends ObservableComponent {
 
     private JPanel _topPanel, _bottomPanel;
     private String csvDirectory;
+    private IGUIEventListener _observer;
+
+    private SimpleTableComponent _neueKundenTable;
+    private String[] columnNames;
+    final Vector<Vector<Attribute>> data = new Vector<>();
 
     public Dashboard(IGUIEventListener observer, String csvDirectory) {
         this.addObserver(observer);
+        this._observer = observer;
         this.csvDirectory = csvDirectory;
         this.initUI();
     }
@@ -43,7 +54,8 @@ public class Dashboard extends ObservableComponent {
         _bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0,0));
         _bottomPanel.setPreferredSize(new Dimension(770, 295));
         _bottomPanel.setBackground(CSHelp.main);
-        _bottomPanel.add(getBeliebteFahrzeugePanel(), BorderLayout.EAST);
+        _bottomPanel.add(getNeueKundenPanel());
+        _bottomPanel.add(getBeliebteFahrzeugePanel());
         this.add(_bottomPanel, BorderLayout.SOUTH);
 
     }
@@ -197,5 +209,108 @@ public class Dashboard extends ObservableComponent {
         borderPanel.add(panelMain, BorderLayout.CENTER);
 
         return borderPanel;
+    }
+
+    private JPanel getNeueKundenPanel() {
+
+        final Vector<Vector<Attribute>> data = new Vector<>();
+        this.columnNames = new String[]{"Name", "zul. bearb."};
+
+//        _neueKundenTable = SimpleTableComponent.builder("STC")
+//                .cellRenderer(new TableCellRenderer(), String.class, LocalDateTime.class)
+//                .data(data)
+//                .columnNames(columnNames)
+//                .selectionMode(ListSelectionModel.SINGLE_SELECTION)
+//                //new int[]{50, 100, 100, 170, 130, 100, 140, 35, 35}
+//                .columnWidths(new int[]{200, 200, 200})
+//                .fixedColumns(new boolean[]{true, true, true})
+//                .observer(_observer)
+//                .sorter()
+//                .build();
+        List<IDepictable> li = new ArrayList<>();
+        IDepictable m = new Kunde();
+        li.add(m);
+
+        _neueKundenTable = SimpleTableComponent.builder("STC")
+                .cellRenderer(new TableCellRendererDashboard(), String.class, LocalDateTime.class)
+                .data(li)
+                .columnNames(columnNames)
+                .selectionMode(ListSelectionModel.SINGLE_SELECTION)
+                //new int[]{50, 100, 100, 170, 130, 100, 140, 35, 35}
+                .columnWidths(new int[]{410, 90})
+                .fixedColumns(new boolean[]{true, true})
+                .observer(_observer)
+                .build();
+
+        JScrollPane p = (JScrollPane) _neueKundenTable.getComponent(0);
+        p.getComponent(1).setPreferredSize(new Dimension(0,0));
+        p.setBackground(CSHelp.main);
+        p.setBorder(new EmptyBorder(0,0,0,0));
+
+        _neueKundenTable.setPreferredSize(new Dimension(530, 170));
+        _neueKundenTable.setBorder(new EmptyBorder(10,10,10,10));
+
+        JPanel borderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 18));
+        borderPanel.setPreferredSize(new Dimension(580, 270));
+        borderPanel.setBorder(new EmptyBorder(0,10,10,10));
+        borderPanel.setBackground(CSHelp.main);
+
+        JPanel contentPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        contentPanel.setPreferredSize(new Dimension(542, 250));
+        contentPanel.setBorder(BorderFactory.createLineBorder(CSHelp.inputFieldBorderColor, 1, true));
+        contentPanel.setBackground(Color.white);
+
+        JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        textPanel.setPreferredSize(new Dimension(560, 70));
+        textPanel.setBackground(Color.white);
+        JLabel neueKundenLabel = new JLabel("Neue Kunden");
+        neueKundenLabel.setFont(CSHelp.lato_bold.deriveFont(17f));
+        neueKundenLabel.setBorder(new EmptyBorder(22,10,10,10));
+        contentPanel.add(neueKundenLabel);
+
+        contentPanel.add(_neueKundenTable);
+
+
+        borderPanel.add(contentPanel);
+
+
+        return borderPanel;
+    }
+
+    class SortKunden implements Comparator<Kunde> {
+        @Override
+        public int compare(Kunde o1, Kunde o2) {
+            LocalDateTime ldt1 = o1.getAttributeValueOf(Kunde.Attributes.LAST_EDITED);
+            LocalDateTime ldt2 = o2.getAttributeValueOf(Kunde.Attributes.LAST_EDITED);
+            return ldt2.compareTo(ldt1);
+        }
+    }
+
+    public void setNeueKundenData(IDepictable[] modelData) {
+        this.data.removeAllElements();
+        Kunde[] kundeModelData = new Kunde[modelData.length];
+        for (int i=0; i<kundeModelData.length; i++) {
+            kundeModelData[i] = (Kunde) modelData[i];
+        }
+
+        Arrays.sort(kundeModelData, new SortKunden());
+        if (kundeModelData.length > 3) {
+            kundeModelData = Arrays.copyOfRange(kundeModelData, 0,3);
+        }
+
+        for (int i = 0; i < kundeModelData.length; i++) {
+            Vector<Attribute> attributeVector = new Vector<Attribute>();
+            List<Attribute> attributeList = kundeModelData[i].getAttributes();
+            String nameString = attributeList.get(1).getValue().toString() + " " + attributeList.get(2).getValue().toString();
+            Attribute name = new Attribute("Name", "", String.class, nameString, null, true, true, false, false);
+            attributeVector.add(name);
+
+            LocalDateTime localDateTime = (LocalDateTime) attributeList.get(7).getValue();
+            Attribute dateTime = new Attribute("DateTime", "", LocalDateTime.class, localDateTime, null, true, true, false, false);
+            attributeVector.add(dateTime);
+
+            this.data.add(attributeVector);
+        }
+        this._neueKundenTable.setData(data, this.columnNames);
     }
 }

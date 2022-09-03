@@ -55,6 +55,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
     private JPanel _contentPanel;
     private String csvDirectory;
     private IPropertyManager _propManager = null;
+    private Dashboard _dashboard;
 
     private final IAppLogger _logger = AppLogger.getInstance();
 
@@ -239,8 +240,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         headerEast.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, CSHelp.tableDividerColor));
         header.add(headerEast, BorderLayout.EAST);
 
+        _dashboard = new Dashboard(this, csvDirectory);
+
         _übersichtPanel.add(header, BorderLayout.NORTH);
-        _übersichtPanel.add(new Dashboard(this, csvDirectory), BorderLayout.CENTER);
+        _übersichtPanel.add(_dashboard, BorderLayout.CENTER);
 
 //        //Inhalt
 //        JPanel content = new JPanel(new BorderLayout(0, 0));
@@ -444,6 +447,9 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             IDepictable[] modelData = new IDepictable[lstKunde.size()];
             lstKunde.toArray(modelData);
             _kundenTable.setModelData(modelData);
+
+            _dashboard.setNeueKundenData(modelData);
+
         } else if (ue.getCmd() == CSControllerReinerObserverUndSender.Commands.SET_BUCHUNGEN) {
             List<Buchung> lstBuchung = (List<Buchung>) ue.getData();
             if (lstBuchung.isEmpty()) {

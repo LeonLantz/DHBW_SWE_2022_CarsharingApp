@@ -154,8 +154,8 @@ public class CustomTableComponent extends ObservableComponent {
 
             this.data.add( attributeVector );
 
-            this.stc.setData(this.data, this.columnNames);
         }
+        this.stc.setData(this.data, this.columnNames);
     }
 
     public class EditButton extends JButton {
