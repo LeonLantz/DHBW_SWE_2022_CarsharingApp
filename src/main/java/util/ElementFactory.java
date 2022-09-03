@@ -6,8 +6,12 @@ import de.dhbwka.swe.utils.model.Person;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -86,7 +90,7 @@ public class ElementFactory {
 			String kapazität = csvData[ Standort.CSVPositions.KAPAZITÄT.ordinal() ];
 			String last_edit = csvData[ Standort.CSVPositions.LAST_EDIT.ordinal() ];
 
-			persistableElement = new Standort(id, strasse, plz, ort, land, new URL(maps), Integer.valueOf(kapazität), 0, LocalDateTime.parse(last_edit));
+			persistableElement = new Standort(id, strasse, plz, ort, land, getGoogleMapsButton(maps), Integer.valueOf(kapazität), 0, LocalDateTime.parse(last_edit));
 		}
 		else if( c == Fahrzeug.class) {
 			String id = csvData[ Fahrzeug.CSVPositions.ID.ordinal() ];
@@ -199,6 +203,30 @@ public class ElementFactory {
 		public InvalideBuchungException(String message) {
 			super(message);
 		}
+	}
+
+	private JButton getGoogleMapsButton(String maps) {
+		JButton jButton = new JButton(maps);
+		jButton.setFont(CSHelp.lato.deriveFont(10f));
+		jButton.setForeground(Color.blue);
+		jButton.setBorder(BorderFactory.createEmptyBorder());
+		jButton.setContentAreaFilled(false);
+		jButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		jButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+					try {
+						Desktop.getDesktop().browse(new URI(maps));
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					} catch (URISyntaxException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		return jButton;
 	}
 
 	/**

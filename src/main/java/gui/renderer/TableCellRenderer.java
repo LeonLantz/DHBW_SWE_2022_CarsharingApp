@@ -9,6 +9,8 @@ import util.CSHelp;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Enumeration;
 
 public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
 
@@ -47,6 +50,12 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             table.getColumn("Delete").setHeaderValue("");
             table.getColumn("Edit").setCellEditor(new JButtonEditor());
             table.getColumn("Delete").setCellEditor(new JButtonEditor());
+            for (int index = 0; index < table.getColumnCount(); index++) {
+                if(table.getColumnName(index) == "Google Maps") {
+                    table.getColumn("Google Maps").setCellEditor(new JButtonEditor());
+                    break;
+                }
+            }
         }
 
         if( value == null ) {
@@ -56,8 +65,6 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             labelNull.setBorder( border );
             return labelNull;
         }
-
-
 
         Component guiComp = new JLabel( value.toString() );
         guiComp.setBackground(CSHelp.tableCellBackground);
@@ -81,7 +88,7 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             ((JButton)guiComp).setBorder( border );
             guiComp.setForeground(Color.BLUE.darker());
             guiComp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        } else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class) {
+        } else if(clazz == CustomTableComponent.EditButton.class || clazz == CustomTableComponent.DeleteButton.class || clazz == JButton.class) {
             guiComp = (JButton)value;
             ((JButton)guiComp).setBorder( border );
         }else if(clazz == LocalDateTime.class) {
@@ -129,9 +136,6 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
             guiComp.setForeground(Color.BLUE.darker());
             ((JLabel)guiComp).setBorder( border );
         }
-
-
-
 
         return guiComp;
     }

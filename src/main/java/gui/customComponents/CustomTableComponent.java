@@ -163,6 +163,7 @@ public class CustomTableComponent extends ObservableComponent {
             this.setIcon(CSHelp.imageList.get("icon_edit.png"));
             this.setBorder(BorderFactory.createEmptyBorder());
             this.setContentAreaFilled(false);
+            this.setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -177,6 +178,7 @@ public class CustomTableComponent extends ObservableComponent {
             this.setIcon(CSHelp.imageList.get("icon_delete.png"));
             this.setBorder(BorderFactory.createEmptyBorder());
             this.setContentAreaFilled(false);
+            this.setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
