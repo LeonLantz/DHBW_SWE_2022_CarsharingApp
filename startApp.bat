@@ -1,0 +1,1 @@
+java -jar ./carsharing-0.0.1-SNAPSHOT-jar-with-dependencies.jar -d /classes/CSVFiles/ -p /classes/properties/demo.properties
