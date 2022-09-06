@@ -51,7 +51,7 @@ public class Fahrzeug implements IDepictable, IPersistable {
         TÜREN("Türen", Integer.class, false, false, false),
         SITZE("Sitze", Integer.class, true, false, false),
         KOFFERRAUMVOLUMEN( "Kofferraumvolumen", Integer.class, false, false, false ),
-        GEWICHT( "Gewicht", String.class, true, false, false ),
+        GEWICHT( "Gewicht(kg)", String.class, true, false, false ),
         FAHRZEUGKATEGORIE( "Kategorie", Fahrzeugkategorie.class, false, false, false ),
         FÜHRERSCHEINKLASSE( "Führerscheinklasse", String.class, false, false, false ),
         NUMMERNSCHILD( "Nummernschild", String.class, true, false, false ),

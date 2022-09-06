@@ -208,6 +208,8 @@ public class ElementFactory {
 	private JButton getGoogleMapsButton(String maps) {
 		JButton jButton = new JButton(maps);
 		jButton.setFont(CSHelp.lato.deriveFont(10f));
+		jButton.setPreferredSize(new Dimension(200,40));
+		jButton.setHorizontalAlignment(SwingConstants.LEFT);
 		jButton.setForeground(Color.blue);
 		jButton.setBorder(BorderFactory.createEmptyBorder());
 		jButton.setContentAreaFilled(false);

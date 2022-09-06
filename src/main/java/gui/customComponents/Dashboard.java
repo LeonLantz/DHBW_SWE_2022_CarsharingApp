@@ -146,7 +146,7 @@ public class Dashboard extends ObservableComponent {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String workingDirectory = CSHelp.getAbsolutWorkingDirectory();
-                    Desktop.getDesktop().open(new File(workingDirectory + csvDirectory));
+                    Desktop.getDesktop().open(new File(workingDirectory + "/CSVFiles"));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -216,17 +216,6 @@ public class Dashboard extends ObservableComponent {
         final Vector<Vector<Attribute>> data = new Vector<>();
         this.columnNames = new String[]{"Name", "zul. bearb."};
 
-//        _neueKundenTable = SimpleTableComponent.builder("STC")
-//                .cellRenderer(new TableCellRenderer(), String.class, LocalDateTime.class)
-//                .data(data)
-//                .columnNames(columnNames)
-//                .selectionMode(ListSelectionModel.SINGLE_SELECTION)
-//                //new int[]{50, 100, 100, 170, 130, 100, 140, 35, 35}
-//                .columnWidths(new int[]{200, 200, 200})
-//                .fixedColumns(new boolean[]{true, true, true})
-//                .observer(_observer)
-//                .sorter()
-//                .build();
         List<IDepictable> li = new ArrayList<>();
         IDepictable m = new Kunde();
         li.add(m);
@@ -270,9 +259,7 @@ public class Dashboard extends ObservableComponent {
 
         contentPanel.add(_neueKundenTable);
 
-
         borderPanel.add(contentPanel);
-
 
         return borderPanel;
     }

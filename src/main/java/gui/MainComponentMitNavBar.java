@@ -116,7 +116,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _buchungenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{35, 120, 100, 120, 90, 90, 140, 99, 33, 33})
+                .columnWidths(new int[]{35, 120, 100, 120, 90, 90, 140, 94, 33, 33})
                 .modelClass(Buchung.class)
                 .build();
 
@@ -135,7 +135,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _fahrzeugeTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{35, 150, 100, 65, 50, 80, 115, 100, 99, 33, 33})
+                .columnWidths(new int[]{35, 120, 130, 65, 50, 80, 115, 100, 94, 33, 33})
                 .modelClass(Fahrzeug.class)
                 .build();
 
@@ -154,7 +154,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _kundenTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{35, 100, 100, 180, 150, 130, 99, 33, 33})
+                .columnWidths(new int[]{35, 100, 100, 180, 150, 130, 94, 33, 33})
                 .modelClass(Kunde.class)
                 .build();
 
@@ -173,7 +173,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _standorteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{35, 60, 100, 140, 220, 80, 60, 99, 33, 33})
+                .columnWidths(new int[]{35, 60, 100, 140, 220, 80, 60, 94, 33, 33})
                 .modelClass(Standort.class)
                 .build();
 
