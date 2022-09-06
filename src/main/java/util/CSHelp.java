@@ -31,8 +31,8 @@ public class CSHelp {
 
     private static void registerFonts() {
         try {
-            lato = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/Fonts/Lato-Regular.ttf"));
-            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/Fonts/Lato-Bold.ttf"));
+            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Regular.ttf"));
+            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Bold.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato_bold);
         } catch (IOException|FontFormatException e) {}
@@ -59,7 +59,7 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        imageFiles = new File("src/main/resources/SystemImages").listFiles();
+        imageFiles = new File(CSHelp.getAbsolutWorkingDirectory() + "/SystemImages").listFiles();
         imageList = new HashMap<>();
         for(File file :  imageFiles) {
             if (!file.isHidden()) {
