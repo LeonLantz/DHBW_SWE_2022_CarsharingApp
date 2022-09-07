@@ -127,17 +127,19 @@ public class CSHelp {
 
     private static final String sp = File.separator;
     public static String getAbsolutWorkingDirectory() {
-        String jarPath = "";
+        String wd = "";
         try {
-            jarPath = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            wd = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
+        // Replace all windows file separators with unix's ones
+        wd = wd.replaceAll("\\\\","/");
         // Incase a maven jar is run
-        if (jarPath.endsWith(".jar")) {
-            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
+        if (wd.endsWith(".jar")) {
+            return wd.substring(0, wd.lastIndexOf(sp)) + sp+"classes";
         }
-        return jarPath.substring(0, jarPath.lastIndexOf(sp));
+        return wd.substring(0, wd.lastIndexOf(sp));
     }
 
     public static boolean areFormFieldValuesCsvCompliant(List formFieldValues, String[] attributeNames) {
