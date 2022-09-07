@@ -38,6 +38,8 @@ public class StartApp {
     public void initWithObserver(String csvDirectory, String propFile) throws Exception {
         if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
         if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
+        csvDirectory = csvDirectory.replaceAll("\\\\","/");
+        propFile = propFile.replaceAll("\\\\","/");
 
         MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager(), csvDirectory);
 
