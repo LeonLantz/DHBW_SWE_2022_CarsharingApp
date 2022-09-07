@@ -418,13 +418,20 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 message = "<html> Wollen Sie den Kunden<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
                 imageIcon = CSHelp.imageList.get("icon_kunde.png");
             } else if (currentClass == Standort.class) {
-                message = "<html> Wollen Sie den Standort<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                message = "<html> Wollen Sie den Standort<br><b>" + ge.getData() +  "</b><br>wirklich löschen? <br><br>Nein.</html>";
                 imageIcon = CSHelp.imageList.get("icon_standort.png");
             } else if (currentClass == Dokument.class) {
                 message = "<html> Wollen Sie das Dokument<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
                 imageIcon = CSHelp.imageList.get("icon_dokument.png");
             }
-            int answer = JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.YES_NO_OPTION, 1, imageIcon);
+            int answer;
+            if (currentClass == Standort.class) {
+                JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+                answer = 1;
+            } else {
+                answer = JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+            }
+
             if (answer == 0) {
                 fireGUIEvent(ge);
             }
