@@ -31,8 +31,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
@@ -368,7 +366,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getBildList().get_slc();
                 }
                 Bild bild = (Bild) ge.getData();
-                String filePath = CSHelp.getAbsolutWorkingDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
+                String filePath = CSHelp.getAbsoluteResourceDirectory() + bild.getAttributeValueOf(Bild.Attributes.FILEPATH);
                 ImageIcon imageIcon = new ImageIcon(filePath);
                 String[] options = new String[]{"Schließen", "Löschen"};
                 int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, "", "Bildname: " + bild.getAttributeValueOf(Bild.Attributes.TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, imageIcon, options, options[0]);
@@ -399,7 +397,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
                     slc = ((GUIFahrzeugAnlegen) _dialogWindowComponent).getDokumentSLC().get_slc();
                 }
                 String path = dokument.getAttributeValueOf(Dokument.Attributes.FILEPATH);
-                File file = new File(CSHelp.getAbsolutWorkingDirectory() + path);
+                File file = new File(CSHelp.getAbsoluteResourceDirectory() + path);
                 JLabel label = new JLabel("<html> Wollen Sie das Dokument <b>" + dokument.toString() +  "</b> wirklich öffnen?</html>");
                 ImageIcon icon = CSHelp.imageList.get("icon_dokument.png");
                 int answer = JOptionPane.showOptionDialog(_dialogWindowComponent, label, "Dokument öffnen?", JOptionPane.YES_NO_OPTION, JOptionPane.OK_OPTION, icon, null, null);

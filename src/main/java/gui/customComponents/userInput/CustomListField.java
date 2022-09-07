@@ -16,7 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.UUID;
 
@@ -150,7 +149,7 @@ public class CustomListField extends CustomInputField {
                         if (answer != null && CSHelp.isAttachmentNameValueCsvCompliant(answer, j.getSelectedFile().getName())) {
                             String imageID = UUID.randomUUID().toString();
                             String filePath = "/UserImages/" + imageID + ".png";
-                            ImageIO.write(image, "png", new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
+                            ImageIO.write(image, "png", new File(CSHelp.getAbsoluteResourceDirectory() + filePath));
                             String[] imageValues = new String[]{imageID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_BILD, imageValues));
                         }
@@ -198,7 +197,7 @@ public class CustomListField extends CustomInputField {
                             String dokumentID = UUID.randomUUID().toString();
                             String filePath = "/Dokumente/" + dokumentID + ".pdf";
 
-                            copy(source, new File(CSHelp.getAbsolutWorkingDirectory() + filePath));
+                            copy(source, new File(CSHelp.getAbsoluteResourceDirectory() + filePath));
 
                             String[] dokumentValues = new String[]{dokumentID, answer, filePath, _iDepictable.getElementID()};
                             fireGUIEvent(new GUIEvent(this, Commands.ADD_DOKUMENT, dokumentValues));

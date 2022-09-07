@@ -31,8 +31,8 @@ public class CSHelp {
 
     private static void registerFonts() {
         try {
-            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Regular.ttf"));
-            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Bold.ttf"));
+            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/Fonts/Lato-Regular.ttf"));
+            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/Fonts/Lato-Bold.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato_bold);
         } catch (IOException|FontFormatException e) {}
@@ -59,7 +59,7 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        imageFiles = new File(CSHelp.getAbsolutWorkingDirectory() + "/SystemImages").listFiles();
+        imageFiles = new File(CSHelp.getAbsoluteResourceDirectory() + "/SystemImages").listFiles();
         imageList = new HashMap<>();
         for(File file :  imageFiles) {
             if (!file.isHidden()) {
@@ -126,7 +126,9 @@ public class CSHelp {
     // End String value validation rules ---
 
     private static final String sp = File.separator;
-    public static String getAbsolutWorkingDirectory() {
+
+    // Always returns absolute path of "classes"-directory
+    public static String getAbsoluteResourceDirectory() {
         String wd = "";
         try {
             wd = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
