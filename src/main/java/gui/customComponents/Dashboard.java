@@ -204,6 +204,13 @@ public class Dashboard extends ObservableComponent {
         button.setBorder(new EmptyBorder(7,10,0,10));
         button.setFont(CSHelp.lato_bold.deriveFont(11f));
         button.setForeground(CSHelp.navBarTextActive);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Dashboard.this.fireGUIEvent(new GUIEvent(this, NavigationBar.Commands.TAB_CHANGED, "buchungen"));
+                Dashboard.this.fireGUIEvent(new GUIEvent(this, MainComponentMitNavBar.Commands.BUTTON_PRESSED, Buchung.class));
+            }
+        });
         panelMain.add(button);
 
         borderPanel.add(panelMain, BorderLayout.CENTER);
