@@ -26,7 +26,7 @@ public class CustomListField extends CustomInputField {
     private IDepictable _iDepictable;
     private JButton _button;
 
-    private static final String SP = File.separator;
+    private static final String SP = System.getProperty("file.separator");
 
     //For Kunde, Fahrzeug und Standort
     public CustomListField(String title, IGUIEventListener observer, List<IDepictable> list) {

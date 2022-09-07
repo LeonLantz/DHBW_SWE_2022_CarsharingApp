@@ -33,7 +33,7 @@ public class StartApp {
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
 
     public void initWithObserver(String csvDirectory, String propFile) throws Exception {
         if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;

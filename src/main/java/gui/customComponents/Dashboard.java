@@ -32,7 +32,7 @@ public class Dashboard extends ObservableComponent {
     private String[] columnNames;
     final Vector<Vector<Attribute>> data = new Vector<>();
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
 
     public Dashboard(IGUIEventListener observer, String csvDirectory) {
         this.addObserver(observer);

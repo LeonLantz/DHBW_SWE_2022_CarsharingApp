@@ -21,7 +21,7 @@ public class WorkingCSVReader {
         this.ignoreHeaderLine = ignoreHeaderLine;
         this.handleFile();
     }
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
     private String absoluteFilePath = "";
 
 

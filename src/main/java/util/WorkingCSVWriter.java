@@ -20,7 +20,7 @@ public class WorkingCSVWriter {
         this.handleFile();
     }
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
     private String absoluteFilePath = "";
 
     /** Check if directory and file exist.

@@ -101,7 +101,7 @@ public class CSControllerReinerObserverUndSender implements IGUIEventListener, I
 
     private String csvDirectory;
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
 
     public CSControllerReinerObserverUndSender() {
         _logger.setSeverity(IAppLogger.Severity.DEBUG_LOW);

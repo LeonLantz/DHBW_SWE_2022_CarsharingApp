@@ -22,7 +22,7 @@ public class PManager {
     return propertyManager;
   }
 
-  private static final String sp = File.separator;
+  private static final String sp = System.getProperty("file.separator");
 
   /**
    * Used for figuring out the current working directory in order to use PropertyManager

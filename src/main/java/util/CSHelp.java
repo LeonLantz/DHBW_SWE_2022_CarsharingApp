@@ -125,7 +125,7 @@ public class CSHelp {
     }
     // End String value validation rules ---
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
 
     // Always returns absolute path of "classes"-directory
     public static String getAbsoluteResourceDirectory() {
