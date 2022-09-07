@@ -71,6 +71,7 @@ public class Dashboard extends ObservableComponent {
 
         JLabel imageLabel = new JLabel(CSHelp.imageList.get("dashboard_calendar.png"));
         imageLabel.setBorder(BorderFactory.createLineBorder(CSHelp.inputFieldBorderColor, 1, true));
+        imageLabel.setToolTipText("Kalenderkomponente");
         //imageLabel.setBorder(new EmptyBorder(16, 23, 17 ,24));
         panelMain.add(imageLabel);
 
@@ -88,7 +89,7 @@ public class Dashboard extends ObservableComponent {
 
         JLabel imageLabel = new JLabel(CSHelp.imageList.get("dashboard_statistic.png"));
         imageLabel.setBorder(BorderFactory.createLineBorder(CSHelp.inputFieldBorderColor, 1, true));
-        //imageLabel.setBorder(new EmptyBorder(16, 23, 17 ,24));
+        imageLabel.setToolTipText("Statistik zu Buchungen pro Wochentag");
         panelMain.add(imageLabel);
 
         borderPanel.add(panelMain);
@@ -103,6 +104,7 @@ public class Dashboard extends ObservableComponent {
         buttonBuchung.setCursor(new Cursor(Cursor.HAND_CURSOR));
         buttonBuchung.setBorder(new EmptyBorder(0,0,0,0));
         buttonBuchung.setIcon(CSHelp.imageList.get("dashboard_buchung.png"));
+        buttonBuchung.setToolTipText("Neue Buchung anlegen ...");
         buttonBuchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,6 +117,7 @@ public class Dashboard extends ObservableComponent {
         buttonKunde.setCursor(new Cursor(Cursor.HAND_CURSOR));
         buttonKunde.setBorder(new EmptyBorder(0,0,0,0));
         buttonKunde.setIcon(CSHelp.imageList.get("dashboard_kunde.png"));
+        buttonKunde.setToolTipText("Neuen Kunden anlegen ...");
         buttonKunde.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,6 +130,7 @@ public class Dashboard extends ObservableComponent {
         buttonFahrzeug.setCursor(new Cursor(Cursor.HAND_CURSOR));
         buttonFahrzeug.setBorder(new EmptyBorder(0,0,0,0));
         buttonFahrzeug.setIcon(CSHelp.imageList.get("dashboard_fahrzeug.png"));
+        buttonFahrzeug.setToolTipText("Neues Fahrzeug anlegen ...");
         buttonFahrzeug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -141,6 +145,7 @@ public class Dashboard extends ObservableComponent {
         buttonDownload.setCursor(new Cursor(Cursor.HAND_CURSOR));
         buttonDownload.setBorder(new EmptyBorder(0,0,0,0));
         buttonDownload.setIcon(CSHelp.imageList.get("dashboard_download.png"));
+        buttonDownload.setToolTipText("Alle CSV-Dateien downloaden ...");
         buttonDownload.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
