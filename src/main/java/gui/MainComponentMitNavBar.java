@@ -193,7 +193,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _dokumenteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{50, 200, 420, 124, 33, 33})
+                .columnWidths(new int[]{50, 150, 370, 224, 33, 33})
                 .modelClass(Dokument.class)
                 .build();
 

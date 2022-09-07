@@ -92,11 +92,12 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
 
         _topPanel = new JPanel(new BorderLayout(0,0));
         _topPanel.setBackground(Color.WHITE);
+        _topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CSHelp.navBar));
         _topLabelDescription = new JLabel("ID: ");
-        _topLabelDescription.setBorder(new EmptyBorder(10,20,0,5));
+        _topLabelDescription.setBorder(new EmptyBorder(10,20,10,5));
         _topLabelDescription.setFont(CSHelp.lato.deriveFont(12f));
         _topLabelValue = new JLabel();
-        _topLabelValue.setBorder(new EmptyBorder(12,0,0,20));
+        _topLabelValue.setBorder(new EmptyBorder(12,0,10,20));
         _topLabelValue.setFont(CSHelp.lato.deriveFont(9f));
         _topPanel.add(_topLabelDescription, BorderLayout.WEST);
         _topPanel.add(_topLabelValue, BorderLayout.CENTER);
