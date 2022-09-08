@@ -32,6 +32,8 @@ public class Dashboard extends ObservableComponent {
     private String[] columnNames;
     final Vector<Vector<Attribute>> data = new Vector<>();
 
+    private static final String sp = System.getProperty("file.separator");
+
     public Dashboard(IGUIEventListener observer, String csvDirectory) {
         this.addObserver(observer);
         this._observer = observer;
@@ -166,8 +168,8 @@ public class Dashboard extends ObservableComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String workingDirectory = CSHelp.getAbsolutWorkingDirectory();
-                    Desktop.getDesktop().open(new File(workingDirectory + "/CSVFiles"));
+                    String workDir = CSHelp.getWorkingDirectory();
+                    Desktop.getDesktop().open(new File(workDir+csvDirectory));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

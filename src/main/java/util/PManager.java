@@ -22,7 +22,7 @@ public class PManager {
     return propertyManager;
   }
 
-  private static final String sp = File.separator;
+  private static final String sp = System.getProperty("file.separator");
 
   /**
    * Used for figuring out the current working directory in order to use PropertyManager
@@ -37,9 +37,9 @@ public class PManager {
       e1.printStackTrace();
     }
 
-    String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf(sp));
+    String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf("/"));
 
-    String relativeDirectoryPath = this.relativePropFilePath.substring(0, this.relativePropFilePath.lastIndexOf(sp));
+    String relativeDirectoryPath = this.relativePropFilePath.substring(0, this.relativePropFilePath.lastIndexOf("/"));
     File absoluteDirectories = new File(absoluteWorkingDirectoryPath + relativeDirectoryPath);
 
     this.absoluteFilePath = absoluteWorkingDirectoryPath + this.relativePropFilePath;

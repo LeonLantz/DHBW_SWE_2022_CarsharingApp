@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class StartApp {
 
     public static void main(String[] args) throws Exception {
+        System.out.println("-------Release version-------");
         new StartApp(args);
     }
 
@@ -35,11 +36,13 @@ public class StartApp {
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }
 
-    private static final String sp = File.separator;
+    private static final String sp = System.getProperty("file.separator");
 
     public void initWithObserver(String csvDirectory, String propFile) throws Exception {
-        if (!csvDirectory.startsWith(sp)) csvDirectory = sp + csvDirectory;
-        if (!csvDirectory.endsWith(sp)) csvDirectory = csvDirectory+sp;
+        if (!csvDirectory.startsWith("/")) csvDirectory = "/" + csvDirectory;
+        if (!csvDirectory.endsWith("/")) csvDirectory = csvDirectory+"/";
+        //csvDirectory = csvDirectory.replaceAll("\\\\","/");
+        //propFile = propFile.replaceAll("\\\\","/");
 
         MainComponentMitNavBar mainComp = new MainComponentMitNavBar(new PManager(propFile).getPropertyManager(), csvDirectory);
 

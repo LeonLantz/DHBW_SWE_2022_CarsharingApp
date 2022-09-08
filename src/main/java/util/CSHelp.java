@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -31,8 +32,8 @@ public class CSHelp {
 
     private static void registerFonts() {
         try {
-            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Regular.ttf"));
-            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsolutWorkingDirectory()+"/Fonts/Lato-Bold.ttf"));
+            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/"+"Fonts"+"/"+"Lato-Regular.ttf"));
+            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/"+"Fonts"+"/"+"Lato-Bold.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato_bold);
         } catch (IOException|FontFormatException e) {}
@@ -59,7 +60,7 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        imageFiles = new File(CSHelp.getAbsolutWorkingDirectory() + "/SystemImages").listFiles();
+        imageFiles = new File(CSHelp.getAbsoluteResourceDirectory() + "/"+"SystemImages").listFiles();
         imageList = new HashMap<>();
         for(File file :  imageFiles) {
             if (!file.isHidden()) {
@@ -125,19 +126,48 @@ public class CSHelp {
     }
     // End String value validation rules ---
 
-    private static final String sp = File.separator;
-    public static String getAbsolutWorkingDirectory() {
-        String jarPath = "";
+    private static final String sp = System.getProperty("file.separator");
+
+    // Always returns absolute path of "classes"-directory
+    public static String getAbsoluteResourceDirectory() {
+        String wd = "";
         try {
-            jarPath = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+            wd = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
-        // Incase a maven jar is run
-        if (jarPath.endsWith(".jar")) {
-            return jarPath.substring(0, jarPath.lastIndexOf(sp)) + "/classes";
+        System.out.println(wd);
+        // Incase Windows -> remove first "/"
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            wd = wd.substring(1,wd.length());
         }
-        return jarPath.substring(0, jarPath.lastIndexOf(sp));
+        // Incase a maven jar is run
+        if (wd.endsWith(".jar")) {
+            System.out.println("Ist jar run");
+            return wd.substring(0, wd.lastIndexOf("/")) + "/"+"classes";
+        }
+        System.out.println("ist kein jar run");
+        return wd.substring(0, wd.lastIndexOf("/"));
+    }
+
+    public static String getWorkingDirectory() {
+        String workDir = "";
+        try {
+            workDir = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println(workDir);
+        // Incase Windows -> remove first "/"
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            workDir = workDir.substring(1,workDir.length());
+        }
+        // Incase a maven jar is run
+        if (workDir.endsWith(".jar")) {
+            System.out.println("Ist jar run");
+        }
+        System.out.println("ist kein jar run");
+        return workDir.substring(0, workDir.lastIndexOf("/"));
     }
 
     public static boolean areFormFieldValuesCsvCompliant(List formFieldValues, String[] attributeNames) {
