@@ -79,9 +79,9 @@ public class NavigationBar extends ObservableComponent {
 
         //Teilkomponente: Sektion 1 (oben) - Profilname
         JPanel navbarPanelProfilname = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel navbarLabelProfilname = new JLabel("Lutz Gröll");
+        JLabel navbarLabelProfilname = new JLabel("Richard Lutz");
         navbarPanelProfilname.setBackground(Color.white);
-        navbarLabelProfilname.setFont(CSHelp.lato_bold.deriveFont(18f));
+        navbarLabelProfilname.setFont(CSHelp.lato_bold.deriveFont(16f));
         navbarLabelProfilname.setBorder(new EmptyBorder(0,10,0,30));
         navbarPanelProfilname.add(navbarLabelProfilname);
         ImageIcon arrow = CSHelp.imageList.get("icon_arrow.png");
