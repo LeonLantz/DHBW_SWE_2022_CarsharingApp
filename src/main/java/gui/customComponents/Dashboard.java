@@ -105,6 +105,10 @@ public class Dashboard extends ObservableComponent {
         buttonBuchung.setBorder(new EmptyBorder(0,0,0,0));
         buttonBuchung.setIcon(CSHelp.imageList.get("dashboard_buchung.png"));
         buttonBuchung.setToolTipText("Neue Buchung anlegen ...");
+        buttonBuchung.setContentAreaFilled(false);
+        buttonBuchung.setBorderPainted(false);
+        buttonBuchung.setFocusPainted(false);
+        buttonBuchung.setOpaque(false);
         buttonBuchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,6 +122,10 @@ public class Dashboard extends ObservableComponent {
         buttonKunde.setBorder(new EmptyBorder(0,0,0,0));
         buttonKunde.setIcon(CSHelp.imageList.get("dashboard_kunde.png"));
         buttonKunde.setToolTipText("Neuen Kunden anlegen ...");
+        buttonKunde.setContentAreaFilled(false);
+        buttonKunde.setBorderPainted(false);
+        buttonKunde.setFocusPainted(false);
+        buttonKunde.setOpaque(false);
         buttonKunde.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,6 +139,10 @@ public class Dashboard extends ObservableComponent {
         buttonFahrzeug.setBorder(new EmptyBorder(0,0,0,0));
         buttonFahrzeug.setIcon(CSHelp.imageList.get("dashboard_fahrzeug.png"));
         buttonFahrzeug.setToolTipText("Neues Fahrzeug anlegen ...");
+        buttonFahrzeug.setContentAreaFilled(false);
+        buttonFahrzeug.setBorderPainted(false);
+        buttonFahrzeug.setFocusPainted(false);
+        buttonFahrzeug.setOpaque(false);
         buttonFahrzeug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,6 +158,10 @@ public class Dashboard extends ObservableComponent {
         buttonDownload.setBorder(new EmptyBorder(0,0,0,0));
         buttonDownload.setIcon(CSHelp.imageList.get("dashboard_download.png"));
         buttonDownload.setToolTipText("Alle CSV-Dateien downloaden ...");
+        buttonDownload.setContentAreaFilled(false);
+        buttonDownload.setBorderPainted(false);
+        buttonDownload.setFocusPainted(false);
+        buttonDownload.setOpaque(false);
         buttonDownload.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -209,6 +225,10 @@ public class Dashboard extends ObservableComponent {
         button.setBorder(new EmptyBorder(7,10,0,10));
         button.setFont(CSHelp.lato_bold.deriveFont(11f));
         button.setForeground(CSHelp.navBarTextActive);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setOpaque(false);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -238,12 +258,13 @@ public class Dashboard extends ObservableComponent {
                 .columnNames(columnNames)
                 .selectionMode(ListSelectionModel.SINGLE_SELECTION)
                 //new int[]{50, 100, 100, 170, 130, 100, 140, 35, 35}
-                .columnWidths(new int[]{410, 90})
+                .columnWidths(new int[]{410, 100})
                 .fixedColumns(new boolean[]{true, true})
                 .observer(_observer)
                 .build();
 
         JScrollPane p = (JScrollPane) _neueKundenTable.getComponent(0);
+        p.setBackground(Color.white);
         p.getComponent(1).setPreferredSize(new Dimension(0,0));
         p.setBackground(CSHelp.main);
         p.setBorder(new EmptyBorder(0,0,0,0));
@@ -268,7 +289,6 @@ public class Dashboard extends ObservableComponent {
         neueKundenLabel.setFont(CSHelp.lato_bold.deriveFont(17f));
         neueKundenLabel.setBorder(new EmptyBorder(22,10,10,10));
         contentPanel.add(neueKundenLabel);
-
         contentPanel.add(_neueKundenTable);
 
         borderPanel.add(contentPanel);

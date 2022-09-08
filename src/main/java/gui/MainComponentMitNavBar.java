@@ -364,7 +364,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             this.setPreferredSize(new Dimension(300, 54));
             this.setBorder(new EmptyBorder(0, 0, 0, 0));
             this.setIcon(imageIcon);
-
+            this.setContentAreaFilled(false);
+            this.setBorderPainted(false);
+            this.setFocusPainted(false);
+            this.setOpaque(false);
             this.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {

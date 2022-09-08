@@ -29,6 +29,8 @@ public class StartApp {
     }
 
     public StartApp(String[] args) throws Exception {
+        UIManager.setLookAndFeel(
+                UIManager.getCrossPlatformLookAndFeelClassName());
         CSHelp.init();
         initWithObserver(getParameterArgument(args, "d"), getParameterArgument(args, "p"));
     }

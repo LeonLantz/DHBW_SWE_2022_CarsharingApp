@@ -101,6 +101,10 @@ public class CustomListField extends CustomInputField {
         _button.setBorder(new EmptyBorder(0, 0, 0, 0));
         _button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         _button.requestFocusInWindow();
+        _button.setContentAreaFilled(false);
+        _button.setBorderPainted(false);
+        _button.setFocusPainted(false);
+        _button.setOpaque(false);
         _button.setToolTipText("Neues Objekt hinzufügen");
         eastPanel.add(_button);
         if (title == "Bilder") {

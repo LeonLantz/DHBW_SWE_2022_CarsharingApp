@@ -121,6 +121,10 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         _saveBuchung.setBorder(new EmptyBorder(0, 0, 0, 0));
         _saveBuchung.setCursor(new Cursor(Cursor.HAND_CURSOR));
         _saveBuchung.setToolTipText("Buchung speichern");
+        _saveBuchung.setContentAreaFilled(false);
+        _saveBuchung.setBorderPainted(false);
+        _saveBuchung.setFocusPainted(false);
+        _saveBuchung.setOpaque(false);
         _saveBuchung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -211,7 +215,10 @@ public class GUIBuchungAnlegen extends ObservableComponent implements IValidate 
         _infoButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         _infoButton.setBorder(new EmptyBorder(0, 0, 0, 0));
         _infoButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Durch das Betätigen des Buttons 'Fahrzeuge laden' werden alle \nim selektierten Zeitraum verfügbaren Fahrzeuge geladen. \nFür die Filterung sind nur Buchungen mit dem Status 'Aktiv' von Relevanz.", "Bedienungshilfe", JOptionPane.INFORMATION_MESSAGE, imageIconButtonInfo));
-
+        _infoButton.setContentAreaFilled(false);
+        _infoButton.setBorderPainted(false);
+        _infoButton.setFocusPainted(false);
+        _infoButton.setOpaque(false);
         _buttonPanel.add(_buttonLoadFahrzeuge);
         _buttonPanel.add(_infoButton);
         _leftPanel.add(_buttonPanel);

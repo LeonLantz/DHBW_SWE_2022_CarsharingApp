@@ -108,6 +108,10 @@ public class GUIKundeAnlegen extends ObservableComponent implements IValidate {
 
         _save_kunde = new JButton(imageIconKunde);
         _save_kunde.setBorder(new EmptyBorder(0,0,0,0));
+        _save_kunde.setContentAreaFilled(false);
+        _save_kunde.setBorderPainted(false);
+        _save_kunde.setFocusPainted(false);
+        _save_kunde.setOpaque(false);
         _save_kunde.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

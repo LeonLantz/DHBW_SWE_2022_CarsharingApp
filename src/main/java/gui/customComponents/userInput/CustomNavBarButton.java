@@ -20,6 +20,10 @@ public class CustomNavBarButton extends JPanel {
         this.button = new JButton(title);
         this.button.setFont(CSHelp.lato_bold.deriveFont(11.5f));
         this.button.setBorder(new EmptyBorder(0,18,0,0));
+        this.button.setContentAreaFilled(false);
+        this.button.setBorderPainted(false);
+        this.button.setFocusPainted(false);
+        this.button.setOpaque(false);
         this.button.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {}

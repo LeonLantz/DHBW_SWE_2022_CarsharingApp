@@ -120,6 +120,10 @@ public class GUIFahrzeugAnlegen extends ObservableComponent implements IValidate
 
         _save_fahrzeug = new JButton(imageIconFahrzeug);
         _save_fahrzeug.setBorder(new EmptyBorder(0,0,0,0));
+        _save_fahrzeug.setContentAreaFilled(false);
+        _save_fahrzeug.setBorderPainted(false);
+        _save_fahrzeug.setFocusPainted(false);
+        _save_fahrzeug.setOpaque(false);
         _save_fahrzeug.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
