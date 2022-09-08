@@ -27,16 +27,16 @@ public class WorkingCSVWriter {
      * Create new directories and file if needed.
      */
     private void handleFile() {
-        String jarPath = "";
-        System.out.println("Reading data...");
-        try {
-            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-            System.out.println(jarPath);
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        }
+//        String jarPath = "";
+//        System.out.println("Reading data...");
+//        try {
+//            jarPath = URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+//            System.out.println(jarPath);
+//        } catch (UnsupportedEncodingException e1) {
+//            e1.printStackTrace();
+//        }
 
-        String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf("/"));
+        String absoluteWorkingDirectoryPath = CSHelp.getWorkingDirectory();
 
         String relativeDirectoryPath = this.csvFilename.substring(0, this.csvFilename.lastIndexOf("/"));
         File absoluteDirectories = new File(absoluteWorkingDirectoryPath + relativeDirectoryPath);
