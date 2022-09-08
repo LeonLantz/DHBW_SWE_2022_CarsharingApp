@@ -11,6 +11,8 @@ import de.dhbwka.swe.utils.model.IPersistable;
 import de.dhbwka.swe.utils.util.CommonEntityManager;
 import model.*;
 
+import javax.swing.*;
+
 public class CSVHelper {
   //TODO: make methods dynamic for each model class (duplicate code)
   //  --> create generic interface with new getAttributeList() or similar, let it get extended by every model class
@@ -117,7 +119,11 @@ public class CSVHelper {
       for (Attribute specificAtt : entityAttsAndValues) {
         for (int i = 0; i < CSVAttNames.size(); i++) {
           if (specificAtt.getName() == Standort.Attributes.valueOf(CSVAttNames.get(i)).getName()) {
-            SingleEntityRecord[i] = specificAtt.getValue().toString();
+            if (specificAtt.getName() == "Google Maps") {
+              SingleEntityRecord[i] = ((JButton)specificAtt.getValue()).getText();
+            } else {
+              SingleEntityRecord[i] = specificAtt.getValue().toString();
+            }
             break;
           }
         }

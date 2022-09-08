@@ -193,7 +193,7 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
         _dokumenteTable = CustomTableComponent.builder(title + "-Table")
                 .observer(this)
                 .propManager(this._propManager)
-                .columnWidths(new int[]{50, 200, 420, 124, 33, 33})
+                .columnWidths(new int[]{50, 150, 370, 224, 33, 33})
                 .modelClass(Dokument.class)
                 .build();
 
@@ -364,7 +364,10 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
             this.setPreferredSize(new Dimension(300, 54));
             this.setBorder(new EmptyBorder(0, 0, 0, 0));
             this.setIcon(imageIcon);
-
+            this.setContentAreaFilled(false);
+            this.setBorderPainted(false);
+            this.setFocusPainted(false);
+            this.setOpaque(false);
             this.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -418,13 +421,20 @@ public class MainComponentMitNavBar extends ObservableComponent implements IGUIE
                 message = "<html> Wollen Sie den Kunden<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
                 imageIcon = CSHelp.imageList.get("icon_kunde.png");
             } else if (currentClass == Standort.class) {
-                message = "<html> Wollen Sie den Standort<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
+                message = "<html> Wollen Sie den Standort<br><b>" + ge.getData() +  "</b><br>wirklich löschen? <br><br>Nein.</html>";
                 imageIcon = CSHelp.imageList.get("icon_standort.png");
             } else if (currentClass == Dokument.class) {
                 message = "<html> Wollen Sie das Dokument<br><b>" + ge.getData() +  "</b><br>wirklich löschen?</html>";
                 imageIcon = CSHelp.imageList.get("icon_dokument.png");
             }
-            int answer = JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.YES_NO_OPTION, 1, imageIcon);
+            int answer;
+            if (currentClass == Standort.class) {
+                JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+                answer = 1;
+            } else {
+                answer = JOptionPane.showConfirmDialog(this, new JLabel(message), "Bestätigung", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+            }
+
             if (answer == 0) {
                 fireGUIEvent(ge);
             }

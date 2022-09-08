@@ -64,6 +64,10 @@ public class ContentPanel extends ObservableComponent {
         header_west_searchBar_button.setBorder(BorderFactory.createEmptyBorder());
         header_west_searchBar_button.setBackground(CSHelp.main);
         header_west_searchBar_button.setToolTipText("Die Suchfunktion wird zurzeit gewartet ...");
+        header_west_searchBar_button.setContentAreaFilled(false);
+        header_west_searchBar_button.setBorderPainted(false);
+        header_west_searchBar_button.setFocusPainted(false);
+        header_west_searchBar_button.setOpaque(false);
 
         header_west_searchBar.add(header_west_searchBar_button, BorderLayout.WEST);
         header_west.add(header_west_searchBar, BorderLayout.NORTH);

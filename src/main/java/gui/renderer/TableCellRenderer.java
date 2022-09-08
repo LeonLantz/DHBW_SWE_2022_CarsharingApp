@@ -40,6 +40,7 @@ public class TableCellRenderer implements javax.swing.table.TableCellRenderer {
         //Performance und so ...
         if( row == 0 && column == 0) {
             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            table.setShowGrid(false);
             table.getTableHeader().setDefaultRenderer(tableHeaderRenderer);
             table.getTableHeader().setReorderingAllowed(false);
             table.setBorder(BorderFactory.createEmptyBorder());

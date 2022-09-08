@@ -21,6 +21,7 @@ public class TableCellRendererDashboard implements javax.swing.table.TableCellRe
         //Performance und so ...
         if( row == 0 && column == 0) {
             table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            table.setShowGrid(false);
             table.getTableHeader().setDefaultRenderer(tableHeaderRenderer);
             table.getTableHeader().setReorderingAllowed(false);
             table.setBorder(new EmptyBorder(0,0,0,0));
@@ -34,8 +35,6 @@ public class TableCellRendererDashboard implements javax.swing.table.TableCellRe
             labelNull.setBorder( border );
             return labelNull;
         }
-
-
 
         Component guiComp = new JLabel( value.toString() );
         guiComp.setBackground(CSHelp.tableCellBackground);
