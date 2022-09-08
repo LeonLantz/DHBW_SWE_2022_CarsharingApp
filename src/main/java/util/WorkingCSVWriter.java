@@ -36,9 +36,9 @@ public class WorkingCSVWriter {
             e1.printStackTrace();
         }
 
-        String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf(sp));
+        String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf("/"));
 
-        String relativeDirectoryPath = this.csvFilename.substring(0, this.csvFilename.lastIndexOf(sp));
+        String relativeDirectoryPath = this.csvFilename.substring(0, this.csvFilename.lastIndexOf("/"));
         File absoluteDirectories = new File(absoluteWorkingDirectoryPath + relativeDirectoryPath);
 
         this.absoluteFilePath = absoluteWorkingDirectoryPath + this.csvFilename;

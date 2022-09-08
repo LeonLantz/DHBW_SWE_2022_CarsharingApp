@@ -37,9 +37,9 @@ public class PManager {
       e1.printStackTrace();
     }
 
-    String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf(sp));
+    String absoluteWorkingDirectoryPath = jarPath.substring(0, jarPath.lastIndexOf("/"));
 
-    String relativeDirectoryPath = this.relativePropFilePath.substring(0, this.relativePropFilePath.lastIndexOf(sp));
+    String relativeDirectoryPath = this.relativePropFilePath.substring(0, this.relativePropFilePath.lastIndexOf("/"));
     File absoluteDirectories = new File(absoluteWorkingDirectoryPath + relativeDirectoryPath);
 
     this.absoluteFilePath = absoluteWorkingDirectoryPath + this.relativePropFilePath;

@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -31,8 +32,8 @@ public class CSHelp {
 
     private static void registerFonts() {
         try {
-            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+sp+"Fonts"+sp+"Lato-Regular.ttf"));
-            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+sp+"Fonts"+sp+"Lato-Bold.ttf"));
+            lato = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/"+"Fonts"+"/"+"Lato-Regular.ttf"));
+            lato_bold = Font.createFont(Font.TRUETYPE_FONT, new File(CSHelp.getAbsoluteResourceDirectory()+"/"+"Fonts"+"/"+"Lato-Bold.ttf"));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(lato_bold);
         } catch (IOException|FontFormatException e) {}
@@ -59,7 +60,7 @@ public class CSHelp {
 
     public static void registerImages() {
 
-        imageFiles = new File(CSHelp.getAbsoluteResourceDirectory() + sp+"SystemImages").listFiles();
+        imageFiles = new File(CSHelp.getAbsoluteResourceDirectory() + "/"+"SystemImages").listFiles();
         imageList = new HashMap<>();
         for(File file :  imageFiles) {
             if (!file.isHidden()) {
@@ -135,13 +136,18 @@ public class CSHelp {
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
-        // Replace all windows file separators with unix's ones
-        wd = wd.replaceAll("\\\\","/");
+        System.out.println(wd);
+        // Incase Windows -> remove first "/"
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            wd = wd.substring(1,wd.length());
+        }
         // Incase a maven jar is run
         if (wd.endsWith(".jar")) {
-            return wd.substring(0, wd.lastIndexOf(sp)) + sp+"classes";
+            System.out.println("Ist jar run");
+            return wd.substring(0, wd.lastIndexOf("/")) + "/"+"classes";
         }
-        return wd.substring(0, wd.lastIndexOf(sp));
+        System.out.println("ist kein jar run");
+        return wd.substring(0, wd.lastIndexOf("/"));
     }
 
     public static boolean areFormFieldValuesCsvCompliant(List formFieldValues, String[] attributeNames) {
