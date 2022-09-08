@@ -1,11 +1,17 @@
 package util;
 
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
+
+import de.dhbwka.swe.utils.util.FileEncoding;
 
 public class WorkingCSVWriter {
 
@@ -58,12 +64,40 @@ public class WorkingCSVWriter {
         }
     }
 
-    public void writeData(List<String[]> data) {
+    public void writeData(List<String[]> data) throws IOException {
+//        try {
+//
+//            // TODO: BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.absoluteFilePath), FileEncoding.UTF_8.getName()));
+//            PrintWriter writer = new PrintWriter(this.absoluteFilePath);
+//            if (this.headerLine.length() > 0) {
+//                writer.write(this.headerLine);
+//                writer.println();
+//            }
+//            data.forEach(line_items -> {
+//                String result_line = "";
+//                for (int i = 0; i < line_items.length-1; i++) {
+//                    result_line += line_items[i] + this.separator;
+//                }
+//                result_line += line_items[line_items.length-1];
+//                writer.write(result_line);
+//                writer.println();
+//            });
+//            writer.flush();
+//            writer.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.absoluteFilePath), FileEncoding.UTF_8.getName()));
         try {
-            PrintWriter writer = new PrintWriter(this.absoluteFilePath);
             if (this.headerLine.length() > 0) {
-                writer.write(this.headerLine);
-                writer.println();
+                try {
+                    writer.write(this.headerLine);
+                    writer.newLine();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             data.forEach(line_items -> {
                 String result_line = "";
@@ -71,13 +105,18 @@ public class WorkingCSVWriter {
                     result_line += line_items[i] + this.separator;
                 }
                 result_line += line_items[line_items.length-1];
-                writer.write(result_line);
-                writer.println();
+                try {
+                    writer.write(result_line);
+                    writer.newLine();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
-            writer.flush();
-            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            writer.flush();
+            writer.close();
         }
     }
 }
