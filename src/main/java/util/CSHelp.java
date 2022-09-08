@@ -150,6 +150,26 @@ public class CSHelp {
         return wd.substring(0, wd.lastIndexOf("/"));
     }
 
+    public static String getWorkingDirectory() {
+        String workDir = "";
+        try {
+            workDir = URLDecoder.decode(CSHelp.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println(workDir);
+        // Incase Windows -> remove first "/"
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            workDir = workDir.substring(1,workDir.length());
+        }
+        // Incase a maven jar is run
+        if (workDir.endsWith(".jar")) {
+            System.out.println("Ist jar run");
+        }
+        System.out.println("ist kein jar run");
+        return workDir.substring(0, workDir.lastIndexOf("/"));
+    }
+
     public static boolean areFormFieldValuesCsvCompliant(List formFieldValues, String[] attributeNames) {
         try {
             for (int i = 0; i < formFieldValues.size(); i++) {

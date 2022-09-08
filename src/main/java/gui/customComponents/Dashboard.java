@@ -147,10 +147,8 @@ public class Dashboard extends ObservableComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String resourceDirectory = CSHelp.getAbsoluteResourceDirectory();
-                    String[] folderNames = csvDirectory.split("/");
-                    String csvDirectoryName = "/" + folderNames[folderNames.length-1];
-                    Desktop.getDesktop().open(new File(resourceDirectory + csvDirectoryName));
+                    String workDir = CSHelp.getWorkingDirectory();
+                    Desktop.getDesktop().open(new File(workDir+csvDirectory));
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
